@@ -6,3 +6,4 @@ Jupyter notebook files for pulling live data for decision making on SPX put trad
   - pulling_live_data.ipynb with scraping functions:
     - latest_yahoo: used to collect latest (with 15 minute delay) data from Yahoo Finance for VIX, VVIX, SKEW, and SPX
     - yahoo_options: used to pull latest data for the nearest regular expiry SPX index options from Yahoo Finance. This function is to be further tested to run during market hours and save data into Data/Options Data folder every 5 minutes for future testing.
+    - get_options_data: alternative function for options data using webreader module's Option function. Much more accurate.
