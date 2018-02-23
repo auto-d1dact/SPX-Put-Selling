@@ -13,6 +13,7 @@ import pandas as pd
 import numpy as np
 from six.moves import urllib
 import time
+import datetime as dt
 
 # Using plotly api_key credentials
 # plotly.tools.set_credentials_file(username='aspiringfastlaner', api_key='')
@@ -163,3 +164,66 @@ class datacollect:
     # Cleaning up unused dataframes
     del skew, spx, vix, vix_present, vxo_old
     
+    def vixterm():
+        vix = datacollect.df[['VIX Close']]
+        v1 = pd.read_csv('http://www.quandl.com/api/v1/datasets/CHRIS/CBOE_VX1.csv')
+        v2 = pd.read_csv('http://www.quandl.com/api/v1/datasets/CHRIS/CBOE_VX2.csv')
+        v1 = v1.set_index(pd.DatetimeIndex(v1['Trade Date']))[['Settle']]
+        v2 = v2.set_index(pd.DatetimeIndex(v2['Trade Date']))[['Settle']]
+        v1.index.name = 'Date'
+        v2.index.name = 'Date'
+        v1.columns = ['V1']
+        v2.columns = ['V2']
+        vixdf = pd.concat([vix,v1,v2], axis = 1)
+        
+        # Previous Third Wed Days
+        
+        # Getting Previous Eight Day
+        vixdf['month'] = vixdf.index.month
+        vixdf['year'] = vixdf.index.year
+        vixdf['day'] = 7
+        vixdf['eigth_day'] = pd.to_datetime(vixdf[['day', 'month', 'year']])
+        # Getting Previous Third Weekday
+        vixdf['day'] = 3
+        vixdf['third_weekday'] = pd.to_datetime(vixdf[['day', 'month', 'year']]).dt.weekday
+        vixdf['prev_wed'] = vixdf['eigth_day'] - pd.to_timedelta(vixdf['third_weekday'], unit = 'day') + dt.timedelta(14) - dt.timedelta(30)
+        #df['START_DATE'] + df['MONTHS'].values.astype("timedelta64[M]")
+        
+        # Current Third Wed Days
+        
+        # Getting Previous Eight Day
+        vixdf['month'] = np.where(vixdf.index.month < 12, vixdf.index.month + 1, 1)
+        vixdf['year'] = np.where(vixdf.index.month < 12, vixdf.index.year, vixdf.index.year + 1)
+        vixdf['day'] = 7
+        vixdf['eigth_day'] = pd.to_datetime(vixdf[['day', 'month', 'year']])
+        # Getting Previous Third Weekday
+        vixdf['day'] = 3
+        vixdf['third_weekday'] = pd.to_datetime(vixdf[['day', 'month', 'year']]).dt.weekday
+        vixdf['curr_wed'] = vixdf['eigth_day'] - pd.to_timedelta(vixdf['third_weekday'], unit = 'day') + dt.timedelta(14) - dt.timedelta(30)
+        
+        # Next Third Wed Days
+        
+        # Getting Previous Eight Day
+        vixdf['month'] = np.where(vixdf['month'] < 12, vixdf['month'] + 1, 1)
+        vixdf['year'] = np.where(vixdf.index.month < 11, vixdf.index.year, vixdf.index.year + 1)
+        vixdf['day'] = 7
+        vixdf['eigth_day'] = pd.to_datetime(vixdf[['day', 'month', 'year']])
+        # Getting Previous Third Weekday
+        vixdf['day'] = 3
+        vixdf['third_weekday'] = pd.to_datetime(vixdf[['day', 'month', 'year']]).dt.weekday
+        vixdf['next_wed'] = vixdf['eigth_day'] - pd.to_timedelta(vixdf['third_weekday'], unit = 'day') + dt.timedelta(14) - dt.timedelta(30)
+        
+        # (vixdf.index - vixdf['curr_wed']).dt.days
+        vixdf['dte'] = np.where(vixdf.index <= vixdf['curr_wed'], (vixdf['curr_wed'] - vixdf.index).dt.days, 
+                                (vixdf['next_wed'] - vixdf.index).dt.days)
+        vixdf['term'] = np.where(vixdf.index <= vixdf['curr_wed'], (vixdf['curr_wed'] - vixdf['prev_wed']).dt.days, 
+                                (vixdf['next_wed'] - vixdf['curr_wed']).dt.days)
+        vixdf['spot wgt'] = vixdf['dte']/vixdf['term']
+        vixdf['front wgt'] = 1 - vixdf['spot wgt']
+        vixdf['Contango'] = vixdf['spot wgt']*(vixdf['VIX Close']/vixdf['V1']) + vixdf['front wgt']*(vixdf['V1']/vixdf['V2'])
+        
+        vixdf = vixdf[['VIX Close', 'V1', 'V2', 'Contango']]
+        return vixdf
+    
+    curr_table = pd.concat([df[['SPX Close']], vixterm()], axis = 1)
+    curr_table['RV'] = ((np.log(curr_table['SPX Close'].shift(-1))-np.log(curr_table['SPX Close'])).rolling(20).std()*np.sqrt(252)*100).shift(1)
