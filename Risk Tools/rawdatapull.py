@@ -164,8 +164,8 @@ class datacollect:
     # Cleaning up unused dataframes
     del skew, spx, vix, vix_present, vxo_old
     
-    def vixterm():
-        vix = datacollect.df[['VIX Close']]
+    def vixterm(df):
+        vix = df[['VIX Close']]
         v1 = pd.read_csv('http://www.quandl.com/api/v1/datasets/CHRIS/CBOE_VX1.csv')
         v2 = pd.read_csv('http://www.quandl.com/api/v1/datasets/CHRIS/CBOE_VX2.csv')
         v1 = v1.set_index(pd.DatetimeIndex(v1['Trade Date']))[['Settle']]
@@ -224,6 +224,5 @@ class datacollect:
         
         vixdf = vixdf[['VIX Close', 'V1', 'V2', 'Contango']]
         return vixdf
-    
-    curr_table = pd.concat([df[['SPX Close']], vixterm()], axis = 1)
+    curr_table = pd.concat([df[['SPX Close']], vixterm(df)], axis = 1)
     curr_table['RV'] = ((np.log(curr_table['SPX Close'].shift(-1))-np.log(curr_table['SPX Close'])).rolling(20).std()*np.sqrt(252)*100).shift(1)
