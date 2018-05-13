@@ -7,7 +7,7 @@ from pandas_datareader.data import Options
 from alpha_vantage.timeseries import TimeSeries
 from py_vollib.black_scholes_merton.implied_volatility import *
 from alpha_vantage.timeseries import TimeSeries
-ts = TimeSeries(key='YOUR_API_KEY',output_format='pandas')
+ts = TimeSeries(key='5HZEUI5AFJB06BUK',output_format='pandas')
 
 from trading_calendar import USTradingCalendar
 
