@@ -4,7 +4,10 @@ import datetime as dt
 import numpy as np
 import pandas as pd
 from pandas_datareader.data import Options
+from alpha_vantage.timeseries import TimeSeries
 from py_vollib.black_scholes_merton.implied_volatility import *
+from alpha_vantage.timeseries import TimeSeries
+ts = TimeSeries(key='YOUR_API_KEY',output_format='pandas')
 
 from trading_calendar import USTradingCalendar
 
@@ -46,7 +49,8 @@ def get_raw_data(ticker):
 def get_filtered_data(data, calculate_iv=True, call=True, put=False,
                       volume_threshold=1, above_below=False,
                       rf_interest_rate=0.0, dividend_rate=0.0,
-                      trading_calendar=True, market=True):
+                      trading_calendar=True, market=True,
+                      days_to_expiry=60):
 
     if call and put:
         raise Exception('Must specify either call or put.')
@@ -68,7 +72,9 @@ def get_filtered_data(data, calculate_iv=True, call=True, put=False,
     df = data[(data.index.get_level_values('Type') == typ)
               & (data['Vol'] >= volume_threshold)
               & (data.index.get_level_values('Strike') < (underlying + above_below + 1))
-              & (data.index.get_level_values('Strike') > (underlying - above_below - 1))]
+              & (data.index.get_level_values('Strike') > (underlying - above_below - 1))
+              & (data.index.get_level_values('Expiry') <= 
+                 (dt.datetime.today() + dt.timedelta(days = days_to_expiry)))]
 
     # Get columns
     if typ == 'call':
@@ -111,3 +117,23 @@ def get_filtered_data(data, calculate_iv=True, call=True, put=False,
         ivs = np.array(sigmas)
 
     return strikes, plotting, ivs
+
+# Function historical data from alpha advantage
+def historical_data(ticker, day_number = 252, rolling_window = 20, outsize = 'full'):
+    alphavantage_link = 'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={0}&apikey=5HZEUI5AFJB06BUK&datatype=csv&outputsize={1}'.format(ticker, outsize)
+    stockframe = pd.read_csv(alphavantage_link, index_col = 0).sort_index()[['open', 'close']]
+    stockframe['daily_ret'] = np.log(stockframe['close']/stockframe['close'].shift(1))
+    stockframe['intra_ret'] = np.log(stockframe['close']/stockframe['open'])
+    stockframe['ovrnt_ret'] = np.log(stockframe['open']/stockframe['close'].shift(1))
+    stockframe['daily_vol'] = stockframe.daily_ret.rolling(window=rolling_window,center=False).std()
+    stockframe['intra_vol'] = stockframe.intra_ret.rolling(window=rolling_window,center=False).std()
+    stockframe['ovrnt_vol'] = stockframe.ovrnt_ret.rolling(window=rolling_window,center=False).std()
+    stockframe['daily_ann'] = stockframe.daily_vol*np.sqrt(252)
+    stockframe['intra_ann'] = stockframe.intra_vol*np.sqrt((24/6.5)*252)
+    stockframe['ovrnt_ann'] = stockframe.ovrnt_vol*np.sqrt((24/17.5)*252)
+    stockframe['oc_diff'] = stockframe.close - stockframe.open
+    stockframe['daily_dollar_vol'] = stockframe.daily_vol*stockframe.close.shift(1)
+    stockframe['daily_dollar_std'] = np.abs(stockframe.oc_diff/stockframe.daily_dollar_vol)
+    stockframe['daily_dollar_std_direction'] = stockframe.oc_diff/stockframe.daily_dollar_vol
+
+    return stockframe.tail(day_number)
