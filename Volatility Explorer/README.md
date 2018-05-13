@@ -12,4 +12,4 @@ To learn more check out our [documentation](https://plot.ly/dash).
 
 The following are screenshots for the app in this repo:
 
-![Alt desc](https://cdn.rawgit.com/plotly/dash-volatility-surface/master/screenshots/Screenshot1.png)
+![Alt desc](https://github.com/aspiringfastlaner/SPX-Put-Selling/blob/master/Volatility%20Explorer/screenshots/Screenshot1.png)
