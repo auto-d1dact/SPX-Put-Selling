@@ -1,0 +1,724 @@
+Symbol,Name,Last,Change,%Chg,"Options Vol.","% Call Options","% Put Options",Time
+SPY,"S&P 500 SPDR",277.37,-0.029999999999973,-0.01%,2622179,37.5%,62.5%,06/07/18
+QQQ,"Nasdaq QQQ ETF",174.43,-1.43,-0.81%,913380,39.8%,60.2%,06/07/18
+EWZ,"Brazil Ishares MSCI ETF",32.71,-1.77,-5.13%,661878,47.9%,52.1%,06/07/18
+IWM,"Russell 2000 Ishares ETF",166.02,-0.91,-0.55%,308023,43.1%,56.9%,06/07/18
+VXX,"Ipath S&P 500 VIX Short-Term Futures ETN",32.81,0.59,+1.83%,271687,43.8%,56.2%,06/07/18
+EEM,"Emerging Markets Ishares MSCI ETF",46.42,-0.72,-1.53%,258754,44.9%,55.1%,06/07/18
+XLF,"S&P 500 Financials Sector SPDR",28.04,0.09,+0.32%,198871,54.0%,46.0%,06/07/18
+EFA,"EAFE Ishares MSCI ETF",70.33,-0.40000000000001,-0.57%,158013,26.0%,74.0%,06/07/18
+TLT,"20+ Year Treas Bond Ishares ETF",119.89,1.15,+0.97%,103512,38.5%,61.5%,06/07/18
+UVXY,"Ultra VIX Short-Term Fut Proshares",10.39,0.22,+2.16%,97921,64.8%,35.2%,06/07/18
+GLD,"Gold SPDR",122.86,-0.060000000000002,-0.05%,93911,78.3%,21.7%,06/07/18
+USO,"US Oil Fund",13.35,0.19,+1.44%,93631,73.5%,26.5%,06/07/18
+XOP,"S&P Oil & Gas Expl & Prod SPDR",42.21,1.04,+2.53%,91272,67.3%,32.7%,06/07/18
+FXI,"China Large-Cap Ishares ETF",48.47,-0.3,-0.62%,85005,27.2%,72.8%,06/07/18
+SLV,"Silver Trust Ishares",15.72,0.020000000000001,+0.13%,67304,59.4%,40.6%,06/07/18
+DIA,"DOW Industrials SPDR",252.53,1.01,+0.40%,67219,58.0%,42.0%,06/07/18
+XLE,"S&P 500 Energy Sector SPDR",77.05,1.15,+1.52%,62821,47.9%,52.1%,06/07/18
+XLU,"S&P 500 Utilities Sector SPDR",48.71,0.34,+0.70%,58278,43.2%,56.8%,06/07/18
+XIU.TO,"Ishares SP TSX 60 Index ETF",24,0.03,+0.13%,56367,87.8%,12.2%,06/07/18
+SMH,"Semiconductor Vaneck ETF",110.72,-0.89,-0.80%,55346,17.5%,82.5%,06/07/18
+XBI,"S&P Biotech SPDR",96.55,-1.22,-1.25%,52169,52.9%,47.1%,06/07/18
+GDX,"Gold Miners Vaneck ETF",22.45,-0.13,-0.58%,49736,78.3%,21.7%,06/07/18
+XLP,"S&P 500 Cons Staples Sector SPDR",50.21,0.31,+0.62%,47974,73.9%,26.1%,06/07/18
+HYG,"High Yield Corp Bond Ishares Iboxx $ ETF",85.71,0.029999999999987,+0.04%,40760,21.1%,78.9%,06/07/18
+XLI,"S&P 500 Industrial Sector SPDR",76.19,0.31999999999999,+0.42%,37440,12.0%,88.0%,06/07/18
+EWW,"Mexico Ishares MSCI ETF",43.86,-0.35,-0.79%,36335,45.6%,54.4%,06/07/18
+KRE,"S&P Regional Banking ETF SPDR",65.51,0.02000000000001,+0.03%,31215,71.4%,28.6%,06/07/18
+FEZ,"Euro Stoxx 50 ETF SPDR",40.21,-0.35,-0.86%,27139,59.3%,40.7%,06/07/18
+OIH,"Oil Services Vaneck ETF",27.55,0.55,+2.04%,24760,86.3%,13.7%,06/07/18
+XHB,"S&P Homebuilders SPDR",40.56,0.2,+0.50%,22364,83.0%,17.0%,06/07/18
+IBB,"Nasdaq Biotechnology Ishares ETF",109.76,-0.76,-0.69%,22309,51.0%,49.0%,06/07/18
+XRT,"S&P Retail SPDR",49.12,0.29,+0.59%,21741,29.0%,71.0%,06/07/18
+ILF,"Latin America 40 Ishares ETF",29.82,-1.03,-3.34%,21402,0.8%,99.2%,06/07/18
+UNG,"US Natural Gas Fund",23.71,0.26,+1.11%,18779,73.0%,27.0%,06/07/18
+TQQQ,"Ultrapro QQQ Proshares",60.18,-1.43,-2.32%,18013,60.0%,40.0%,06/07/18
+XLK,"S&P 500 Info Tech Sector SPDR",71.8,-0.58,-0.80%,17349,44.9%,55.1%,06/07/18
+SQQQ,"Ultrapro Short QQQ Proshares",13.82,0.32,+2.37%,12340,79.0%,21.0%,06/07/18
+TBT,"Ultrashort 20+ Year Treasury Proshares",37.04,-0.69,-1.83%,11624,69.7%,30.3%,06/07/18
+KBE,"S&P Bank ETF SPDR",50.69,0.030000000000001,+0.06%,11574,8.6%,91.4%,06/07/18
+SVXY,"VIX Short-Term Fut Short Proshares",13.68,-0.09,-0.65%,11383,48.6%,51.4%,06/07/18
+XLY,"S&P 500 Cons Disc Sector SPDR",109.69,0.31999999999999,+0.29%,11144,79.5%,20.5%,06/07/18
+NUGT,"Gold Miners Bull 3X Direxion ETF",25.29,-0.22,-0.86%,10713,73.2%,26.8%,06/07/18
+FXE,"Euro Trust PS Currencyshares",113.26,0.25,+0.22%,9990,71.0%,29.0%,06/07/18
+XLV,"S&P 500 Healthcare Sector SPDR",84.55,0.11,+0.13%,9445,63.8%,36.2%,06/07/18
+XLB,"S&P 500 Materials Sector SPDR",60.66,-0.31,-0.51%,8702,41.8%,58.2%,06/07/18
+IYR,"US Real Estate Ishares ETF",79.19,0.049999999999997,+0.06%,8502,35.5%,64.5%,06/07/18
+TZA,"Smallcap Bear 3X Direxion",9.01,0.15,+1.69%,8277,78.7%,21.3%,06/07/18
+ACWI,"ACWI Ishares MSCI ETF",73.8,-0.33,-0.45%,7819,3.7%,96.3%,06/07/18
+JNUG,"Direxion Junior Gold Mine Bull 3X",14.1,-0.06,-0.42%,7207,77.0%,23.0%,06/07/18
+VGK,"Europe ETF FTSE Vanguard",58.65,-0.38,-0.64%,6893,95.8%,4.2%,06/07/18
+EWJ,"Japan Ishares MSCI ETF",60.66,0,unch,6422,3.7%,96.3%,06/07/18
+FAS,"Financial Bull 3X Direxion",69.36,-0.28,-0.40%,6075,72.9%,27.1%,06/07/18
+BRZU,"Direxion Brazil Bull 3X",18.55,-3.37,-15.37%,5875,75.1%,24.9%,06/07/18
+TNA,"Smallcap Bull 3X Direxion",86.2,-1.4,-1.60%,5296,44.3%,55.7%,06/07/18
+LQD,"Invst Grade Corp Bond Ishares Iboxx $ ETF",114.69,0.38,+0.33%,5239,22.4%,77.6%,06/07/18
+AMLP,"Alps Alerian MLP ETF",10.54,0.069999999999999,+0.67%,4802,55.7%,44.3%,06/07/18
+IWO,"Russell 2000 Growth Ishares ETF",206.71,-2.1,-1.01%,4673,2.3%,97.7%,06/07/18
+IYT,"Transportation Average Ishares ETF",195.81,0.11,+0.06%,4352,6.7%,93.3%,06/07/18
+DUST,"Gold Miners Bear 3X Direxion ETF",23.75,0.3,+1.28%,3981,31.8%,68.2%,06/07/18
+UPRO,"Ultrapro S&P 500 Proshares",49.76,-0.07,-0.14%,3866,43.4%,56.6%,06/07/18
+SDS,"Ultrashort S&P 500 Proshares",36.91,0.059999999999995,+0.16%,3513,80.4%,19.6%,06/07/18
+ITB,"US Home Construction Ishares ETF",39.49,0.13,+0.33%,3459,92.0%,8.0%,06/07/18
+IEF,"7-10 Year Treas Bond Ishares ETF",101.85,0.43,+0.42%,3432,6.0%,94.0%,06/07/18
+EMB,"USD Emrg Mkts Bond Ishares JPM ETF",107.59,-0.3,-0.28%,3387,1.3%,98.7%,06/07/18
+GDXJ,"Junior Gold Miners ETF Vaneck",32.95,-0.039999999999999,-0.12%,3127,87.2%,12.8%,06/07/18
+XEG.TO,"Ishares SP TSX Capped Energy Index ETF",12.8,0.25,+1.99%,3088,6.8%,93.2%,06/07/18
+ERX,"Energy Bull 3X Direxion",39.73,1.75,+4.61%,3024,81.8%,18.2%,06/07/18
+MJ,"Etfmg Alternative Harvest ETF",31.77,-0.49,-1.52%,2655,90.9%,9.1%,06/07/18
+SSO,"Ultra S&P 500 Proshares",115.74,-0.14,-0.12%,2539,57.5%,42.5%,06/07/18
+LABU,"Direxion S&P Biotech Bull 3X",99.07,-5.23,-5.01%,2355,40.5%,59.5%,06/07/18
+FXY,"Japanese Yen Trust PS Currencyshares",87.29,0.40000000000001,+0.46%,2221,36.3%,63.7%,06/07/18
+UDOW,"Ultrapro DOW 30 Proshares",95.76,1.19,+1.26%,2197,74.2%,25.8%,06/07/18
+IGV,"North American Tech-Software Ishares ETF",186.77,-3.22,-1.69%,2140,8.1%,91.9%,06/07/18
+GUSH,"Direxion S&P Oil & Gas Expl Bull 3X",38.96,2.95,+8.19%,2114,81.9%,18.1%,06/07/18
+UUP,"DB US Dollar Indx Bull Fund PS",24.63,-0.050000000000001,-0.20%,2030,61.9%,38.1%,06/07/18
+XME,"S&P Metals & Mining SPDR",38.29,-0.33,-0.85%,1943,78.7%,21.3%,06/07/18
+ASHR,"Db-Xt Harvest CSI 300 China A",29.87,-0.34,-1.13%,1943,95.1%,4.9%,06/07/18
+EWG,"Germany Ishares MSCI ETF",32.09,-0.38999999999999,-1.20%,1923,57.3%,42.7%,06/07/18
+SPXL,"Direxion S&P 500 Bull 3X",47.09,-0.079999999999998,-0.17%,1697,56.6%,43.4%,06/07/18
+SDOW,"Ultrapro Short DOW 30 Proshares",16.74,-0.17,-1.01%,1679,54.8%,45.2%,06/07/18
+QLD,"Ultra QQQ Proshares",89.41,-1.42,-1.56%,1556,49.6%,50.4%,06/07/18
+DJP,"Ipath.B Commodity Index TR ETN",25.18,0,unch,1550,100.0%,0.0%,06/07/18
+EWI,"Italy Ishares MSCI ETF",29.85,-0.48,-1.58%,1533,6.5%,93.5%,06/07/18
+UCO,"Ultra DJ-UBS Crude Oil Proshares",28.25,0.72,+2.62%,1500,81.9%,18.1%,06/07/18
+RSX,"Russia Vaneck ETF",21.2,-0.3,-1.40%,1466,61.0%,39.0%,06/07/18
+VWO,"Emrg Mkts ETF MSCI Vanguard",45.13,-0.7,-1.53%,1422,44.0%,56.0%,06/07/18
+SPXS,"Direxion S&P 500 Bear 3X",25.07,0.07,+0.28%,1413,76.1%,23.9%,06/07/18
+DXD,"Ultrashort DOW 30 Proshares",31.85,-0.22,-0.69%,1261,98.7%,1.3%,06/07/18
+GREK,"G-X FTSE Greece 20 ETF",9.31,-0.19,-2.00%,1259,65.4%,34.6%,06/07/18
+DXJ,"Japan Hedged Equity Wisdomtree",57.12,-0.2,-0.35%,1221,70.6%,29.4%,06/07/18
+TUR,"Turkey Ishares MSCI ETF",32.22,0.45,+1.42%,1180,28.1%,71.9%,06/07/18
+AGQ,"Ultra Silver Proshares",32,0.039999999999999,+0.13%,1168,81.2%,18.8%,06/07/18
+DVY,"Select Dividend Ishares ETF",98.36,0.4,+0.41%,1155,93.1%,6.9%,06/07/18
+LABD,"Direxion S&P Biotech Bear 3X",25.71,1.25,+5.11%,1142,68.2%,31.8%,06/07/18
+SOXL,"Semiconductor Bull 3X Direxion",181.57,-4.95,-2.65%,1109,47.3%,52.7%,06/07/18
+TMV,"20+ Year Trsy Bear 3X Direxion",19.96,-0.59,-2.87%,1092,94.4%,5.6%,06/07/18
+FXC,"Canadian Dollar Trust PS Currencyshares",75.97,-0.14,-0.18%,1087,0.6%,99.4%,06/07/18
+FAZ,"Financial Bear 3X Direxion",10.15,0.040000000000001,+0.40%,1085,61.8%,38.2%,06/07/18
+DRIP,"Direxion S&P Oil & Gas Expl Bear 3X",6.47,-0.58,-8.23%,1056,87.4%,12.6%,06/07/18
+VNQ,"Vanguard Real Estate ETF",79.91,0,unch,1005,79.7%,20.3%,06/07/18
+SOXX,"PHLX Semiconductor Ishares ETF",193.63,-1.74,-0.89%,969,23.6%,76.4%,06/07/18
+PFF,"US Preferred Stock Ishares ETF",37.49,0.05,+0.13%,907,30.0%,70.0%,06/07/18
+XFN.TO,"Ishares SP TSX Capped Financials ETF",37.73,0.1,+0.27%,894,27.1%,72.9%,06/07/18
+YINN,"Direxion FTSE China Bull 3X",35.67,-0.53,-1.46%,790,62.7%,37.3%,06/07/18
+DDM,"Ultra DOW 30 Proshares",45.2,0.3,+0.67%,756,27.9%,72.1%,06/07/18
+SCZ,"EAFE Small-Cap Ishares MSCI ETF",65.86,-0.46,-0.69%,704,0.0%,100.0%,06/07/18
+VIXY,"VIX Short-Term Futures Proshares",27.07,0.39,+1.46%,645,69.1%,30.9%,06/07/18
+QID,"Ultrashort QQQ Proshares",40.69,0.64,+1.60%,629,96.5%,3.5%,06/07/18
+SCO,"Ultrashort DJ-UBS Crude Oil Proshares",18.5,-0.52,-2.73%,598,43.3%,56.7%,06/07/18
+CWB,"Convertible Secs Barclays Capital SPDR",54,-0.29,-0.53%,591,92.9%,7.1%,06/07/18
+EWU,"United Kingdom Ishares MSCI ETF",36.38,-0.19,-0.52%,570,3.9%,96.1%,06/07/18
+FDN,"DJ Internet Index First Trust",137.61,-2.14,-1.53%,569,41.8%,58.2%,06/07/18
+URA,"G-X Uranium ETF",14.25,-0.46,-3.13%,553,59.5%,40.5%,06/07/18
+TECL,"Technology Bull 3X Direxion",146.69,-4.08,-2.71%,548,33.6%,66.4%,06/07/18
+JNK,"High Yield Bond ETF SPDR",35.75,0.020000000000003,+0.06%,538,1.3%,98.7%,06/07/18
+DBA,"DB Agriculture Fund PS",18.58,-0.15,-0.80%,521,98.7%,1.3%,06/07/18
+MDY,"S&P Midcap 400 SPDR",362.61,0.13999999999999,+0.04%,495,56.0%,44.0%,06/07/18
+SPXU,"Ultrapro Short S&P 500 Proshares",38,0.049999999999997,+0.13%,486,78.8%,21.2%,06/07/18
+BOIL,"Ultra DJ-UBS Natural Gas Proshares",29.38,0.64,+2.23%,481,28.1%,71.9%,06/07/18
+LIT,"G-X Lithium ETF",34.25,-0.21,-0.61%,480,83.5%,16.5%,06/07/18
+BZQ,"Ultrashort MSCI Brazil Proshares",63.11,5.93,+10.37%,478,57.7%,42.3%,06/07/18
+IJR,"S&P Small-Cap Ishares Core ETF",85.2,-0.31999999999999,-0.37%,444,84.9%,15.1%,06/07/18
+EZA,"South Africa Ishares MSCI ETF",62.11,-2.24,-3.48%,441,2.3%,97.7%,06/07/18
+EPI,"India Earnings Wisdomtree",25.76,-0.25,-0.96%,434,95.9%,4.1%,06/07/18
+TMF,"20+ Year Trsy Bull 3X Direxion",18.7,0.53,+2.92%,431,94.9%,5.1%,06/07/18
+KWEB,"Kranes CSI China ETF",64.43,-0.36999999999999,-0.57%,402,58.7%,41.3%,06/07/18
+EWY,"South Korea Ishares MSCI ETF",74.01,-0.48999999999999,-0.66%,396,46.5%,53.5%,06/07/18
+TTT,"Ultrapro Short 20+ Year Trsy Proshares",27.73,-0.82,-2.87%,394,100.0%,0.0%,06/07/18
+CORN,"Teucrium Corn",17.48,-0.050000000000001,-0.29%,380,69.5%,30.5%,06/07/18
+HMMJ.TO,"Horizons Marijuana Life Sciences ETF",19.17,-0.32,-1.64%,367,70.0%,30.0%,06/07/18
+BOTZ,"G-X Robotics & Artificial Intel Thmtc ETF",23.46,-0.09,-0.38%,350,95.4%,4.6%,06/07/18
+JDST,"Direxion Junior Gold Mine Bear 3X",49.6,0.26,+0.53%,348,67.5%,32.5%,06/07/18
+XES,"S&P Oil & Gas Eqpt & Services SPDR",17.57,0.42,+2.45%,332,86.1%,13.9%,06/07/18
+FXF,"Swiss Franc Trust PS Currencyshares",95.77,0.58,+0.61%,322,68.6%,31.4%,06/07/18
+SOXS,"Semiconductor Bear 3X Direxion",9.12,0.23,+2.59%,321,95.3%,4.7%,06/07/18
+RUSL,"Russia Bull 3X Direxion",43.05,-1.71,-3.82%,292,76.4%,23.6%,06/07/18
+TBF,"20+ Year Short Treasury Proshares",23.01,-0.2,-0.86%,287,4.2%,95.8%,06/07/18
+IWN,"Russell 2000 Value Ishares ETF",134.29,-0.050000000000011,-0.04%,285,16.1%,83.9%,06/07/18
+IEMG,"Emrg Mkts Ishares Core MSCI ETF",56.31,-0.82,-1.44%,283,72.1%,27.9%,06/07/18
+SHY,"1-3 Year Treasury Bond Ishares ETF",83.3,0.08,+0.10%,271,11.1%,88.9%,06/07/18
+TECS,"Technology Bear 3X Direxion",21.9,0.6,+2.82%,268,86.2%,13.8%,06/07/18
+GASL,"Natural Gas Bull 3X Direxion",22.44,1.37,+6.50%,268,54.5%,45.5%,06/07/18
+BJO,"Ipath.B Coffee Subindex TR Series B ETN",45.99,-0.75,-1.60%,267,62.9%,37.1%,06/07/18
+VTI,"Total Stock Market ETF Vanguard",143.42,-0.21000000000001,-0.15%,254,86.2%,13.8%,06/07/18
+SDIV,"G-X Superdividend ETF",20.92,-0.05,-0.24%,250,0.8%,99.2%,06/07/18
+KBA,"Kranes Bosera MSCI China A",33.68,-0.34,-1.00%,244,66.8%,33.2%,06/07/18
+HACK,"Etfmg Prime Cyber Security ETF",38.06,-0.44,-1.14%,238,81.9%,18.1%,06/07/18
+VEA,"FTSE Developed Markets Vanguard",44.77,-0.26,-0.58%,233,5.2%,94.8%,06/07/18
+DBC,"DB Cmdty Index Tracking Fund PS",17.86,0.07,+0.39%,228,100.0%,0.0%,06/07/18
+IWR,"Russell Mid-Cap Ishares ETF",215.41,-0.31999999999999,-0.15%,217,100.0%,0.0%,06/07/18
+AMJ,"Alerian MLP Index ETN JP Morgan",27.21,0.25,+0.93%,212,60.8%,39.2%,06/07/18
+IVV,"S&P 500 Ishares Core ETF",279.26,-0.18000000000001,-0.06%,210,68.1%,31.9%,06/07/18
+RTH,"Retail ETF Vaneck",100.49,0.49,+0.49%,205,2.4%,97.6%,06/07/18
+BKF,"BRIC Ishares MSCI ETF",45.14,-0.64,-1.40%,199,98.0%,2.0%,06/07/18
+WEAT,"Teucrium Wheat",6.92,0.05,+0.73%,196,100.0%,0.0%,06/07/18
+XSP.TO,"Ishares Core SP 500 ETF CAD Hdg ETF",31.51,0,unch,185,78.4%,21.6%,06/07/18
+EDC,"Emrg Mkts Bull 3X Direxion",110.48,-5.21,-4.50%,180,72.8%,27.2%,06/07/18
+INDA,"India MSCI Ishares ETF",33.57,-0.56,-1.64%,173,96.5%,3.5%,06/07/18
+ERY,"Energy Bear 3X Direxion",32.69,-1.64,-4.78%,168,57.1%,42.9%,06/07/18
+OILU,"Ultrapro Crude Oil Proshares",47.31,1.81,+3.97%,165,15.2%,84.8%,06/07/18
+EUFN,"Europe Financials Ishares MSCI ETF",21.85,-0.08,-0.36%,162,47.5%,52.5%,06/07/18
+EUO,"Ultrashort Euro Proshares",22.25,-0.1,-0.45%,155,46.5%,53.5%,06/07/18
+ITOT,"S&P Total US Stock Market Ishares Core ETF",63.89,-0.049999999999997,-0.08%,150,20.0%,80.0%,06/07/18
+SH,"S&P 500 Short Proshares",28.84,0.02,+0.07%,149,74.5%,25.5%,06/07/18
+MCHI,"China Ishares MSCI ETF",71.31,-0.83,-1.15%,146,91.1%,8.9%,06/07/18
+FXB,"British Pound Sterling Trust PS Currencyshares",130.28,0.11000000000001,+0.08%,145,45.5%,54.5%,06/07/18
+CIBR,"Nasdaq Cybersecurity ETF FT",26.96,-0.31,-1.14%,145,100.0%,0.0%,06/07/18
+EDZ,"Emrg Mkts Bear 3X Direxion",42.78,1.86,+4.55%,139,88.5%,11.5%,06/07/18
+UGA,"US Gasoline",33.88,0.65,+1.97%,131,78.6%,21.4%,06/07/18
+UWM,"Ultra Russell 2000 Proshares",82.03,-0.95,-1.14%,130,90.8%,9.2%,06/07/18
+SGOL,"Physical Swiss Gold",125.61,0.26000000000001,+0.21%,127,0.0%,100.0%,06/07/18
+VBR,"Smallcap Value ETF Vanguard",138.93,-0.069999999999993,-0.05%,125,96.8%,3.2%,06/07/18
+AMZA,"Infracap MLP ETF",7.81,0.09,+1.17%,122,95.9%,4.1%,06/07/18
+VXZ,"Ipath S&P 500 VIX Mid-Term Futures ETN",17.95,0.15,+0.84%,116,4.3%,95.7%,06/07/18
+BRF,"Brazil Smallcap ETF Vaneck",18.03,-1.05,-5.50%,116,0.0%,100.0%,06/07/18
+IJK,"S&P Mid-Cap 400 Value Ishares ETF",230.64,-0.37,-0.16%,115,77.4%,22.6%,06/07/18
+EWP,"Spain Ishares MSCI ETF",31.61,-0.010000000000002,-0.03%,113,73.5%,26.5%,06/07/18
+VOO,"S&P 500 ETF Vanguard",254.77,-0.11999999999998,-0.05%,109,56.0%,44.0%,06/07/18
+HND.TO,"Betapro Nat Gas 2X Daily Bear ETF",13.07,-0.29,-2.17%,109,86.2%,13.8%,06/07/18
+SOCL,"G-X Social Media ETF",36.24,-0.35,-0.96%,108,100.0%,0.0%,06/07/18
+AGG,"US Aggregate Bond Ishares Core ETF",105.9,0.23,+0.22%,107,55.1%,44.9%,06/07/18
+XLRE,"S&P 500 Real Estate Sector SPDR",31.95,0,unch,106,51.9%,48.1%,06/07/18
+FTEC,"Fidelity Info Tech MSCI ETF",56.99,-0.69,-1.20%,102,71.6%,28.4%,06/07/18
+INDL,"India Bull 3X Direxion",76.52,-3.55,-4.43%,99,47.5%,52.5%,06/07/18
+SDY,"S&P Dividend SPDR",93.65,0.32000000000001,+0.34%,96,86.5%,13.5%,06/07/18
+IJH,"S&P Mid-Cap 400 Ishares Core ETF",199.24,0.090000000000003,+0.05%,96,68.8%,31.3%,06/07/18
+VTWO,"Russell 2000 Vanguard",133.35,-0.71,-0.53%,95,100.0%,0.0%,06/07/18
+SGGB,"Ipath.B Sugar Subindex TR Series B ETN",44.29,-1.44,-3.15%,90,37.8%,62.2%,06/07/18
+YANG,"Direxion FTSE China Bear 3X",44.11,0.61,+1.40%,89,83.1%,16.9%,06/07/18
+FENY,"Fidelity Energy MSCI ETF",21.5,0.37,+1.75%,86,100.0%,0.0%,06/07/18
+IVE,"S&P 500 Value Ishares ETF",112.57,0.45999999999999,+0.41%,82,100.0%,0.0%,06/07/18
+ROBO,"Global Robotics and Automation ETF",42.37,-0.13,-0.31%,82,96.3%,3.7%,06/07/18
+UGL,"Ultra Gold Proshares",39.36,-0.020000000000003,-0.05%,81,100.0%,0.0%,06/07/18
+SIL,"G-X Silver Miners ETF",30.52,-0.030000000000001,-0.10%,81,45.7%,54.3%,06/07/18
+IWB,"Russell 1000 Ishares ETF",154.72,-0.11000000000001,-0.07%,78,100.0%,0.0%,06/07/18
+IYZ,"US Telecommunications Ishares ETF",27.67,-0.04,-0.14%,77,98.7%,1.3%,06/07/18
+BIB,"Ultra Nasdaq Biotech Proshares",57.14,-0.83,-1.43%,77,75.3%,24.7%,06/07/18
+TAN,"Solar ETF Guggenheim",23.23,-0.059999999999999,-0.26%,76,60.5%,39.5%,06/07/18
+IWF,"Russell 1000 Growth Ishares ETF",146.31,-0.68000000000001,-0.46%,76,81.6%,18.4%,06/07/18
+FXA,"Australian Dollar Trust PS Currencyshares",76.21,-0.41000000000001,-0.54%,75,96.0%,4.0%,06/07/18
+ZSL,"Ultrashort Silver Proshares",32.1,-0.08,-0.25%,74,67.6%,32.4%,06/07/18
+SPHB,"S&P 500 High Beta Portfolio PS",45.12,-0.3,-0.66%,73,100.0%,0.0%,06/07/18
+TWM,"Ultrashort Russell 2000 Proshares",14.34,0.16,+1.13%,70,90.0%,10.0%,06/07/18
+IWD,"Russell 1000 Value Ishares ETF",123.69,0.44,+0.36%,70,98.6%,1.4%,06/07/18
+EZU,"Eurozone Ishares MSCI ETF",43.32,-0.39,-0.89%,69,17.4%,82.6%,06/07/18
+SKYY,"Cloud Computing ETF FT",53.87,-0.43,-0.79%,66,84.8%,15.2%,06/07/18
+GASX,"Direxion Natural Gas Bear 3X",19.31,-1.41,-6.81%,66,9.1%,90.9%,06/07/18
+PSCH,"S&P Smallcap Health Care Port PS",126.67,-2.02,-1.57%,65,52.3%,47.7%,06/07/18
+VV,"Largecap ETF Vanguard",127.52,-0.16,-0.13%,64,73.4%,26.6%,06/07/18
+ITA,"US Aerospace & Defense Ishares ETF",203.59,-0.18,-0.09%,63,81.0%,19.0%,06/07/18
+SCHG,"Schwab US Largecap Growth ETF",77.04,-0.27,-0.35%,61,62.3%,37.7%,06/07/18
+VYM,"High Dividend Yld Indx ETF Vanguard",85.7,0.14,+0.16%,58,100.0%,0.0%,06/07/18
+TIP,"TIPS Bond Ishares ETF",112.1,0.33999999999999,+0.30%,56,89.3%,10.7%,06/07/18
+VIG,"Dividend Appreciation ETF Vanguard",104.37,0.13000000000001,+0.12%,54,90.7%,9.3%,06/07/18
+TAO,"China Real Estate Portfolio PS",31.57,-0.19,-0.60%,53,58.5%,41.5%,06/07/18
+HDV,"High Dividend Ishares Core ETF",86.05,0.61999999999999,+0.73%,53,90.6%,9.4%,06/07/18
+IYM,"US Basic Materials Ishares ETF",103.54,-0.81999999999999,-0.79%,51,100.0%,0.0%,06/07/18
+XMA.TO,"Ishares SP TSX Capped Materials ETF",13.95,-0.05,-0.36%,50,80.0%,20.0%,06/07/18
+IEO,"US Oil & Gas Explor & Prod Ishares ETF",74.18,1.34,+1.84%,50,100.0%,0.0%,06/07/18
+HOU.TO,"Betapro Crude Oil 2X Daily Bull ETF",9.78,0.26,+2.73%,50,100.0%,0.0%,06/07/18
+IGM,"North American Tech Ishares ETF",197.74,-2.26,-1.13%,50,100.0%,0.0%,06/07/18
+VIIX,"VS VIX Short Term",13.85,0.21,+1.54%,49,51.0%,49.0%,06/07/18
+XPP,"Ultra FTSE China 25 Proshares",88.77,-0.88,-0.98%,48,37.5%,62.5%,06/07/18
+ACWX,"ACWI Ex US Ishares MSCI ETF",49.7,-0.34,-0.68%,48,100.0%,0.0%,06/07/18
+VUG,"Growth ETF Vanguard",152.29,-0.66,-0.43%,47,85.1%,14.9%,06/07/18
+DFEN,"Direxion Daily Aerospace Defense Bull 3X Shares",52.72,-0.03,-0.06%,47,57.4%,42.6%,06/07/18
+VTV,"Value ETF Vanguard",106.73,0.27,+0.25%,45,62.2%,37.8%,06/07/18
+IYF,"US Financials Ishares ETF",121.61,0.010000000000005,+0.01%,45,62.2%,37.8%,06/07/18
+EWH,"Hong Kong Ishares MSCI ETF",26.36,-0.16,-0.60%,45,8.9%,91.1%,06/07/18
+VBK,"Smallcap Growth ETF Vanguard",177.63,-1.03,-0.58%,44,100.0%,0.0%,06/07/18
+EWT,"Taiwan Ishares MSCI ETF",38.07,-0.38,-0.99%,44,15.9%,84.1%,06/07/18
+IPAY,"Purefunds ISE Mobile Payments ETF",39.14,-0.54,-1.36%,42,100.0%,0.0%,06/07/18
+KSA,"Saudi Arabia Ishares MSCI ETF",31.37,-0.46,-1.45%,42,100.0%,0.0%,06/07/18
+EWM,"Malaysia Ishares MSCI ETF",33.5,-0.18,-0.53%,41,39.0%,61.0%,06/07/18
+BBH,"Biotech Vaneck ETF",119.67,-0.27,-0.23%,41,12.2%,87.8%,06/07/18
+CHAU,"Direxion CSI 300 China A 2X",27.07,-0.63,-2.27%,41,97.6%,2.4%,06/07/18
+ECH,"Chile Ishares MSCI ETF",49.73,-0.58,-1.15%,39,0.0%,100.0%,06/07/18
+BALB,"Ipath.B Cotton Subindex TR Series B ETN",56.92,1.76,+3.20%,39,28.2%,71.8%,06/07/18
+IDU,"US Utilities Ishares ETF",124.07,0.63999999999999,+0.52%,38,100.0%,0.0%,06/07/18
+BNO,"US Brent Oil",21.52,0.38,+1.80%,37,67.6%,32.4%,06/07/18
+SPHD,"S&P 500 High Div Low Vlty Port PS",40.57,0.15,+0.37%,37,27.0%,73.0%,06/07/18
+IHI,"US Medical Devices Ishares ETF",202.91,-1.91,-0.93%,36,91.7%,8.3%,06/07/18
+SPYG,"SPDR S&P 500 Growth Portfolio ETF",35.96,-0.16,-0.44%,36,61.1%,38.9%,06/07/18
+XSD,"S&P Semiconductor SPDR",76.55,-0.43,-0.56%,35,0.0%,100.0%,06/07/18
+YCS,"Ultrashort Yen Proshares",71.84,-0.61,-0.84%,35,45.7%,54.3%,06/07/18
+OEF,"S&P 100 Ishares ETF",122.56,-0.049999999999997,-0.04%,35,2.9%,97.1%,06/07/18
+BZF,"Wisdomtree Brazilian Real Fund",15.85,-0.35,-2.16%,35,2.9%,97.1%,06/07/18
+VIXM,"VIX Mid-Term Futures Proshares",21.6,0.18,+0.84%,33,30.3%,69.7%,06/07/18
+EWA,"Australia Ishares MSCI ETF",22.9,-0.18,-0.78%,33,42.4%,57.6%,06/07/18
+BLOK,"Amplify Transformational Data Sharing ETF",20.56,-0.07,-0.34%,33,15.2%,84.8%,06/07/18
+UDN,"DB US Dollar Indx Bear Fund PS",21.95,0.050000000000001,+0.23%,32,100.0%,0.0%,06/07/18
+MTUM,"USA Momentum Factor Ishares Edge MSCI ETF",113.3,-0.99,-0.87%,32,65.6%,34.4%,06/07/18
+VGT,"Information Technology ETF Vanguard",187.85,-2.15,-1.13%,31,45.2%,54.8%,06/07/18
+IWV,"Russell 3000 Ishares ETF",165.23,-0.12,-0.07%,31,96.8%,3.2%,06/07/18
+GSG,"S&P GSCI Commodity-Indexed Ishares ETF",17.55,0.16,+0.92%,31,71.0%,29.0%,06/07/18
+ZCN.TO,"BMO SP TSX Capped Comp ETF",21.92,0.02,+0.09%,30,0.0%,100.0%,06/07/18
+XGD.TO,"Ishares S&P/Tsx Global Gold Index ETF",11.86,-0.03,-0.25%,30,100.0%,0.0%,06/07/18
+VB,"Smallcap ETF Vanguard",158.46,-0.40000000000001,-0.25%,30,80.0%,20.0%,06/07/18
+UYG,"Ultra Financials Proshares",43.27,-0.03,-0.07%,30,86.7%,13.3%,06/07/18
+PIZ,"DWA Devd Mkts Mmtm Portfolio PS",28.67,-0.25,-0.86%,30,0.0%,100.0%,06/07/18
+MUB,"Natl Muni Bond Ishares ETF",108.86,0.17,+0.16%,30,0.0%,100.0%,06/07/18
+MGK,"Megacap 300 Growth Index ETF Vanguard",120.98,-0.53,-0.44%,30,63.3%,36.7%,06/07/18
+RUSS,"Russia Bear 3X Direxion",19.11,0.77,+4.20%,29,89.7%,10.3%,06/07/18
+KOLD,"Ultrashort Natural Gas Proshares",38.87,-0.86,-2.16%,29,82.8%,17.2%,06/07/18
+REM,"Mortgage Real Estate Ishares ETF",44.06,0.07,+0.16%,26,96.2%,3.8%,06/07/18
+DEM,"Emrg Mkts Equity Inc Wisdomtree",45.89,-0.53,-1.14%,26,11.5%,88.5%,06/07/18
+BND,"Total Bond Market ETF Vanguard",78.97,0.2,+0.25%,26,84.6%,15.4%,06/07/18
+IYW,"US Technology Ishares ETF",184.81,-2.1,-1.12%,25,12.0%,88.0%,06/07/18
+DIG,"Ultra Oil & Gas Proshares",44.27,1.41,+3.29%,25,88.0%,12.0%,06/07/18
+KOL,"Coal ETF Vaneck",17.44,-0.07,-0.40%,24,100.0%,0.0%,06/07/18
+CURE,"Healthcare Bull 3X Direxion ETF",46.92,-0.11,-0.23%,24,91.7%,8.3%,06/07/18
+SRTY,"Ultrapro Short Russell 2000 Proshares",23.63,0.38,+1.63%,23,95.7%,4.3%,06/07/18
+SIVR,"Physical Silver",16.26,0.020000000000003,+0.12%,23,95.7%,4.3%,06/07/18
+SOYB,"Teucrium Soybean",18.07,-0.3,-1.63%,23,91.3%,8.7%,06/07/18
+NIB,"Ipath.B Cocoa Subindex TR ETN",27.13,-0.37,-1.35%,23,100.0%,0.0%,06/07/18
+UBIO,"Ultrapro Biotechnology Proshares",33.23,-0.84,-2.47%,23,13.0%,87.0%,06/07/18
+TLH,"10-20 Year Treas Bond Ishares ETF",130.19,0.72999999999999,+0.56%,22,31.8%,68.2%,06/07/18
+ROM,"Ultra Technology Proshares",110.37,-2.28,-2.02%,22,59.1%,40.9%,06/07/18
+PSQ,"QQQ Short Proshares",31.33,0.25,+0.80%,22,100.0%,0.0%,06/07/18
+DRN,"Real Estate Bull 3X Direxion",20.29,0.02,+0.10%,22,86.4%,13.6%,06/07/18
+BJK,"Gaming ETF Vaneck",48.67,-0.13,-0.27%,22,27.3%,72.7%,06/07/18
+FXN,"Energy Alphadex First Trust",16.83,0.37,+2.25%,22,100.0%,0.0%,06/07/18
+VCLT,"Long-Term Corp Bond Vanguard",87.9,0.36,+0.41%,21,100.0%,0.0%,06/07/18
+SCHH,"Schwab US REIT ETF",40.99,0.020000000000003,+0.05%,21,47.6%,52.4%,06/07/18
+HNU.TO,"Betapro Nat Gas 2X Daily Bull ETF",4.02,0.1,+2.55%,21,100.0%,0.0%,06/07/18
+USD,"Ultra Semiconductors Proshares",52.19,-0.98,-1.84%,20,90.0%,10.0%,06/07/18
+PHO,"Water Resources Portfolio PS",31.04,0.09,+0.29%,20,100.0%,0.0%,06/07/18
+HXD.TO,"Betapro SP TSX 60 2X Daily Bear ETF",5.63,-0.01,-0.18%,20,100.0%,0.0%,06/07/18
+GXG,"G-X FTSE Colombia 20 ETF",10.78,-0.11,-1.01%,20,0.0%,100.0%,06/07/18
+DBE,"DB Energy Fund PS",16.65,0.28,+1.71%,20,100.0%,0.0%,06/07/18
+GMF,"S&P Emerging Asia Pacific SPDR",107.58,-0.74,-0.68%,20,100.0%,0.0%,06/07/18
+XAR,"S&P Aerospace & Defense SPDR",90.52,-0.17,-0.19%,20,65.0%,35.0%,06/07/18
+PBW,"Clean Energy Portfolio PS Wilderhill",25.36,-0.16,-0.63%,18,0.0%,100.0%,06/07/18
+IWC,"Micro-Cap Ishares ETF",106.56,-0.77,-0.72%,17,29.4%,70.6%,06/07/18
+EWC,"Canada Ishares MSCI ETF",28.92,-0.02,-0.07%,17,41.2%,58.8%,06/07/18
+IAT,"US Regional Banks Ishares ETF",52.74,-0.030000000000001,-0.06%,16,37.5%,62.5%,06/07/18
+SBIO,"Alps Medical Breakthroughs ETF",38.73,-0.55,-1.40%,16,37.5%,62.5%,06/07/18
+SCHX,"Schwab US Largecap ETF",66.45,-0.049999999999997,-0.08%,14,21.4%,78.6%,06/07/18
+KIE,"S&P Insurance ETF SPDR",31.02,0.11,+0.36%,14,0.0%,100.0%,06/07/18
+DRV,"Real Estate Bear 3X Direxion",10.59,0.02,+0.19%,14,100.0%,0.0%,06/07/18
+OILD,"Ultrapro Short Crude Oil Proshares",26.9,-1.18,-4.20%,14,85.7%,14.3%,06/07/18
+ARKK,"Ark Innovation ETF",45.43,-0.44,-0.96%,14,50.0%,50.0%,06/07/18
+WOOD,"Global Timber & Forestry Ishares ETF",83.26,-0.5,-0.60%,13,46.2%,53.8%,06/07/18
+VPU,"Utilities ETF Vanguard",109.18,0.49,+0.45%,13,92.3%,7.7%,06/07/18
+SLX,"Steel Vaneck ETF",48.88,-1.34,-2.67%,13,84.6%,15.4%,06/07/18
+RSP,"S&P 500 Equal Weight Portfolio PS",103.53,0.049999999999997,+0.05%,13,7.7%,92.3%,06/07/18
+EWN,"Netherlands Ishares MSCI ETF",32.08,-0.18,-0.56%,13,100.0%,0.0%,06/07/18
+EMLC,"Emrg Mkts Local Curr Bond ETF Vaneck",17.47,-0.17,-0.96%,13,0.0%,100.0%,06/07/18
+DBO,"DB Oil Fund PS",11.84,0.11,+0.94%,13,92.3%,7.7%,06/07/18
+IGF,"Global Infrastructure Ishares ETF",42.57,-0.04,-0.09%,13,0.0%,100.0%,06/07/18
+RJA,"Rogers Agriculture ETN Elements",6.28,-0.01,-0.16%,12,16.7%,83.3%,06/07/18
+LBJ,"Latin America Bull 3X Direxion",19.33,-2.11,-9.84%,12,83.3%,16.7%,06/07/18
+VXUS,"Total Intl Stock ETF Vanguard",56.61,-0.45,-0.79%,11,100.0%,0.0%,06/07/18
+VDE,"Energy ETF Vanguard",106.19,1.75,+1.68%,11,72.7%,27.3%,06/07/18
+SCHM,"Schwab US Midcap ETF",55.97,-0.11,-0.20%,11,0.0%,100.0%,06/07/18
+PHB,"Fundamental High Yld Corp Bond Port PS",18.47,0.009999999999998,+0.05%,11,0.0%,100.0%,06/07/18
+PNQI,"Nasdaq Internet Portfolio PS",140.02,-1.37,-0.97%,11,63.6%,36.4%,06/07/18
+VIS,"Industrials ETF Vanguard",143.43,0.36,+0.25%,10,100.0%,0.0%,06/07/18
+VOE,"Midcap Value ETF Vanguard",112.04,0.090000000000003,+0.08%,10,100.0%,0.0%,06/07/18
+UNL,"US 12 Month Natural Gas",9.5,0.11,+1.23%,10,0.0%,100.0%,06/07/18
+IEV,"Europe 350 Ishares ETF",46.85,-0.38,-0.80%,10,0.0%,100.0%,06/07/18
+GXC,"S&P China SPDR",115.69,-1.13,-0.97%,10,100.0%,0.0%,06/07/18
+FRAK,"Unconventional Oil & Gas Vaneck ETF",16.83,0.33,+2.03%,10,100.0%,0.0%,06/07/18
+DUG,"Ultrashort Oil & Gas Proshares",30.29,-0.98,-3.13%,10,70.0%,30.0%,06/07/18
+EWS,"Singapore Ishares MSCI ETF",26.71,-0.21,-0.78%,10,100.0%,0.0%,06/07/18
+IXP,"Global Telecom Ishares ETF",56.34,0.040000000000006,+0.07%,10,0.0%,100.0%,06/07/18
+HYMB,"S&P Hi Yld Muni Bond SPDR",56.22,-0.03,-0.05%,10,0.0%,100.0%,06/07/18
+ZDV.TO,"BMO Canadian Dividend ETF",16.87,0.09,+0.54%,10,100.0%,0.0%,06/07/18
+ZUE.TO,"BMO SP 500 Hedged CAD ETF",41.86,0.01,+0.02%,10,0.0%,100.0%,06/07/18
+IHE,"US Pharmaceuticals Ishares ETF",153.47,0.51,+0.33%,10,40.0%,60.0%,06/07/18
+FNDE,"Schwab Fundamental EM Large Company",29.46,-0.38,-1.27%,10,100.0%,0.0%,06/07/18
+RETL,"Retail Bull 3X Direxion",43.3,0.84,+1.98%,10,50.0%,50.0%,06/07/18
+RXL,"Ultra Health Care Proshares",91.24,-0.36,-0.39%,10,0.0%,100.0%,06/07/18
+VEU,"FTSE All-World Ex-US ETF Vanguard",54.33,-0.39,-0.71%,9,100.0%,0.0%,06/07/18
+IHY,"Intl High Yield Bond ETF Vaneck",24.61,-0.05,-0.20%,9,0.0%,100.0%,06/07/18
+ASHS,"Db-Xt Harvest CSI 500 China A",32.7,-0.5,-1.51%,9,100.0%,0.0%,06/07/18
+FFTY,"Innovator Ibd 50 Fund ETF",35.82,-0.51,-1.40%,9,66.7%,33.3%,06/07/18
+VHT,"Healthcare ETF Vanguard",161.03,-0.31999999999999,-0.20%,8,37.5%,62.5%,06/07/18
+URTY,"Ultrapro Russell 2000 Proshares",101.48,-1.56,-1.51%,8,100.0%,0.0%,06/07/18
+RWM,"Russell 2000 Short Proshares",38.57,0.2,+0.52%,8,100.0%,0.0%,06/07/18
+REMX,"Rare Earth/Strategic Metals Vaneck ETF",25.37,-0.35,-1.36%,8,12.5%,87.5%,06/07/18
+KBWB,"KBW Bank Portfolio PS",56.76,0.07,+0.12%,8,25.0%,75.0%,06/07/18
+EWX,"S&P Emrg Mkts Smallcap SPDR",50.66,-0.69,-1.34%,8,0.0%,100.0%,06/07/18
+EEMV,"Emrg Mkts Min Vol Ishares Edge MSCI ETF",61.54,-0.44,-0.71%,8,50.0%,50.0%,06/07/18
+DBB,"DB Base Metals Fund PS",19.16,-0.24,-1.24%,8,100.0%,0.0%,06/07/18
+URE,"Ultra Real Estate Proshares",62.59,-0.02,-0.03%,7,28.6%,71.4%,06/07/18
+SCHD,"Schwab US Dividend Equity ETF",50.65,0.14,+0.28%,7,100.0%,0.0%,06/07/18
+IYE,"US Energy Ishares ETF",42.36,0.68,+1.63%,7,71.4%,28.6%,06/07/18
+HXT.TO,"Horizons SP Tsx60 Index ETF",33.76,0.04,+0.12%,7,100.0%,0.0%,06/07/18
+HEDJ,"Intl Hedged Equity Wisdomtree",65.57,-0.84,-1.26%,7,28.6%,71.4%,06/07/18
+XPH,"S&P Pharmaceuticals SPDR",43.26,-0.02,-0.05%,7,100.0%,0.0%,06/07/18
+PTH,"DWA Healthcare Mmtm Port PS",87.56,-1.42,-1.60%,7,14.3%,85.7%,06/07/18
+VSS,"FTSE All-World Ex-US Smcp Idx ETF Vanguard",121.46,-0.63,-0.52%,6,100.0%,0.0%,06/07/18
+SPLV,"S&P 500 Low Vlty Portfolio PS",47.05,0.079999999999998,+0.17%,6,100.0%,0.0%,06/07/18
+IEZ,"US Oil Equipment & Services Ishares ETF",37.92,0.77,+2.07%,6,100.0%,0.0%,06/07/18
+FCG,"Natural Gas ETF FT",22.69,0.47,+2.12%,6,100.0%,0.0%,06/07/18
+NOBL,"S&P 500 Aristocrats Proshares",63.66,0.18,+0.28%,6,0.0%,100.0%,06/07/18
+FXL,"Technology Alphadex First Trust",58.24,-1.08,-1.82%,6,0.0%,100.0%,06/07/18
+FNCL,"Fidelity Financials MSCI ETF",41.37,0.079999999999998,+0.19%,6,83.3%,16.7%,06/07/18
+VMIN,"Rex Volmaxx Inverse VIX Weekly",3.27,-0.02,-0.61%,6,83.3%,16.7%,06/07/18
+VXXB,"Ipath S&P 500 VIX Short-Term Futures Series B Et",32.82,0.38,+1.17%,6,100.0%,0.0%,06/07/18
+BLCN,"Reality Shares Nasdaq Nextgen Economy ETF",23.71,-0.15,-0.63%,6,100.0%,0.0%,06/07/18
+UYM,"Ultra Basic Materials Proshares",73.7,-1.43,-1.90%,5,100.0%,0.0%,06/07/18
+PST,"Ultrashort 7-10 Year Treasury Proshares",23.02,-0.22,-0.93%,5,100.0%,0.0%,06/07/18
+PGX,"Preferred Portfolio PS",14.62,0,unch,5,100.0%,0.0%,06/07/18
+EWL,"Switzerland Ishares MSCI ETF",33.56,-0.13,-0.39%,5,0.0%,100.0%,06/07/18
+EDIV,"S&P Emrg Mkts Dividend SPDR",33.06,-0.64,-1.90%,5,100.0%,0.0%,06/07/18
+SILJ,"Purefunds ISE Junior Silver ETF",11.23,-0.08,-0.71%,5,100.0%,0.0%,06/07/18
+XRE.TO,"Ishares SP TSX Capped REIT Index ETF",17.14,-0.05,-0.29%,5,0.0%,100.0%,06/07/18
+SCHE,"Schwab EM Mkts Equity ETF",27.42,-0.41,-1.47%,4,0.0%,100.0%,06/07/18
+ARGT,"G-X FTSE Argentina 20 ETF",30.44,-0.77,-2.47%,4,75.0%,25.0%,06/07/18
+ZUB.TO,"BMO Eql Wgt US Bank Hdgd To CAD ETF",31.04,-0.02,-0.06%,4,100.0%,0.0%,06/07/18
+ZQQ.TO,"BMO Nasdaq 100 Hedged To CAD Index ETF",54.33,-0.39,-0.71%,4,0.0%,100.0%,06/07/18
+FHLC,"Fidelity Health Care MSCI ETF",41.71,-0.1,-0.24%,4,100.0%,0.0%,06/07/18
+ALFA,"Alphaclone Alternative Alpha ETF",47.96,-0.46,-0.95%,4,0.0%,100.0%,06/07/18
+GSLC,"GS Activebeta US Largecap ETF",56.06,-0.049999999999997,-0.09%,4,100.0%,0.0%,06/07/18
+ARKW,"Ark Web X.0 ETF",56.09,-0.79,-1.39%,4,100.0%,0.0%,06/07/18
+XSU.TO,"Ishares US Small Cap Index ETF",35.39,-0.18,-0.51%,3,100.0%,0.0%,06/07/18
+VT,"Total World Stock Index ETF Vanguard",75.84,-0.25999999999999,-0.34%,3,0.0%,100.0%,06/07/18
+USMV,"USA Min Vol Ishares Edge MSCI ETF",53.37,0.04,+0.07%,3,100.0%,0.0%,06/07/18
+SRS,"Ultrashort Real Estate Proshares",29.63,-0.02,-0.07%,3,100.0%,0.0%,06/07/18
+SKF,"Ultrashort Financials Proshares",19.45,-0.01,-0.05%,3,100.0%,0.0%,06/07/18
+FBT,"Biotechnology Index NYSE ETF",141.76,-1.15,-0.80%,3,100.0%,0.0%,06/07/18
+DOG,"DOW 30 Short Proshares",57.67,-0.19,-0.33%,3,100.0%,0.0%,06/07/18
+CHIX,"G-X China Financials ETF",18.87,0,unch,3,100.0%,0.0%,06/07/18
+MLPX,"G-X MLP & Energy Infrasture ETF",13.14,0.11,+0.84%,3,100.0%,0.0%,06/07/18
+FM,"Frontier 100 Ishares MSCI ETF",31.6,0.060000000000002,+0.19%,3,0.0%,100.0%,06/07/18
+FNG,"Advisorshares New Tech and Media ETF",21.91,-0.34,-1.53%,3,100.0%,0.0%,06/07/18
+SPYV,"SPDR S&P 500 Value Portfolio ETF",30.27,0.13,+0.43%,3,66.7%,33.3%,06/07/18
+VXF,"Extended Market Index ETF Vanguard",120.08,-0.42,-0.35%,2,100.0%,0.0%,06/07/18
+VO,"Midcap ETF Vanguard",160.18,-0.37,-0.23%,2,100.0%,0.0%,06/07/18
+ULE,"Ultra Euro Proshares",16.49,0.09,+0.55%,2,100.0%,0.0%,06/07/18
+SCHA,"Schwab US Smallcap ETF",75.06,-0.25999999999999,-0.35%,2,100.0%,0.0%,06/07/18
+SCHB,"Schwab US Broad Market ETF",67.41,-0.090000000000003,-0.13%,2,100.0%,0.0%,06/07/18
+IWP,"Russell Mid-Cap Growth Ishares ETF",129.9,-0.56999999999999,-0.44%,2,100.0%,0.0%,06/07/18
+HYS,"0-5 Year Hi Yld Corp Bond Idx ETF Pimco",100,0.040000000000006,+0.04%,2,0.0%,100.0%,06/07/18
+HDGE,"Active Bear ETF",7.91,-0.0099999999999998,-0.13%,2,100.0%,0.0%,06/07/18
+DNO,"US Short Oil",50.37,-0.85,-1.66%,2,100.0%,0.0%,06/07/18
+CIU,"Interm Credit Bond Ishares ETF",106.18,0.15,+0.14%,2,50.0%,50.0%,06/07/18
+ZBIO,"Ultrapro Short Biotechnology Proshares",18.38,0.42,+2.34%,2,100.0%,0.0%,06/07/18
+JJGB,"Ipath.B Grains Subindex TR Series B ETN",52.87,-0.33,-0.62%,2,50.0%,50.0%,06/07/18
+YCL,"Ultra Yen Proshares",58.6,0,unch,1,100.0%,0.0%,06/07/18
+VFH,"Financial ETF Vanguard",71.22,0.15000000000001,+0.21%,1,100.0%,0.0%,06/07/18
+SJB,"High Yld Short Proshares",23.1,0,unch,1,100.0%,0.0%,06/07/18
+SEA,"Shipping Portfolio PS",11.13,-0.02,-0.18%,1,100.0%,0.0%,06/07/18
+SCHV,"Schwab US Largecap Value ETF",54.56,0.080000000000005,+0.15%,1,100.0%,0.0%,06/07/18
+PSP,"Global Listed Private Eqty Port PS",12.37,-0.01,-0.08%,1,100.0%,0.0%,06/07/18
+MGV,"Megacap 300 Value Index ETF Vanguard",76.71,0.25999999999999,+0.34%,1,100.0%,0.0%,06/07/18
+MOO,"Agribusiness ETF Vaneck",63.65,-0.13,-0.20%,1,0.0%,100.0%,06/07/18
+KCE,"S&P Capital Markets ETF SPDR",61.55,0.06,+0.11%,1,100.0%,0.0%,06/07/18
+IYH,"US Healthcare Ishares ETF",180.21,-0.09,-0.05%,1,0.0%,100.0%,06/07/18
+IYG,"US Financial Services Ishares ETF",136.48,-0.23,-0.17%,1,100.0%,0.0%,06/07/18
+IJS,"S&P Small-Cap 600 Value Ishares ETF",167.26,0.060000000000002,+0.04%,1,0.0%,100.0%,06/07/18
+IVW,"S&P 500 Growth Ishares ETF",166.35,-0.81999999999999,-0.49%,1,100.0%,0.0%,06/07/18
+IAI,"US Broker-Dealers & Sec Exch Ishares ETF",68.69,-0.1,-0.15%,1,100.0%,0.0%,06/07/18
+IEFA,"EAFE Ishares Core MSCI ETF",66.42,-0.42,-0.63%,1,100.0%,0.0%,06/07/18
+IEI,"3-7 Year Treas Bond Ishares ETF",119.64,0.28,+0.23%,1,100.0%,0.0%,06/07/18
+IAU,"Gold Trust Ishares",12.44,0,unch,1,100.0%,0.0%,06/07/18
+FXP,"Ultrashort FTSE China 25 Proshares",57.21,0.51,+0.90%,1,0.0%,100.0%,06/07/18
+EWQ,"France Ishares MSCI ETF",32.11,-0.34,-1.05%,1,100.0%,0.0%,06/07/18
+EET,"Ultra MSCI Emrg Mkts Proshares",87.46,-2.68,-2.97%,1,100.0%,0.0%,06/07/18
+DGS,"Emrg Mkts Smallcap Div Wisdomtree",52.03,-0.73,-1.38%,1,0.0%,100.0%,06/07/18
+DES,"Smallcap Dividend Wisdomtree",29.85,0.050000000000001,+0.17%,1,100.0%,0.0%,06/07/18
+CVY,"Zacks Multi-Asset Income Port PS",22.51,0.07,+0.31%,1,100.0%,0.0%,06/07/18
+BIS,"Ultrashort Biotechnology Proshares",19.67,0.35,+1.81%,1,100.0%,0.0%,06/07/18
+AAXJ,"All Country Asia Ex Japan Ishares MSCI ETF",77.92,-0.77,-0.98%,1,100.0%,0.0%,06/07/18
+FXU,"Utilities Alphadex First Trust",25.14,0.12,+0.48%,1,0.0%,100.0%,06/07/18
+GNR,"S&P Global Natural Resources SPDR",51.94,-0.11,-0.21%,1,100.0%,0.0%,06/07/18
+INDY,"India 50 Ishares ETF",35.53,-0.53,-1.47%,1,100.0%,0.0%,06/07/18
+PEY,"High Yld Eqty Div Achvrs Port PS",17.38,0.1,+0.58%,1,0.0%,100.0%,06/07/18
+FPE,"Preferred Securities and Income ETF FT",19.27,-0.010000000000002,-0.05%,1,100.0%,0.0%,06/07/18
+EPOL,"Poland Ishares MSCI ETF",23.92,-0.009999999999998,-0.04%,1,0.0%,100.0%,06/07/18
+CWEB,"Direxion CSI China Internet Idx Bull 2X",58.41,-0.83000000000001,-1.40%,1,100.0%,0.0%,06/07/18
+OILB,"Ipath S&P GSCI Crude Oil TR Index Series B ETN",65.8,1.01,+1.55%,1,100.0%,0.0%,06/07/18
+ZROZ,"25+ Year Zero Cpn U.S. Trsy Idx ETF Pimco",112.08,1.17,+1.05%,0,N/A,N/A,06/07/18
+ZEB.TO,"BMO SP TSX Equal Weight Banks Index ETF",29.08,0.06,+0.21%,0,N/A,N/A,06/07/18
+YAO,"China All-Cap Portfolio PS",37.58,-0.13,-0.34%,0,N/A,N/A,06/07/18
+XSB.TO,"Ishares Core CDN Short Trm Bond ETF",27.21,0.02,+0.07%,0,N/A,N/A,06/07/18
+XCB.TO,"Ishares Canadian Corporate Bond ETF",20.87,0.02,+0.10%,0,N/A,N/A,06/07/18
+XIN.TO,"Ishares MSCI EAFE Index ETF",26.66,-0.21,-0.78%,0,N/A,N/A,06/07/18
+XIC.TO,"Ishares Core SP TSX Capped Comp ETF",25.81,0,unch,0,N/A,N/A,06/07/18
+XDV.TO,"Ishares Canadian Select Div Index ETF",24.75,0.08,+0.32%,0,N/A,N/A,06/07/18
+VPL,"Pacific ETF FTSE Vanguard",73.62,-0.19,-0.26%,0,N/A,N/A,06/07/18
+VOT,"Midcap Growth ETF Vanguard",136.67,-0.73000000000002,-0.53%,0,N/A,N/A,06/07/18
+VDC,"Consumer Staples ETF Vanguard",130.97,0.68,+0.53%,0,N/A,N/A,06/07/18
+VOX,"Telecom Services ETF Vanguard",84.56,0.27,+0.32%,0,N/A,N/A,06/07/18
+VNQI,"Global Ex-US Real Estate Vanguard",61.27,-0.46,-0.75%,0,N/A,N/A,06/07/18
+VCIT,"Interm Corp Bond Vanguard",83.43,0.23,+0.28%,0,N/A,N/A,06/07/18
+VAW,"Materials ETF Vanguard",137.45,-0.72,-0.52%,0,N/A,N/A,06/07/18
+UST,"Ultra 7-10 Year Treasury Proshares",53.6,0.43,+0.81%,0,N/A,N/A,06/07/18
+VCR,"Consumer Disc ETF Vanguard",171.82,0.34999999999999,+0.20%,0,N/A,N/A,06/07/18
+USL,"US 12 Month Oil",23.72,0.29,+1.24%,0,N/A,N/A,06/07/18
+TYD,"7-10 Year Treasury Bull 3X Direxion",39.69,0.06,+0.15%,0,N/A,N/A,06/07/18
+UBT,"Ultra 20+ Year Treasury Proshares",74.41,1.06,+1.45%,0,N/A,N/A,06/07/18
+UMDD,"Ultrapro Midcap 400 Proshares",127.64,0.98,+0.77%,0,N/A,N/A,06/07/18
+TYO,"7-10 Year Treasury Bear -3X Direxion",15.25,-0.15,-0.97%,0,N/A,N/A,06/07/18
+TFI,"Muni Bond ETF SPDR",47.91,0.009999999999998,+0.02%,0,N/A,N/A,06/07/18
+TDIV,"Nasdaq Technology Dividend Index Fund FT",37.18,-0.22,-0.57%,0,N/A,N/A,06/07/18
+SMN,"Ultrashort Basic Materials Proshares",24.5,0.19,+0.78%,0,N/A,N/A,06/07/18
+SJNK,"ST High Yield Bond ETF SPDR",27.4,0.02,+0.07%,0,N/A,N/A,06/07/18
+SCHP,"Schwab US TIPS ETF",54.52,0.13,+0.24%,0,N/A,N/A,06/07/18
+SCHC,"Schwab Intl Smallcap ETF",37.47,-0.13,-0.35%,0,N/A,N/A,06/07/18
+SEF,"Financials Short Proshares",22.55,-0.07,-0.31%,0,N/A,N/A,06/07/18
+SCJ,"Japan Small-Cap Ishares MSCI ETF",81.12,-0.11,-0.14%,0,N/A,N/A,06/07/18
+SCHF,"Schwab Intl Equity ETF",34.06,-0.16999999999999,-0.50%,0,N/A,N/A,06/07/18
+SAA,"Ultra Smallcap 600 Proshares",120.54,0.46,+0.38%,0,N/A,N/A,06/07/18
+RWL,"Largecap Revenue ETF Oppenheimer",52.04,0.18,+0.35%,0,N/A,N/A,06/07/18
+RWO,"DJ Global Real Estate ETF SPDR",48.26,-0.1,-0.21%,0,N/A,N/A,06/07/18
+RWR,"DJ REIT ETF SPDR",92.29,-0.03,-0.03%,0,N/A,N/A,06/07/18
+RWX,"DJ Intl Real Estate ETF SPDR",40.22,-0.31,-0.76%,0,N/A,N/A,06/07/18
+RJN,"Rogers Energy ETN Elements",3.14,0.08,+2.61%,0,N/A,N/A,06/07/18
+RJI,"Rogers Commodity ETN Elements",5.74,0.02,+0.35%,0,N/A,N/A,06/07/18
+REW,"Ultrashort Technology Proshares",12.19,0.38,+3.22%,0,N/A,N/A,06/07/18
+RING,"Global Gold Miners Ishares MSCI ETF",17.86,0.05,+0.28%,0,N/A,N/A,06/07/18
+QTEC,"Nasdaq-100 Technology Index Fund FT",80.6,-0.98,-1.20%,0,N/A,N/A,06/07/18
+QQEW,"Nasdaq-100 EW Index Fund FT",61.47,-0.38,-0.61%,0,N/A,N/A,06/07/18
+PZA,"National Amt-Free Muni Bond Port PS",25.16,0.059999999999999,+0.24%,0,N/A,N/A,06/07/18
+PID,"Intl Div Achvrs Portfolio PS",15.8,-0.03,-0.19%,0,N/A,N/A,06/07/18
+PPH,"Pharmaceutical Vaneck ETF",59.5,-0.12,-0.20%,0,N/A,N/A,06/07/18
+PIN,"India Portfolio PS",24.9,-0.28,-1.11%,0,N/A,N/A,06/07/18
+PGJ,"Golden Dragon China Portfolio PS",49.41,-0.5,-1.00%,0,N/A,N/A,06/07/18
+PKW,"Buyback Achievers Portfolio PS",58.45,0.23,+0.40%,0,N/A,N/A,06/07/18
+PIE,"DWA Emrg Mkts Mmtm Portfolio PS",21.72,-0.4,-1.81%,0,N/A,N/A,06/07/18
+PGF,"Financial Preferred Portfolio PS",18.53,0.01,+0.05%,0,N/A,N/A,06/07/18
+PCEF,"CEF Income Composite Portfolio PS",23.11,0.030000000000001,+0.13%,0,N/A,N/A,06/07/18
+PDP,"DWA Momentum Portfolio PS",56.74,-0.35,-0.61%,0,N/A,N/A,06/07/18
+PCY,"Emrg Mkts Sovereign Debt Port PS",26.85,-0.059999999999999,-0.22%,0,N/A,N/A,06/07/18
+MZZ,"Ultrashort Midcap400 Proshares",16.52,-0.13,-0.78%,0,N/A,N/A,06/07/18
+MUNI,"Interm Muni Bond Strgy ETF Pimco",52.7,0.04,+0.08%,0,N/A,N/A,06/07/18
+MDIV,"Multi-Asset Diversified Income Index Fund FT",18.5,0.08,+0.43%,0,N/A,N/A,06/07/18
+MBB,"MBS Ishares ETF",103.67,0.23,+0.22%,0,N/A,N/A,06/07/18
+MGC,"Megacap 300 Index ETF Vanguard",95.59,0,unch,0,N/A,N/A,06/07/18
+LTPZ,"15+ Year US TIPS Index ETF Pimco",66.42,0.48,+0.73%,0,N/A,N/A,06/07/18
+MIDZ,"Midcap Bear 3X Direxion",11.09,-0.01,-0.09%,0,N/A,N/A,06/07/18
+MIDU,"Direxion Mid Cap Bull 3X",51.27,0.03,+0.06%,0,N/A,N/A,06/07/18
+LEMB,"Emrg Mkts Local Curr Bond Ishares JPM ETF",45.32,-0.48,-1.05%,0,N/A,N/A,06/07/18
+IXC,"Global Energy Ishares ETF",37.93,0.47,+1.25%,0,N/A,N/A,06/07/18
+JPNL,"Direxion Japan Bull 3X",75.29,-0.09,-0.12%,0,N/A,N/A,06/07/18
+IYJ,"US Industrials Ishares ETF",150.53,-0.05,-0.03%,0,N/A,N/A,06/07/18
+IWS,"Russell Mid-Cap Value Ishares ETF",89.32,0.13,+0.15%,0,N/A,N/A,06/07/18
+IJJ,"S&P Mid-Cap 400 Value Ishares ETF",164.97,0.41999999999999,+0.26%,0,N/A,N/A,06/07/18
+IHF,"US Healthcare Providers Ishares ETF",174.99,-0.26,-0.15%,0,N/A,N/A,06/07/18
+IGE,"Natural Resources North American Ishares ETF",37.13,0.46,+1.25%,0,N/A,N/A,06/07/18
+ISRA,"Israel Vaneck ETF",31.88,-0.16,-0.50%,0,N/A,N/A,06/07/18
+HXU.TO,"Betapro SP TSX 60 2X Daily Bull ETF",36.65,0.07,+0.19%,0,N/A,N/A,06/07/18
+ICF,"Cohen & Steers REIT Ishares ETF",97.41,-0.07,-0.07%,0,N/A,N/A,06/07/18
+IJT,"S&P Small-Cap 600 Growth Ishares ETF",191.74,-1.48,-0.77%,0,N/A,N/A,06/07/18
+IDV,"Intl Select Dividend Ishares ETF",33.35,-0.13,-0.39%,0,N/A,N/A,06/07/18
+IOO,"Global 100 Ishares ETF",47.48,-0.1,-0.21%,0,N/A,N/A,06/07/18
+HYD,"High Yld Muni ETF Vaneck",31.32,0.030000000000001,+0.10%,0,N/A,N/A,06/07/18
+IFGL,"Intl Developed Real Estate Ishares ETF",30.25,-0.21,-0.69%,0,N/A,N/A,06/07/18
+HGD.TO,"Betapro CDN Gold Miners 2X Dly Bear ETF",9.51,0.03,+0.32%,0,N/A,N/A,06/07/18
+HYLD,"Peritus High Yield ETF",36.97,0.060000000000002,+0.16%,0,N/A,N/A,06/07/18
+HAO,"China Small Cap Guggenheim ETF",32.47,-0.58,-1.75%,0,N/A,N/A,06/07/18
+HOD.TO,"Betapro Crude Oil 2X Daily Bear ETF",5.51,-0.17,-2.99%,0,N/A,N/A,06/07/18
+HGU.TO,"Betapro CDN Gold Miners 2X Dly Bull ETF",11.55,-0.06,-0.52%,0,N/A,N/A,06/07/18
+GCC,"Continuous Commodity Index",19.44,-0.049999999999997,-0.26%,0,N/A,N/A,06/07/18
+FXZ,"Materials Alphadex First Trust",44.33,-0.18,-0.40%,0,N/A,N/A,06/07/18
+GLL,"Ultrashort Gold Proshares",70.01,-0.02,-0.03%,0,N/A,N/A,06/07/18
+FXO,"Financial Alphadex First Trust",32.42,-0.06,-0.18%,0,N/A,N/A,06/07/18
+FXS,"Swedish Krona Trust PS Currencyshares",108.97,0.9,+0.83%,0,N/A,N/A,06/07/18
+GEX,"Global Alternatve Energy ETF Vaneck",60.37,-0.48,-0.78%,0,N/A,N/A,06/07/18
+FIW,"Water ETF FT",49.01,0.08,+0.16%,0,N/A,N/A,06/07/18
+EWV,"Ultrashort MSCI Japan Proshares",25.07,-0.01,-0.04%,0,N/A,N/A,06/07/18
+FXD,"Consumer Disc Alphadex First Trust",42.71,0.12,+0.28%,0,N/A,N/A,06/07/18
+FTC,"Largecap Growth Alphadex Fund FT",67.87,-0.41,-0.60%,0,N/A,N/A,06/07/18
+EFAV,"EAFE Min Vol Ishares Edge MSCI ETF",73.75,-0.28,-0.38%,0,N/A,N/A,06/07/18
+EUM,"Emrg Mkts MSCI Short Proshares",17.94,0.27,+1.53%,0,N/A,N/A,06/07/18
+EWD,"Sweden Ishares MSCI ETF",32.83,-0.27,-0.82%,0,N/A,N/A,06/07/18
+EPV,"Ultrashort FTSE Europe Proshares",30.53,0.45,+1.50%,0,N/A,N/A,06/07/18
+EFZ,"EAFE MSCI Short Proshares",25.44,0.17,+0.67%,0,N/A,N/A,06/07/18
+EFG,"EAFE Growth Ishares MSCI ETF",81.94,-0.57,-0.70%,0,N/A,N/A,06/07/18
+EBND,"EM Local Bond ETF Barclays Capital SPDR",27.53,-0.23,-0.83%,0,N/A,N/A,06/07/18
+DTN,"Dividend Ex-Financials Wisdomtree",87.56,0.29,+0.33%,0,N/A,N/A,06/07/18
+DXJS,"Wisdomtree Japan Smallcap Eqty Hedged Fund",45.77,-0.17,-0.37%,0,N/A,N/A,06/07/18
+EZJ,"Ultra MSCI Japan Proshares",42.89,0,unch,0,N/A,N/A,06/07/18
+EPP,"Pacific Ex Japan Ishares MSCI ETF",48.18,-0.32,-0.66%,0,N/A,N/A,06/07/18
+DLN,"Largecap Dividend Wisdomtree",91.56,0.2,+0.22%,0,N/A,N/A,06/07/18
+ELD,"Emrg Mkts Local Debt Wisdomtree",35.54,-0.38,-1.06%,0,N/A,N/A,06/07/18
+ENZL,"New Zealand Ishares MSCI ETF",50.25,0.28,+0.56%,0,N/A,N/A,06/07/18
+EFU,"Ultrashort MSCI EAFE Proshares",22.35,0,unch,0,N/A,N/A,06/07/18
+DGRW,"Wisdomtree US Quality Divd Fund",42.25,0.02,+0.05%,0,N/A,N/A,06/07/18
+DWX,"S&P Dividend Intl SPDR",39.5,-0.25,-0.63%,0,N/A,N/A,06/07/18
+DWAS,"DWA Smallcap Mmtm Portfolio PS",54.82,-0.48,-0.87%,0,N/A,N/A,06/07/18
+EEV,"Ultrashort MSCI Emrg Mkts Proshares",40.7,1.15,+2.91%,0,N/A,N/A,06/07/18
+CYB,"Wisdomtree Chinese Yuan Fund",27.06,-0.050000000000001,-0.18%,0,N/A,N/A,06/07/18
+DPK,"Dev Mkts Bear 3X Direxion ETF",11.97,0.21,+1.79%,0,N/A,N/A,06/07/18
+EFV,"EAFE Value Ishares MSCI ETF",54.41,-0.11,-0.20%,0,N/A,N/A,06/07/18
+DBJP,"Db-Xt MSCI Japan Hgd Eq",43.81,-0.14,-0.32%,0,N/A,N/A,06/07/18
+EEB,"BRIC Guggenheim ETF",37.84,-0.57,-1.48%,0,N/A,N/A,06/07/18
+DFJ,"Japan Smallcap Dividend Wisdomtree",81.32,-0.030000000000001,-0.04%,0,N/A,N/A,06/07/18
+DBP,"DB Precious Metals Fund PS",38.06,0.039999999999999,+0.11%,0,N/A,N/A,06/07/18
+DBEF,"Db-Xt MSCI EAFE Hgd Eq",32.14,-0.23,-0.71%,0,N/A,N/A,06/07/18
+DBS,"DB Silver Fund PS",25.51,0.01,+0.04%,0,N/A,N/A,06/07/18
+DGL,"DB Gold Fund PS",40.96,0.009999999999998,+0.02%,0,N/A,N/A,06/07/18
+DBV,"DB G10 Currency Harvest Fund PS",24.44,-0.1,-0.41%,0,N/A,N/A,06/07/18
+CHIQ,"G-X China Consumer ETF",19.67,-0.15,-0.76%,0,N/A,N/A,06/07/18
+CROC,"Ultrashort Australian Proshares",47.63,0.59,+1.25%,0,N/A,N/A,06/07/18
+CSJ,"1-3 Year Credit Bond Ishares ETF",103.6,0.06,+0.06%,0,N/A,N/A,06/07/18
+CROP,"IQ Global Agribusiness Smallcap ETF",34.04,-0.25,-0.73%,0,N/A,N/A,06/07/18
+BOND,"Total Return ETF Pimco",102.56,0.15000000000001,+0.15%,0,N/A,N/A,06/07/18
+BWX,"Intl Treasury Bond ETF SPDR",27.98,-0.009999999999998,-0.04%,0,N/A,N/A,06/07/18
+BLV,"Long Term Bond Index ETF Vanguard",88.16,0.53999999999999,+0.62%,0,N/A,N/A,06/07/18
+BIV,"Interm Term Bond ETF Vanguard",80.68,0.24000000000001,+0.30%,0,N/A,N/A,06/07/18
+BNDX,"Total Intl Bond ETF Vanguard",54.12,0.01,+0.02%,0,N/A,N/A,06/07/18
+BKLN,"Senior Loan Portfolio PS",23.05,0,unch,0,N/A,N/A,06/07/18
+BFOR,"Barron's 400",44.14,-0.03,-0.07%,0,N/A,N/A,06/07/18
+ACWV,"Global Min Vol Ishares Edge MSCI ETF",84.78,0.01,+0.01%,0,N/A,N/A,06/07/18
+IPFF,"Intl Preferred Stock Ishares ETF",17.72,0,-0.03%,0,N/A,N/A,06/07/18
+EWK,"Belgium Ishares MSCI ETF",20.33,-0.13,-0.64%,0,N/A,N/A,06/07/18
+PXJ,"Dynamic Oil & Gas Srvs Port PS",10,0.15,+1.52%,0,N/A,N/A,06/07/18
+GWX,"S&P Smallcap Intl SPDR",36.08,-0.06,-0.17%,0,N/A,N/A,06/07/18
+IGN,"North American Tech-Multimedia Networking Ishare",52.59,-0.37,-0.70%,0,N/A,N/A,06/07/18
+ECON,"Emrg Mkts Consumer Egshares",25.48,-0.27,-1.05%,0,N/A,N/A,06/07/18
+FXR,"Indust/Producer Dur Alphadex First Trust",40.86,0.019999999999996,+0.05%,0,N/A,N/A,06/07/18
+FXH,"Healthcare Alphadex First Trust ETF",74.89,-0.26,-0.35%,0,N/A,N/A,06/07/18
+IGOV,"Intl Treasury Bond Ishares ETF",49.23,0.06,+0.12%,0,N/A,N/A,06/07/18
+CLY,"10+ Year Credit Bond Ishares ETF",58.04,0.21,+0.36%,0,N/A,N/A,06/07/18
+REZ,"Residential Real Estate Ishares ETF",61.17,0.1,+0.17%,0,N/A,N/A,06/07/18
+GVI,"Interm Govt/Credit Bond Ishares ETF",107.47,0.21,+0.20%,0,N/A,N/A,06/07/18
+GURU,"G-X Guru Index ETF",31.75,-0.08,-0.25%,0,N/A,N/A,06/07/18
+CSD,"S&P Spin-Off Portfolio PS",55.6,-0.23,-0.41%,0,N/A,N/A,06/07/18
+PICK,"Global Metals & Mining Producers Ishares MSCI Et",36.21,-0.35,-0.96%,0,N/A,N/A,06/07/18
+FXG,"Consumer Staples Alphadex First Trust",45.46,-0.02,-0.04%,0,N/A,N/A,06/07/18
+IXUS,"Total Intl Stock Ishares Core MSCI ETF",63.13,-0.47,-0.74%,0,N/A,N/A,06/07/18
+DFE,"Europe Smallcap Dividend Wisdomtree",70.39,-0.45999999999999,-0.65%,0,N/A,N/A,06/07/18
+RPV,"S&P 500 Pure Value Portfolio PS",67.94,0.35,+0.52%,0,N/A,N/A,06/07/18
+PRF,"FTSE RAFI US 1000 Portfolio PS",115.41,0.45,+0.39%,0,N/A,N/A,06/07/18
+FEP,"Europe Alphadex Fund FT",40.68,-0.24,-0.59%,0,N/A,N/A,06/07/18
+GUNR,"Mstar Global Upstream Natural Resources ETF",35.15,0,unch,0,N/A,N/A,06/07/18
+THD,"Thailand Ishares MSCI ETF",94.03,-1.21,-1.27%,0,N/A,N/A,06/07/18
+RWK,"Midcap Revenue ETF Oppenheimer",62.51,0.05,+0.08%,0,N/A,N/A,06/07/18
+RWJ,"Smallcap Revenue ETF Oppenheimer",75.09,0.12,+0.16%,0,N/A,N/A,06/07/18
+CEW,"Wisdomtree Emerging Currency Fund",18.92,-0.17,-0.86%,0,N/A,N/A,06/07/18
+HECO,"Ecological Strategy ETF",42.65,0.89,+2.12%,0,N/A,N/A,06/07/18
+PJP,"Dynamic Pharmaceuticals Port PS",67.23,0.08,+0.12%,0,N/A,N/A,06/07/18
+FEM,"Emrg Mkts Alphadex Fund FT",28.26,-0.35,-1.22%,0,N/A,N/A,06/07/18
+FV,"Dorsey Wright Focus 5 ETF FT",30.56,-0.29,-0.94%,0,N/A,N/A,06/07/18
+CRED,"US Credit Bond Ishares ETF",107.11,0.26,+0.24%,0,N/A,N/A,06/07/18
+SCIF,"India Smallcap ETF Vaneck",51.82,0.020000000000003,+0.04%,0,N/A,N/A,06/07/18
+BSV,"Short-Term Bond ETF Vanguard",78.14,0.099999999999994,+0.13%,0,N/A,N/A,06/07/18
+PHDG,"S&P 500 Downside Hedged Port PS",28.47,-0.01,-0.04%,0,N/A,N/A,06/07/18
+MLPI,"Alerian MLP Infrastrctr ETN UBS E-Tracs",23.73,0.22,+0.94%,0,N/A,N/A,06/07/18
+FRI,"S&P REIT Index",22.84,0,unch,0,N/A,N/A,06/07/18
+EMLP,"North American Energy Infr Fund FT",22.72,0.11,+0.49%,0,N/A,N/A,06/07/18
+ITM,"Interm Muni ETF Vaneck",23.53,-0.009999999999998,-0.04%,0,N/A,N/A,06/07/18
+FEX,"Largecap Core Alphadex Fund FT",60.8,-0.11,-0.18%,0,N/A,N/A,06/07/18
+FDL,"Mstar Dividend Leaders",28.96,0.18,+0.63%,0,N/A,N/A,06/07/18
+RPG,"S&P 500 Pure Growth Portfolio PS",117.32,-0.86000000000001,-0.73%,0,N/A,N/A,06/07/18
+ZSP.TO,"BMO SP 500 Index ETF",39.65,0.09,+0.23%,0,N/A,N/A,06/07/18
+HEFA,"EAFE Curr Hedged Ishares MSCI ETF",30.03,-0.23,-0.76%,0,N/A,N/A,06/07/18
+DBEU,"Db-Xt MSCI Europe Hgd Eq",28.86,-0.27,-0.93%,0,N/A,N/A,06/07/18
+JETS,"US Global Jets ETF",30.42,-0.15,-0.49%,0,N/A,N/A,06/07/18
+AFTY,"CSOP FTSE China A50 ETF",17.13,-0.09,-0.52%,0,N/A,N/A,06/07/18
+ZLB.TO,"BMO Low Volatility CAD Equity ETF",30.21,-0.12,-0.40%,0,N/A,N/A,06/07/18
+ZFL.TO,"BMO Long Fed Bond Index ETF",17.03,0.03,+0.18%,0,N/A,N/A,06/07/18
+ZEQ.TO,"BMO MSCI EU Hq Hcad ETF",20.3,-0.26,-1.26%,0,N/A,N/A,06/07/18
+ZDM.TO,"BMO MSCI EAFE Hedged To CAD Index ETF",21.84,-0.16,-0.73%,0,N/A,N/A,06/07/18
+ZHY.TO,"BMO High Yld US Corp Bnd Hdg CAD ETF",13.85,0.01,+0.07%,0,N/A,N/A,06/07/18
+ZEO.TO,"BMO SP TSX Eql Weight Oil Gas Index ETF",10.76,0.18,+1.70%,0,N/A,N/A,06/07/18
+ZLU.TO,"BMO Low Volatility US Equity ETF CAD",31.06,0.22,+0.71%,0,N/A,N/A,06/07/18
+ZPR.TO,"BMO Laddered Pref Share ETF",11.65,0.03,+0.26%,0,N/A,N/A,06/07/18
+ZUT.TO,"BMO Equal Weight Utilities Index ETF",16.02,0.05,+0.31%,0,N/A,N/A,06/07/18
+CNXT,"Chinaamc Sme-Chn Vaneck ETF",33.35,-0.37,-1.10%,0,N/A,N/A,06/07/18
+HEWG,"Germany Curr Hedged Ishares MSCI ETF",28.69,-0.39,-1.34%,0,N/A,N/A,06/07/18
+HEZU,"Eurozone Curr Hedged Ishares MSCI ETF",30.62,-0.35,-1.13%,0,N/A,N/A,06/07/18
+HEWJ,"Japan Curr Hedged Ishares MSCI ETF",33.11,-0.15,-0.45%,0,N/A,N/A,06/07/18
+PEK,"China ETF Vaneck",46.44,-0.55,-1.17%,0,N/A,N/A,06/07/18
+CHAD,"Direxion CSI 300 China A 1X",31.53,0.3,+0.96%,0,N/A,N/A,06/07/18
+MOAT,"Wide Moat Vaneck ETF",43.63,0.03,+0.07%,0,N/A,N/A,06/07/18
+QQQC,"G-X Nasdaq China Tech ETF",31.55,-0.3,-0.94%,0,N/A,N/A,06/07/18
+ECNS,"China Small-Cap Ishares MSCI ETF",55.67,-0.32,-0.57%,0,N/A,N/A,06/07/18
+FCA,"China Alphadex Fund FT",32.94,-0.51,-1.51%,0,N/A,N/A,06/07/18
+FNDX,"Schwab Fundamental US Largecap",38.31,0.13,+0.34%,0,N/A,N/A,06/07/18
+FNDF,"Schwab Fundamental Intl Large Company",30.39,-0.11,-0.36%,0,N/A,N/A,06/07/18
+EUSC,"Wisdomtree Europe Hedged Smallcap Eqty ETF",31.41,-0.45,-1.41%,0,N/A,N/A,06/07/18
+IXJ,"Global Healthcare Ishares ETF",57.18,-0.07,-0.12%,0,N/A,N/A,06/07/18
+QUAL,"USA Quality Factor Ishares Edge MSCI ETF",86.06,-0.09,-0.10%,0,N/A,N/A,06/07/18
+EIDO,"Indonesia Ishares MSCI ETF",25.78,-0.41,-1.57%,0,N/A,N/A,06/07/18
+OUSA,"O's U.S. Qlty Divd ETF",31.17,0.11,+0.35%,0,N/A,N/A,06/07/18
+VRP,"Variable Rate Preferred Portfolio PS",24.93,-0.02,-0.08%,0,N/A,N/A,06/07/18
+RYH,"S&P 500 Health Care Eql Wgt Port PS",184.22,-0.46,-0.25%,0,N/A,N/A,06/07/18
+IHDG,"Wisdomtree Intl Hedged Fund",32.24,-0.41,-1.26%,0,N/A,N/A,06/07/18
+PXH,"FTSE RAFI Emrg Mkts Port PS",21.86,-0.33,-1.49%,0,N/A,N/A,06/07/18
+PSL,"DWA Cons Staples Mmtm Port PS",70.07,-0.01,-0.01%,0,N/A,N/A,06/07/18
+PTF,"DWA Technology Mmtm Port PS",62.15,-1.4,-2.20%,0,N/A,N/A,06/07/18
+PFM,"Dividend Achievers Portfolio PS",26.09,0.12,+0.46%,0,N/A,N/A,06/07/18
+PEZ,"DWA Cons Cyc Mmtm Port PS",55.54,0.1,+0.18%,0,N/A,N/A,06/07/18
+PRN,"DWA Industrials Mmtm Port PS",62.18,-0.21,-0.34%,0,N/A,N/A,06/07/18
+PXI,"DWA Energy Mmtm Port PS",44.03,0.82,+1.90%,0,N/A,N/A,06/07/18
+FVD,"Value Line Dividend Idx First Trust",30.3,0.09,+0.30%,0,N/A,N/A,06/07/18
+CWI,"ACWI [Ex-Us] MSCI ETF SPDR",38.33,-0.26000000000001,-0.67%,0,N/A,N/A,06/07/18
+URTH,"World Ishares MSCI ETF",90.16,-0.29000000000001,-0.32%,0,N/A,N/A,06/07/18
+QQQE,"Nasdaq 100 EW Index Direxion",45.85,-0.19,-0.41%,0,N/A,N/A,06/07/18
+FMAT,"Fidelity Materials MSCI ETF",35.14,-0.18,-0.51%,0,N/A,N/A,06/07/18
+USDU,"Wisdomtree USD Bullish Fund",26.27,-0.030000000000001,-0.11%,0,N/A,N/A,06/07/18
+GEM,"GS Activebeta EM Equity ETF",35.37,-0.43,-1.20%,0,N/A,N/A,06/07/18
+GSIE,"GS Activebeta International ETF",30.46,-0.16,-0.52%,0,N/A,N/A,06/07/18
+FTAG,"Indxx Global Agriculture ETF FT",27.66,-0.21,-0.75%,0,N/A,N/A,06/07/18
+MXI,"Global Materials Ishares ETF",71.89,-0.19,-0.26%,0,N/A,N/A,06/07/18
+FTRI,"Indxx Global Natural Resources Income ETF FT",13.03,0.02,+0.15%,0,N/A,N/A,06/07/18
+MYY,"Midcap 400 Short Proshares",42.61,0.05,+0.12%,0,N/A,N/A,06/07/18
+EURL,"Direxion FTSE Europe Bull 3X",35.57,-0.78,-2.15%,0,N/A,N/A,06/07/18
+REK,"Real Estate Short Proshares",16.04,-0.03,-0.22%,0,N/A,N/A,06/07/18
+GDXX,"Ultra Gold Miners Proshares",37.8,-0.45,-1.18%,0,N/A,N/A,06/07/18
+DDG,"Oil & Gas Short Proshares",21.19,-0.37,-1.72%,0,N/A,N/A,06/07/18
+YXI,"China 25 Short Proshares",17.83,0.06,+0.34%,0,N/A,N/A,06/07/18
+GDXS,"Ultrashort Gold Miner Proshares",14.27,0.19,+1.35%,0,N/A,N/A,06/07/18
+DLS,"Intl Smallcap Dividend Wisdomtree",76.7,-0.23999999999999,-0.31%,0,N/A,N/A,06/07/18
+DON,"Midcap Dividend Wisdomtree",36.12,0.07,+0.19%,0,N/A,N/A,06/07/18
+PRFZ,"FTSE RAFI US 1500 Small-Mid Port PS",140.78,-0.1,-0.07%,0,N/A,N/A,06/07/18
+OUNZ,"Gold Shares Vaneck",12.76,0.0099999999999998,+0.08%,0,N/A,N/A,06/07/18
+YMLP,"High Income MLP ETF Yorkville",22.25,0.08,+0.36%,0,N/A,N/A,06/07/18
+ANGL,"Fallen Angel HY Bond ETF Vaneck",28.97,-0.060000000000002,-0.21%,0,N/A,N/A,06/07/18
+QABA,"Qtec First Trust ETF",58.28,0.01,+0.02%,0,N/A,N/A,06/07/18
+SPDN,"Direxion S&P 500 Bear 1X",29.34,0.06,+0.20%,0,N/A,N/A,06/07/18
+REGL,"S&P Midcap 400 Divd Proshares",54.63,0.03,+0.05%,0,N/A,N/A,06/07/18
+GOEX,"G-X Gold Explorers ETF",22.98,0.11,+0.48%,0,N/A,N/A,06/07/18
+VMAX,"Rex Volmaxx Long VIX Weekly Futures",18.96,0.16,+0.85%,0,N/A,N/A,06/07/18
+SPHQ,"S&P 500 Quality Portfolio PS",31.11,-0.02,-0.06%,0,N/A,N/A,06/07/18
+SNLN,"Pyxis/Iboxx Senior Loan ETF",18.24,-0.02,-0.11%,0,N/A,N/A,06/07/18
+VSC.TO,"Vanguard CDN Short Term Corp Bd ETF",23.96,0.03,+0.13%,0,N/A,N/A,06/07/18
+VSB.TO,"Vanguard CDN Short-Term Bond Index ETF",23.63,0.04,+0.17%,0,N/A,N/A,06/07/18
+VUN.TO,"Vanguard US Total Market ETF",50.59,0.09,+0.18%,0,N/A,N/A,06/07/18
+VFV.TO,"Vanguard SP 500 Index ETF",64.1,0.13,+0.20%,0,N/A,N/A,06/07/18
+VAB.TO,"Vanguard CDN Aggregate Bond Index ETF",24.86,0.04,+0.16%,0,N/A,N/A,06/07/18
+HPR.TO,"Horizons Active Pref Share ETF",9.61,0.02,+0.21%,0,N/A,N/A,06/07/18
+GYLD,"Arrow DJ Global Yield ETF",17.71,-0.04,-0.23%,0,N/A,N/A,06/07/18
+JPUS,"JPM Dvsd Rtns US Equity ETF",71.84,0.13,+0.18%,0,N/A,N/A,06/07/18
+JPIN,"JPM Dvsd Rtns Intl Equity ETF",60.47,-0.26,-0.44%,0,N/A,N/A,06/07/18
+JPEM,"JPM Dvsd Rtns EM ETF",57.5,-0.73,-1.25%,0,N/A,N/A,06/07/18
+HYGH,"Int Rate Hedged High Yield Bond Ishares ETF",91.22,-0.21,-0.23%,0,N/A,N/A,06/07/18
+GOVT,"US Treasury Bond Ishares ETF",24.49,0.07,+0.29%,0,N/A,N/A,06/07/18
+CNYA,"China A Ishares MSCI ETF",31.3,-0.23,-0.73%,0,N/A,N/A,06/07/18
+ZAG.TO,"BMO Aggregate Bond Index ETF",15.3,0.01,+0.07%,0,N/A,N/A,06/07/18
+ZCM.TO,"BMO Mid Corporate Bond ETF",15.82,0.04,+0.25%,0,N/A,N/A,06/07/18
+ERUS,"Russia Ishares MSCI ETF",33.69,-0.52,-1.52%,0,N/A,N/A,06/07/18
+MAGA,"Point Bridge Gop Stock Tracker ETF",27.98,0.18,+0.65%,0,N/A,N/A,06/07/18
+GHYB,"Access High Yield Corporate Bond ETF Goldman Sac",48.54,0.03,+0.06%,0,N/A,N/A,06/07/18
+GIGB,"Goldman Sachs Access Investment Grade Corp Bond",47.99,0.16,+0.33%,0,N/A,N/A,06/07/18
+SPDW,"SPDR World Ex-US Portfolio ETF",31.8,-0.18,-0.56%,0,N/A,N/A,06/07/18
+XT,"Exponential Technologies Ishares ETF",37.47,-0.26,-0.69%,0,N/A,N/A,06/07/18
+USHY,"Broad USD High Yield Corp Bond Ishares ETF",48.72,0.04,+0.08%,0,N/A,N/A,06/07/18
+SHYG,"0-5 Year High Yield Corp Bond Ishares ETF",46.73,0.059999999999995,+0.13%,0,N/A,N/A,06/07/18
+ZEA.TO,"BMO MSCI EAFE ETF",19.24,-0.06,-0.31%,0,N/A,N/A,06/07/18
+VXZB,"Ipath S&P 500 VIX Mid-Term Futures Series B ETN",19.21,0,unch,0,N/A,N/A,06/07/18
+ULBR,"Citigroup Global Markets Holdings Inc Velocitysh",37.78,0.49,+1.30%,0,N/A,N/A,06/07/18
+GVIP,"GS Hedge Industry Vip ETF",56.33,-0.14,-0.25%,0,N/A,N/A,06/07/18
+COWB,"Ipath.B Livestock Subindex TR Series B ETN",46.69,0.7,+1.52%,0,N/A,N/A,06/06/18
+JJCB,"Ipath.B Copper Subindex TR Series B ETN",50.95,0.22,+0.43%,0,N/A,N/A,06/07/18
+HYLB,"D-X USD Hi Yld Corp Bond ETF",49.4,-0.020000000000003,-0.04%,0,N/A,N/A,06/07/18
+NANR,"S&P North American Natural SPDR",36.63,0.23,+0.63%,0,N/A,N/A,06/07/18
+USMC,"Principal U.S. Mega-Cap Multi-Factor Index ETF",26.37,0.07,+0.27%,0,N/A,N/A,06/07/18
+VLUE,"USA Value Factor Ishares Edge MSCI ETF",86.42,0.18,+0.21%,0,N/A,N/A,06/07/18
+SIZE,"USA Size Factor Ishares Edge MSCI ETF",85.05,0.17,+0.20%,0,N/A,N/A,06/07/18
+MLPA,"G-X MLP ETF",9.49,0.09,+0.96%,0,N/A,N/A,06/07/18
+WPS,"Intl Devd Property Ishares ETF",39.77,-0.18,-0.45%,0,N/A,N/A,06/07/18
+IUSG,"S&P US Growth Ishares Core ETF",58.53,-0.27,-0.46%,0,N/A,N/A,06/07/18
+DGRO,"Dividend Growth Ishares Core ETF",35.25,0.030000000000001,+0.09%,0,N/A,N/A,06/07/18
+IEUR,"Europe Ishares Core MSCI ETF",50.1,-0.38,-0.75%,0,N/A,N/A,06/07/18
+SPLG,"SPDR Large Cap Portfolio ETF",32.62,-0.020000000000003,-0.06%,0,N/A,N/A,06/07/18
+SPTM,"SPDR Total Stock Market Portfolio ETF",34.74,0.030000000000001,+0.09%,0,N/A,N/A,06/07/18
+"Downloaded from Barchart.com as of 06-07-2018 10:33pm CDT"
