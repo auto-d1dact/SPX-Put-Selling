@@ -10,8 +10,11 @@ import dash
 from dash.dependencies import Input, Output, State
 import dash_core_components as dcc
 import dash_html_components as html
+import plotly.graph_objs as go
 
 from tickers import tickers
+from py_vollib.black_scholes_merton.implied_volatility import *
+from py_vollib.black_scholes_merton.greeks.analytical import *
 from data_fetcher_pos import *
 
 
@@ -31,7 +34,18 @@ if 'DYNO' in os.environ:
     app.scripts.append_script({
         'external_url': 'https://cdn.rawgit.com/chriddyp/ca0d8f02a1659981a0ea7f013a378bbd/raw/e79f3f789517deec58f41251f7dbb6bee72c44ab/plotly_ga.js'
     })
+    
 
+def generate_table(dataframe):
+    return html.Table(
+        # Header
+        [html.Tr([html.Th(col) for col in dataframe.columns])] +
+
+        # Body
+        [html.Tr([
+            html.Td(dataframe.iloc[i][col]) for col in dataframe.columns
+        ]) for i in range(len(dataframe))]
+    )
 
 # Tickers
 tickers = [dict(label=str(ticker), value=str(ticker))
@@ -106,7 +120,7 @@ app.layout = html.Div(
                 dcc.Input(
                     id='moneyness_filter',
                     type='number',
-                    value=0.5,
+                    value=0.1,
                 ),
             ],
                 className='three columns',
@@ -114,6 +128,8 @@ app.layout = html.Div(
             html.Div([
                 html.Label('Query Summary:'),
                 html.Button('Submit Query', id='query_button'),
+                html.Label('Display Summary:'),
+                html.Button('Update Tables', id='display_button'),
             ],
                 className='three columns',
             )
@@ -129,9 +145,14 @@ app.layout = html.Div(
                 className='twelve columns',
                 style={'text-align': 'center'}
             ),
+            html.Div(id='call_summary',
+                     children ='Wait for update to display table',
+                     style={'text-align': 'center',
+                            'font-size': '75%'})
         ],
             className='row',
-            style={'margin-bottom': '20'}
+            style={'margin-bottom': '20',
+                   'text-align': 'center'}
         ),   
             
         html.Div([
@@ -140,9 +161,14 @@ app.layout = html.Div(
                 className='twelve columns',
                 style={'text-align': 'center'}
             ),
+            html.Div(id='put_summary',
+                     children ='Wait for update to display table',
+                     style={'text-align': 'center',
+                            'font-size': '75%'})
         ],
             className='row',
-            style={'margin-bottom': '20'}
+            style={'margin-bottom': '20',
+                   'text-align': 'center'}
         ), 
         
         ################# Input for Positions Entry Layout ########################
@@ -180,10 +206,10 @@ app.layout = html.Div(
                 html.Label('Type:'),
                 dcc.Dropdown(
                     id='type1',
-                    options=[{'label': 'call', 'value': 'c'},
-                             {'label': 'put', 'value': 'p'},
+                    options=[{'label': 'c', 'value': 'c'},
+                             {'label': 'p', 'value': 'p'},
                              {'label': 'none', 'value': 'na'}],
-                    value='call',
+                    value='c',
                 )
             ],
                 className='two columns',
@@ -252,10 +278,10 @@ app.layout = html.Div(
             html.Div([
                 dcc.Dropdown(
                     id='type2',
-                    options=[{'label': 'call', 'value': 'c'},
-                             {'label': 'put', 'value': 'p'},
+                    options=[{'label': 'c', 'value': 'c'},
+                             {'label': 'p', 'value': 'p'},
                              {'label': 'none', 'value': 'na'}],
-                    value='call',
+                    value='c',
                 )
             ],
                 className='two columns',
@@ -320,10 +346,10 @@ app.layout = html.Div(
             html.Div([
                 dcc.Dropdown(
                     id='type3',
-                    options=[{'label': 'call', 'value': 'c'},
-                             {'label': 'put', 'value': 'p'},
+                    options=[{'label': 'c', 'value': 'c'},
+                             {'label': 'p', 'value': 'p'},
                              {'label': 'none', 'value': 'na'}],
-                    value='call',
+                    value='c',
                 )
             ],
                 className='two columns',
@@ -388,10 +414,10 @@ app.layout = html.Div(
             html.Div([
                 dcc.Dropdown(
                     id='type4',
-                    options=[{'label': 'call', 'value': 'c'},
-                             {'label': 'put', 'value': 'p'},
+                    options=[{'label': 'c', 'value': 'c'},
+                             {'label': 'p', 'value': 'p'},
                              {'label': 'none', 'value': 'na'}],
-                    value='call',
+                    value='c',
                 )
             ],
                 className='two columns',
@@ -495,6 +521,47 @@ app.layout = html.Div(
             className='row',
             style={'margin-bottom': '20'}
         ),
+                            
+        html.Div([
+            html.Div([
+                html.Label('Skew Type:'),
+                dcc.Dropdown(
+                    id='skew',
+                    options=[{'label': 'flat', 'value': 'flat'},
+                             {'label': 'right', 'value': 'right'},
+                             {'label': 'left', 'value': 'left'},
+                             {'label': 'smile', 'value': 'smile'}],
+                    value='flat',
+                )
+            ],
+                className='four columns',
+                style={'text-align': 'center'}
+            ),
+            html.Div([
+                html.Label('Underlying Price:'),
+                dcc.Input(
+                    id='underlying',
+                    type='number'
+                ),
+            ],
+                className='four columns',
+                style={'text-align': 'center'}
+            ),
+            html.Div([
+                html.Label('Price Spacing for Surface:'),
+                dcc.Input(
+                    id='spacing',
+                    type='number',
+                    value=0,
+                ),
+            ],
+                className='four columns',
+                style={'text-align': 'center'}
+            )
+        ],
+            className='row',
+            style={'margin-bottom': '10'}
+        ),
         
         html.Div([
                 html.Button('Run Analysis', id='analysis_button'),
@@ -582,834 +649,530 @@ app.layout = html.Div(
 
 
 #%%
-## Cache raw data
-#@app.callback(Output('raw_container', 'hidden'),
-#              [Input('ticker_dropdown', 'value')])
-#def cache_raw_data(ticker):
-#
-#    global raw_data
-#    raw_data = get_raw_data(ticker)
-#    print('Loaded raw data')
-#
-#    return 'loaded'
-#
-#
-## Cache filtered data
-#@app.callback(Output('filtered_container', 'hidden'),
-#              [Input('raw_container', 'hidden'),
-#               Input('market_selector', 'value'),
-#               Input('ticker_dropdown', 'value'),
-#               Input('price_slider', 'value'),
-#               Input('volume_slider', 'value'),
-#               Input('expiry_slider', 'value'),
-#               Input('numdays_slider', 'value'),
-#               Input('hvroll_slider', 'value'),
-#               Input('iv_selector', 'value'),
-#               Input('calendar_selector', 'value'),
-#               Input('rf_input', 'value'),
-#               Input('div_input', 'value')])  # To be split
-#def cache_filtered_data(hidden, market, stock_ticker,
-#                        above_below, volume_threshold, expiration_threshold,
-#                        number_of_days, hv_rolldays,
-#                        calculate_iv, trading_calendar,
-#                        rf_interest_rate, dividend_rate):
-#
-#    if hidden == 'loaded':
-#        
-#        # Options Data Call
-#        s_c, p_c, i_c = get_filtered_data(raw_data, calculate_iv=calculate_iv,
-#                                          call=True, put=False,
-#                                          above_below=float(above_below),
-#                                          volume_threshold=float(volume_threshold),
-#                                          rf_interest_rate=float(rf_interest_rate),
-#                                          dividend_rate=float(dividend_rate),
-#                                          trading_calendar=trading_calendar,
-#                                          market=market,
-#                                          days_to_expiry=int(expiration_threshold))
-#        
-#        s_p, p_p, i_p = get_filtered_data(raw_data, calculate_iv=calculate_iv,
-#                                          call=False, put=True,
-#                                          above_below=float(above_below),
-#                                          volume_threshold=float(volume_threshold),
-#                                          rf_interest_rate=float(rf_interest_rate),
-#                                          dividend_rate=float(dividend_rate),
-#                                          trading_calendar=trading_calendar,
-#                                        market=market,
-#                                        days_to_expiry=int(expiration_threshold))
-#
-#        df_call = pd.DataFrame([s_c, p_c, i_c]).T
-#        df_put = pd.DataFrame([s_p, p_p, i_p]).T
-#        # Stock Price Calls
-#        historical = historical_data(stock_ticker, 
-#                                     day_number = number_of_days, 
-#                                     rolling_window = hv_rolldays, 
-#                                     outsize = 'full')
-##        
-#        global filtered_data_call
-#        global filtered_data_put
-#        global hist_data
-#        
-#        filtered_data_call = df_call[df_call[2] > 0.0001]  # Filter invalid calculations with abnormally low IV
-#        filtered_data_put = df_put[df_put[2] > 0.0001]
-#        hist_data = historical[['daily_ann', 'intra_ann', 'ovrnt_ann',
-#                                'daily_dollar_std', 'daily_dollar_std_direction',
-#                                'close']]
-#        
-#        print('Loaded filtered data')
-#
-#        return 'loaded'
-#
-#
-## Make main surface plot
-#@app.callback(Output('iv_surface_call', 'figure'),
-#              [Input('filtered_container', 'hidden'),
-#               Input('ticker_dropdown', 'value'),
-#               Input('log_selector', 'value'),
-#               Input('graph_toggles', 'values')],
-#              [State('graph_toggles', 'values'),
-#               State('iv_surface_call', 'relayoutData')])
-#def make_call_surface_plot(hidden, ticker, log_selector, graph_toggles,
-#                           graph_toggles_state, iv_surface_layout):
-#
-#    if hidden == 'loaded':
-#
-#        if 'flat' in graph_toggles:
-#            flat_shading = True
-#        else:
-#            flat_shading = False
-#
-#        trace1 = {
-#            "type": "mesh3d",
-#            'x': filtered_data_call[0],
-#            'y': filtered_data_call[1],
-#            'z': filtered_data_call[2],
-#            'intensity': filtered_data_call[2],
-#            'autocolorscale': False,
-#            "colorscale": [
-#                [0, "rgb(244,236,21)"], [0.3, "rgb(249,210,41)"], [0.4, "rgb(134,191,118)"], [
-#                    0.5, "rgb(37,180,167)"], [0.65, "rgb(17,123,215)"], [1, "rgb(54,50,153)"],
-#            ],
-#            "lighting": {
-#                "ambient": 1,
-#                "diffuse": 0.9,
-#                "fresnel": 0.5,
-#                "roughness": 0.9,
-#                "specular": 2
-#            },
-#            "flatshading": flat_shading,
-#            "reversescale": True,
-#        }
-#
-#        layout = {
-#            "title": "{} Call Volatility Surface | {}".format(ticker, str(dt.datetime.now())),
-#            'margin': {
-#                'l': 10,
-#                'r': 10,
-#                'b': 10,
-#                't': 60,
-#            },
-#            'paper_bgcolor': '#FAFAFA',
-#            "hovermode": "closest",
-#            "scene": {
-#                "aspectmode": "manual",
-#                "aspectratio": {
-#                    "x": 2,
-#                    "y": 2,
-#                    "z": 1
-#                },
-#                'camera': {
-#                    'up': {'x': 0, 'y': 0, 'z': 1},
-#                    'center': {'x': 0, 'y': 0, 'z': 0},
-#                    'eye': {'x': 1, 'y': 1, 'z': 0.5},
-#                },
-#                "xaxis": {
-#                    "title": "Strike ($)",
-#                    "showbackground": True,
-#                    "backgroundcolor": "rgb(230, 230,230)",
-#                    "gridcolor": "rgb(255, 255, 255)",
-#                    "zerolinecolor": "rgb(255, 255, 255)"
-#                },
-#                "yaxis": {
-#                    "title": "Expiry (days)",
-#                    "showbackground": True,
-#                    "backgroundcolor": "rgb(230, 230,230)",
-#                    "gridcolor": "rgb(255, 255, 255)",
-#                    "zerolinecolor": "rgb(255, 255, 255)"
-#                },
-#                "zaxis": {
-#                    "rangemode": "tozero",
-#                    "title": "IV (σ)",
-#                    "type": log_selector,
-#                    "showbackground": True,
-#                    "backgroundcolor": "rgb(230, 230,230)",
-#                    "gridcolor": "rgb(255, 255, 255)",
-#                    "zerolinecolor": "rgb(255, 255, 255)"
-#                }
-#            },
-#        }
-#
-#        if (iv_surface_layout is not None and 'lock' in graph_toggles_state):
-#
-#            try:
-#                up = iv_surface_layout['scene']['up']
-#                center = iv_surface_layout['scene']['center']
-#                eye = iv_surface_layout['scene']['eye']
-#                layout['scene']['camera']['up'] = up
-#                layout['scene']['camera']['center'] = center
-#                layout['scene']['camera']['eye'] = eye
-#            except:
-#                pass
-#
-#        data = [trace1]
-#        figure = dict(data=data, layout=layout)
-#        return figure
-#    
-## Make main surface plot
-#@app.callback(Output('iv_surface_put', 'figure'),
-#              [Input('filtered_container', 'hidden'),
-#               Input('ticker_dropdown', 'value'),
-#               Input('log_selector', 'value'),
-#               Input('graph_toggles', 'values')],
-#              [State('graph_toggles', 'values'),
-#               State('iv_surface_put', 'relayoutData')])
-#def make_put_surface_plot(hidden, ticker, log_selector, graph_toggles,
-#                          graph_toggles_state, iv_surface_layout):
-#
-#    if hidden == 'loaded':
-#
-#        if 'flat' in graph_toggles:
-#            flat_shading = True
-#        else:
-#            flat_shading = False
-#
-#        trace1 = {
-#            "type": "mesh3d",
-#            'x': filtered_data_put[0],
-#            'y': filtered_data_put[1],
-#            'z': filtered_data_put[2],
-#            'intensity': filtered_data_put[2],
-#            'autocolorscale': False,
-#            "colorscale": [
-#                [0, "rgb(244,236,21)"], [0.3, "rgb(249,210,41)"], [0.4, "rgb(134,191,118)"], [
-#                    0.5, "rgb(37,180,167)"], [0.65, "rgb(17,123,215)"], [1, "rgb(54,50,153)"],
-#            ],
-#            "lighting": {
-#                "ambient": 1,
-#                "diffuse": 0.9,
-#                "fresnel": 0.5,
-#                "roughness": 0.9,
-#                "specular": 2
-#            },
-#            "flatshading": flat_shading,
-#            "reversescale": True,
-#        }
-#
-#        layout = {
-#            "title": "{} Put Volatility Surface | {}".format(ticker, str(dt.datetime.now())),
-#            'margin': {
-#                'l': 10,
-#                'r': 10,
-#                'b': 10,
-#                't': 60,
-#            },
-#            'paper_bgcolor': '#FAFAFA',
-#            "hovermode": "closest",
-#            "scene": {
-#                "aspectmode": "manual",
-#                "aspectratio": {
-#                    "x": 2,
-#                    "y": 2,
-#                    "z": 1
-#                },
-#                'camera': {
-#                    'up': {'x': 0, 'y': 0, 'z': 1},
-#                    'center': {'x': 0, 'y': 0, 'z': 0},
-#                    'eye': {'x': 1, 'y': 1, 'z': 0.5},
-#                },
-#                "xaxis": {
-#                    "title": "Strike ($)",
-#                    "showbackground": True,
-#                    "backgroundcolor": "rgb(230, 230,230)",
-#                    "gridcolor": "rgb(255, 255, 255)",
-#                    "zerolinecolor": "rgb(255, 255, 255)"
-#                },
-#                "yaxis": {
-#                    "title": "Expiry (days)",
-#                    "showbackground": True,
-#                    "backgroundcolor": "rgb(230, 230,230)",
-#                    "gridcolor": "rgb(255, 255, 255)",
-#                    "zerolinecolor": "rgb(255, 255, 255)"
-#                },
-#                "zaxis": {
-#                    "rangemode": "tozero",
-#                    "title": "IV (σ)",
-#                    "type": log_selector,
-#                    "showbackground": True,
-#                    "backgroundcolor": "rgb(230, 230,230)",
-#                    "gridcolor": "rgb(255, 255, 255)",
-#                    "zerolinecolor": "rgb(255, 255, 255)"
-#                }
-#            },
-#        }
-#
-#        if (iv_surface_layout is not None and 'lock' in graph_toggles_state):
-#
-#            try:
-#                up = iv_surface_layout['scene']['up']
-#                center = iv_surface_layout['scene']['center']
-#                eye = iv_surface_layout['scene']['eye']
-#                layout['scene']['camera']['up'] = up
-#                layout['scene']['camera']['center'] = center
-#                layout['scene']['camera']['eye'] = eye
-#            except:
-#                pass
-#
-#        data = [trace1]
-#        figure = dict(data=data, layout=layout)
-#        return figure
-#
-#
-## Make side heatmap plot
-#@app.callback(Output('iv_heatmap_call', 'figure'),
-#              [Input('filtered_container', 'hidden'),
-#               Input('ticker_dropdown', 'value'),
-#               Input('graph_toggles', 'values')],
-#              [State('graph_toggles', 'values'),
-#               State('iv_heatmap_call', 'relayoutData')])
-#def make_call_heat_plot(hidden, ticker, graph_toggles,
-#                           graph_toggles_state, iv_heatmap_layout):
-#
-#    if hidden == 'loaded':
-#
-#        if 'discrete' in graph_toggles:
-#            shading = 'contour'
-#        else:
-#            shading = 'heatmap'
-#
-#        trace1 = {
-#            "type": "contour",
-#            'x': filtered_data_call[0],
-#            'y': filtered_data_call[1],
-#            'z': filtered_data_call[2],
-#            'connectgaps': True,
-#            'line': {'smoothing': '1'},
-#            'contours': {'coloring': shading},
-#            'autocolorscale': False,
-#            "colorscale": [
-#                [0, "rgb(244,236,21)"], [0.3, "rgb(249,210,41)"], [0.4, "rgb(134,191,118)"],
-#                [0.5, "rgb(37,180,167)"], [0.65, "rgb(17,123,215)"], [1, "rgb(54,50,153)"],
-#            ],
-#            # Add colorscale log
-#            "reversescale": True,
-#        }
-#
-#        layout = {
-#            'margin': {
-#                'l': 60,
-#                'r': 10,
-#                'b': 60,
-#                't': 10,
-#            },
-#            'paper_bgcolor': '#FAFAFA',
-#            "hovermode": "closest",
-#            "xaxis": {
-#                'range': [],
-#                "title": "Call Strike ($)",
-#            },
-#            "yaxis": {
-#                'range': [],
-#                "title": "Expiry (days)",
-#            },
-#        }
-#
-#        if (iv_heatmap_layout is not None and 'lock' in graph_toggles_state):
-#
-#            try:
-#                x_range_left = iv_heatmap_layout['xaxis.range[0]']
-#                x_range_right = iv_heatmap_layout['xaxis.range[1]']
-#                layout['xaxis']['range'] = [x_range_left, x_range_right]
-#            except:
-#                pass
-#
-#            try:
-#                y_range_left = iv_heatmap_layout['yaxis.range[0]']
-#                y_range_right = iv_heatmap_layout['yaxis.range[1]']
-#                layout['yaxis']['range'] = [x_range_left, x_range_right]
-#            except:
-#                pass
-#
-#        data = [trace1]
-#        figure = dict(data=data, layout=layout)
-#        return figure
-#
-## Make side heatmap plot
-#@app.callback(Output('iv_heatmap_put', 'figure'),
-#              [Input('filtered_container', 'hidden'),
-#               Input('ticker_dropdown', 'value'),
-#               Input('graph_toggles', 'values')],
-#              [State('graph_toggles', 'values'),
-#               State('iv_heatmap_put', 'relayoutData')])
-#def make_put_heat_plot(hidden, ticker, graph_toggles,
-#                           graph_toggles_state, iv_heatmap_layout):
-#
-#    if hidden == 'loaded':
-#
-#        if 'discrete' in graph_toggles:
-#            shading = 'contour'
-#        else:
-#            shading = 'heatmap'
-#
-#        trace1 = {
-#            "type": "contour",
-#            'x': filtered_data_put[0],
-#            'y': filtered_data_put[1],
-#            'z': filtered_data_put[2],
-#            'connectgaps': True,
-#            'line': {'smoothing': '1'},
-#            'contours': {'coloring': shading},
-#            'autocolorscale': False,
-#            "colorscale": [
-#                [0, "rgb(244,236,21)"], [0.3, "rgb(249,210,41)"], [0.4, "rgb(134,191,118)"],
-#                [0.5, "rgb(37,180,167)"], [0.65, "rgb(17,123,215)"], [1, "rgb(54,50,153)"],
-#            ],
-#            # Add colorscale log
-#            "reversescale": True,
-#        }
-#
-#        layout = {
-#            'margin': {
-#                'l': 60,
-#                'r': 10,
-#                'b': 60,
-#                't': 10,
-#            },
-#            'paper_bgcolor': '#FAFAFA',
-#            "hovermode": "closest",
-#            "xaxis": {
-#                'range': [],
-#                "title": "Put Strike ($)",
-#            },
-#            "yaxis": {
-#                'range': [],
-#                "title": "Expiry (days)",
-#            },
-#        }
-#
-#        if (iv_heatmap_layout is not None and 'lock' in graph_toggles_state):
-#
-#            try:
-#                x_range_left = iv_heatmap_layout['xaxis.range[0]']
-#                x_range_right = iv_heatmap_layout['xaxis.range[1]']
-#                layout['xaxis']['range'] = [x_range_left, x_range_right]
-#            except:
-#                pass
-#
-#            try:
-#                y_range_left = iv_heatmap_layout['yaxis.range[0]']
-#                y_range_right = iv_heatmap_layout['yaxis.range[1]']
-#                layout['yaxis']['range'] = [x_range_left, x_range_right]
-#            except:
-#                pass
-#
-#        data = [trace1]
-#        figure = dict(data=data, layout=layout)
-#        return figure
-#
-## Make side scatter plot
-#@app.callback(Output('iv_scatter_call', 'figure'),
-#              [Input('filtered_container', 'hidden'),
-#               Input('ticker_dropdown', 'value'),
-#               Input('graph_toggles', 'values')],
-#              [State('graph_toggles', 'values'),
-#               State('iv_scatter_call', 'relayoutData')])
-#def make_call_scatter_plot(hidden, ticker, graph_toggles,
-#                           graph_toggles_state, iv_scatter_layout):
-#
-#    if hidden == 'loaded':
-#
-#        if 'discrete' in graph_toggles:
-#            shading = 'contour'
-#        else:
-#            shading = 'heatmap'
-#
-#        if 'box' in graph_toggles:
-#            typ = 'box'
-#        else:
-#            typ = 'scatter'
-#
-#        trace1 = {
-#            "type": typ,
-#            'mode': 'markers',
-#            'x': filtered_data_call[1],
-#            'y': filtered_data_call[2],
-#            'boxpoints': 'outliers',
-#            'marker': {'color': '#32399F', 'opacity': 0.2}
-#        }
-#
-#        layout = {
-#            'margin': {
-#                'l': 60,
-#                'r': 10,
-#                'b': 60,
-#                't': 10,
-#            },
-#            'paper_bgcolor': '#FAFAFA',
-#            "hovermode": "closest",
-#            "xaxis": {
-#                "title": "Expiry (days)",
-#            },
-#            "yaxis": {
-#                "rangemode": "tozero",
-#                "title": "Call IV (σ)",
-#            },
-#        }
-#
-#        if (iv_scatter_layout is not None and 'lock' in graph_toggles_state):
-#
-#            try:
-#                x_range_left = iv_scatter_layout['xaxis.range[0]']
-#                x_range_right = iv_scatter_layout['xaxis.range[1]']
-#                layout['xaxis']['range'] = [x_range_left, x_range_right]
-#            except:
-#                pass
-#
-#            try:
-#                y_range_left = iv_scatter_layout['yaxis.range[0]']
-#                y_range_right = iv_scatter_layout['yaxis.range[1]']
-#                layout['yaxis']['range'] = [x_range_left, x_range_right]
-#            except:
-#                pass
-#
-#        data = [trace1]
-#        figure = dict(data=data, layout=layout)
-#        return figure
-#    
-#    
-## Make side scatter plot
-#@app.callback(Output('iv_scatter_put', 'figure'),
-#              [Input('filtered_container', 'hidden'),
-#               Input('ticker_dropdown', 'value'),
-#               Input('graph_toggles', 'values')],
-#              [State('graph_toggles', 'values'),
-#               State('iv_scatter_put', 'relayoutData')])
-#def make_put_scatter_plot(hidden, ticker, graph_toggles,
-#                          graph_toggles_state, iv_scatter_layout):
-#
-#    if hidden == 'loaded':
-#
-#        if 'discrete' in graph_toggles:
-#            shading = 'contour'
-#        else:
-#            shading = 'heatmap'
-#
-#        if 'box' in graph_toggles:
-#            typ = 'box'
-#        else:
-#            typ = 'scatter'
-#
-#        trace1 = {
-#            "type": typ,
-#            'mode': 'markers',
-#            'x': filtered_data_call[1],
-#            'y': filtered_data_call[2],
-#            'boxpoints': 'outliers',
-#            'marker': {'color': '#32399F', 'opacity': 0.2}
-#        }
-#
-#        layout = {
-#            'margin': {
-#                'l': 60,
-#                'r': 10,
-#                'b': 60,
-#                't': 10,
-#            },
-#            'paper_bgcolor': '#FAFAFA',
-#            "hovermode": "closest",
-#            "xaxis": {
-#                "title": "Expiry (days)",
-#            },
-#            "yaxis": {
-#                "rangemode": "tozero",
-#                "title": "Put IV (σ)",
-#            },
-#        }
-#
-#        if (iv_scatter_layout is not None and 'lock' in graph_toggles_state):
-#
-#            try:
-#                x_range_left = iv_scatter_layout['xaxis.range[0]']
-#                x_range_right = iv_scatter_layout['xaxis.range[1]']
-#                layout['xaxis']['range'] = [x_range_left, x_range_right]
-#            except:
-#                pass
-#
-#            try:
-#                y_range_left = iv_scatter_layout['yaxis.range[0]']
-#                y_range_right = iv_scatter_layout['yaxis.range[1]']
-#                layout['yaxis']['range'] = [x_range_left, x_range_right]
-#            except:
-#                pass
-#
-#        data = [trace1]
-#        figure = dict(data=data, layout=layout)
-#        return figure
-#    
-## Make side std plot
-#@app.callback(Output('std_historical_plot', 'figure'),
-#              [Input('filtered_container', 'hidden'),
-#               Input('ticker_dropdown', 'value'),
-#               Input('graph_toggles', 'values')],
-#              [State('graph_toggles', 'values'),
-#               State('std_historical_plot', 'relayoutData')])
-#def make_dollar_std_plot(hidden, ticker, graph_toggles,
-#                         graph_toggles_state, iv_scatter_layout):
-#
-#    if hidden == 'loaded':
-#
-#        if 'discrete' in graph_toggles:
-#            shading = 'contour'
-#        else:
-#            shading = 'heatmap'
-#
-#        typ = 'bar'
-#
-#        trace1 = {
-#            "type": typ,
-#            'mode': 'markers',
-#            'x': hist_data.index,
-#            'y': hist_data.daily_dollar_std_direction,
-#            'boxpoints': 'outliers',
-#            'marker': {'color': '#00aaff', 'opacity': 0.8}
-#        }
-#
-#        layout = {
-#            'margin': {
-#                'l': 60,
-#                'r': 10,
-#                'b': 60,
-#                't': 10,
-#            },
-#            'paper_bgcolor': '#FAFAFA',
-#            "hovermode": "closest",
-#            "xaxis": {
-#                "title": "Date",
-#            },
-#            "yaxis": {
-#                "rangemode": "tozero",
-#                "title": "Historical Dollar Return Std.",
-#            },
-#        }
-#
-#        if (iv_scatter_layout is not None and 'lock' in graph_toggles_state):
-#
-#            try:
-#                x_range_left = iv_scatter_layout['xaxis.range[0]']
-#                x_range_right = iv_scatter_layout['xaxis.range[1]']
-#                layout['xaxis']['range'] = [x_range_left, x_range_right]
-#            except:
-#                pass
-#
-#            try:
-#                y_range_left = iv_scatter_layout['yaxis.range[0]']
-#                y_range_right = iv_scatter_layout['yaxis.range[1]']
-#                layout['yaxis']['range'] = [x_range_left, x_range_right]
-#            except:
-#                pass
-#
-#        data = [trace1]
-#        figure = dict(data=data, layout=layout)
-#        return figure
-#
-## Make side std hist plot
-#@app.callback(Output('hv_std_hist', 'figure'),
-#              [Input('filtered_container', 'hidden'),
-#               Input('ticker_dropdown', 'value'),
-#               Input('graph_toggles', 'values')],
-#              [State('graph_toggles', 'values'),
-#               State('hv_std_hist', 'relayoutData')])
-#def make_dollar_hist(hidden, ticker, graph_toggles,
-#                     graph_toggles_state, iv_scatter_layout):
-#
-#    if hidden == 'loaded':
-#
-#        if 'discrete' in graph_toggles:
-#            shading = 'contour'
-#        else:
-#            shading = 'heatmap'
-#
-#        typ = 'histogram'
-#
-#        trace1 = {
-#            "type": typ,
-#            'mode': 'markers',
-#            'histnorm': 'probability',
-#            'x': hist_data.daily_dollar_std_direction,
-#            'marker': {'color': '#00aaff', 'opacity': 0.8}
-#        }
-#
-#        layout = {
-#            'margin': {
-#                'l': 60,
-#                'r': 10,
-#                'b': 60,
-#                't': 10,
-#            },
-#            'paper_bgcolor': '#FAFAFA',
-#            "hovermode": "closest",
-#            "xaxis": {
-#                "title": "Dollar Return Std.",
-#            },
-#            "yaxis": {
-#                "rangemode": "tozero",
-#                "title": "Percentage Distribution",
-#            },
-#            'bargap' : 0.2,
-#            'bargroupgap': 0.1
-#        }
-#
-#        if (iv_scatter_layout is not None and 'lock' in graph_toggles_state):
-#
-#            try:
-#                x_range_left = iv_scatter_layout['xaxis.range[0]']
-#                x_range_right = iv_scatter_layout['xaxis.range[1]']
-#                layout['xaxis']['range'] = [x_range_left, x_range_right]
-#            except:
-#                pass
-#
-#            try:
-#                y_range_left = iv_scatter_layout['yaxis.range[0]']
-#                y_range_right = iv_scatter_layout['yaxis.range[1]']
-#                layout['yaxis']['range'] = [x_range_left, x_range_right]
-#            except:
-#                pass
-#
-#        data = [trace1]
-#        figure = dict(data=data, layout=layout)
-#        return figure
-#    
-## Update Prices
-#@app.callback(Output('last_price', 'children'),
-#              [Input('filtered_container', 'hidden'),
-#               Input('ticker_dropdown', 'value')])
-#def update_last_price(hidden, ticker):
-#
-#    if hidden == 'loaded':
-#        last_price = '{} Last Price: ${}'.format(ticker, str(round(hist_data.tail(1).close[0], 2)))
-#        return last_price
-#    
-## Update Daily Vol
-#@app.callback(Output('daily_vol', 'children'),
-#              [Input('filtered_container', 'hidden'),
-#               Input('ticker_dropdown', 'value')])
-#def update_daily_vol(hidden, ticker):
-#
-#    if hidden == 'loaded':
-#        last_price = '{} Daily HV: {}%'.format(ticker, str(round(hist_data.tail(1).daily_ann[0]*100, 2)))
-#        return last_price
-#    
-## Update Intra Vol
-#@app.callback(Output('intra_vol', 'children'),
-#              [Input('filtered_container', 'hidden'),
-#               Input('ticker_dropdown', 'value')])
-#def update_intra_vol(hidden, ticker):
-#
-#    if hidden == 'loaded':
-#        last_price = '{} Intraday HV: {}%'.format(ticker, str(round(hist_data.tail(1).intra_ann[0]*100, 2)))
-#        return last_price
-#
-## Update Overnight Vol
-#@app.callback(Output('ovrnt_vol', 'children'),
-#              [Input('filtered_container', 'hidden'),
-#               Input('ticker_dropdown', 'value')])
-#def update_overnight_vol(hidden, ticker):
-#
-#    if hidden == 'loaded':
-#        last_price = '{} Overnight HV: {}%'.format(ticker, str(round(hist_data.tail(1).ovrnt_ann[0]*100, 2)))
-#        return last_price
-#
-## Make side scatter plot
-#@app.callback(Output('hv_line_plot', 'figure'),
-#              [Input('filtered_container', 'hidden'),
-#               Input('ticker_dropdown', 'value'),
-#               Input('graph_toggles', 'values')],
-#              [State('graph_toggles', 'values'),
-#               State('hv_line_plot', 'relayoutData')])
-#def make_hv_line_plot(hidden, ticker, graph_toggles,
-#                      graph_toggles_state, iv_scatter_layout):
-#
-#    if hidden == 'loaded':
-#        
-#        typ = 'scatter'
-#
-#        trace1 = {
-#            "type": typ,
-#            'mode': 'lines+markers',
-#            'name': 'Daily Vol',
-#            'x': hist_data.index,
-#            'y': hist_data.daily_ann,
-#            'marker': {'color': '#00c8c8', 'opacity': 0.8}
-#        }
-#        
-#        trace2 = {
-#            "type": typ,
-#            'mode': 'lines+markers',
-#            'name': 'Intraday Vol',
-#            'x': hist_data.index,
-#            'y': hist_data.intra_ann,
-#            'marker': {'color': '#c800c8', 'opacity': 0.8}
-#        }
-#        
-#        trace3 = {
-#            "type": typ,
-#            'mode': 'lines+markers',
-#            'name': 'Overnight Vol',
-#            'x': hist_data.index,
-#            'y': hist_data.ovrnt_ann,
-#            'marker': {'color': '#c8c800', 'opacity': 0.8}
-#        }
-#
-#        layout = {
-#            'margin': {
-#                'l': 60,
-#                'r': 10,
-#                'b': 60,
-#                't': 10,
-#            },
-#            'paper_bgcolor': '#FAFAFA',
-#            "hovermode": "closest",
-#            "xaxis": {
-#                "title": "Date",
-#                'showline': 'True',
-#                'showgrid': 'False',
-#                'showticklabels': 'True',
-#                'ticks': 'outside'
-#            },
-#            "yaxis": {
-#                "rangemode": "tozero",
-#                "title": "HV (σ)",
-#            },
-#        }
-#
-#        if (iv_scatter_layout is not None and 'lock' in graph_toggles_state):
-#
-#            try:
-#                x_range_left = iv_scatter_layout['xaxis.range[0]']
-#                x_range_right = iv_scatter_layout['xaxis.range[1]']
-#                layout['xaxis']['range'] = [x_range_left, x_range_right]
-#            except:
-#                pass
-#
-#            try:
-#                y_range_left = iv_scatter_layout['yaxis.range[0]']
-#                y_range_right = iv_scatter_layout['yaxis.range[1]']
-#                layout['yaxis']['range'] = [x_range_left, x_range_right]
-#            except:
-#                pass
-#
-#        data = [trace1, trace2, trace3]
-#        figure = dict(data=data, layout=layout)
-#        return figure
+# Cache raw data
+@app.callback(
+        Output('raw_container', 'hidden'),
+        [Input('query_button', 'n_clicks')],
+        [State('ticker_dropdown','value'),
+         State('moneyness_filter','value'),
+         State('ticker_dte','value')])
+def cache_raw_data_options(n_clicks, ticker, moneyness, dte):
+
+    global calls, puts
+    calls, puts = option_filter(ticker, moneyness, dte)
+    columns = list(calls.columns)
+    calls['Strike'] = calls.index
+    puts['Strike'] = puts.index
+    calls = np.round(calls[['Strike'] + columns],2)
+    puts = np.round(puts[['Strike'] + columns],2)
+    print('Loaded raw data')
+    return 'loaded'
+
+@app.callback(
+        Output('filtered_container', 'hidden'),
+        [Input('analysis_button', 'n_clicks')],
+        [State('expiry1','date'),
+         State('type1','value'),
+         State('strike1','value'),
+         State('interest1','value'),
+         State('price1','value'),
+         State('position1', 'value'),
+         State('expiry2','date'),
+         State('type2','value'),
+         State('strike2','value'),
+         State('interest2','value'),
+         State('price2','value'),
+         State('position2', 'value'),
+         State('expiry3','date'),
+         State('type3','value'),
+         State('strike3','value'),
+         State('interest3','value'),
+         State('price3','value'),
+         State('position3', 'value'),
+         State('expiry4','date'),
+         State('type4','value'),
+         State('strike4','value'),
+         State('interest4','value'),
+         State('price4','value'),
+         State('position4', 'value'),
+         State('underlying', 'value'),
+         State('price_changes', 'value'),
+         State('vol_range', 'value'),
+         State('dte_range', 'value'),
+         State('skew', 'value'),
+         State('spacing','value')])
+def cache_raw_data_sim(n_clicks, expiry1, type1, strike1, interest1, price1, position1,
+                       expiry2, type2, strike2, interest2, price2, position2,
+                       expiry3, type3, strike3, interest3, price3, position3,
+                       expiry4, type4, strike4, interest4, price4, position4,
+                       underlying, price_range, vol_range, dte_range, skew_type,
+                       spacing):
+
+    global pnl_outmeshes, pct_outmeshes, delta_outmeshes, gamma_outmeshes, theta_outmeshes, vega_outmeshes
+    global priceGrid, dteGrid, v_changes, df
     
+    day_spacing = dte_range[1] - dte_range[0] + 1
+    
+    price_axis = np.linspace(price_range[0], price_range[1], spacing)
+    dte_axis = np.linspace(dte_range[0], dte_range[1], day_spacing)
+    v_changes = np.linspace(vol_range[0], vol_range[1], 3)
+    
+    priceGrid, dteGrid = np.meshgrid(price_axis, dte_axis)
+    
+    # Setting up data feed
+    dtes = [(dt.datetime.strptime(expiry1, '%Y-%m-%d').date() - dt.date.today()).days,
+            (dt.datetime.strptime(expiry2, '%Y-%m-%d').date() - dt.date.today()).days,
+            (dt.datetime.strptime(expiry3, '%Y-%m-%d').date() - dt.date.today()).days,
+            (dt.datetime.strptime(expiry4, '%Y-%m-%d').date() - dt.date.today()).days]
+    types = [type1, type2, type3, type4]
+    strikes = [strike1, strike2, strike3, strike4]
+    interests = [interest1, interest2, interest3, interest4]
+    prices = [price1, price2, price3, price4]
+    positions = [position1, position2, position3, position4]
+    underlyings = [underlying, underlying, underlying, underlying]
+    df = pd.DataFrame({'DTE': dtes, 'Type': types, 'Strike': strikes,
+                       'Cost': prices, 'Underlying_Price': underlyings, 
+                       'Interest': interests, 'Pos': positions}, index = range(4))
+    df = df[df['Pos'] != 0]
+    positions = df['Pos'].tolist()
+                
+    sigmas = []
+    for premium, strike, time_to_expiration, flag, interest in zip(df['Cost'], 
+                                                                   df['Strike'], 
+                                                                   df['DTE'],
+                                                                   df['Type'],
+                                                                   df['Interest']):
+        # Constants
+        P = premium
+        S = df['Underlying_Price'].values[0]
+        K = strike
+        t = time_to_expiration/float(365)
+        r = interest / 100
+        q = 0 / 100
+        try:
+            sigma = py_vollib.black_scholes_merton.implied_volatility.implied_volatility(P, S, K, t, r, q, flag)
+            sigmas.append(sigma)
+        except:
+            sigma = 0.0
+            sigmas.append(sigma)
+    
+    df['Calc IV'] = sigmas
+    
+    # Creating Mesh Grids
+    
+    pnl_outmeshes= []
+    pct_outmeshes = []
+    delta_outmeshes = []
+    gamma_outmeshes = []
+    theta_outmeshes = []
+    vega_outmeshes = []
+    
+    for v_change in v_changes:
+    
+        pnl_out_values_lst = []
+        pct_out_values_lst = []
+        delta_out_values_lst = []
+        gamma_out_values_lst = []
+        theta_out_values_lst = []
+        vega_out_values_lst = []
+        for p_arrays, d_arrays in zip(priceGrid, dteGrid):
+            pnl_current_values_sublist = []
+            pct_current_values_sublist = []
+            delta_current_values_sublist = []
+            gamma_current_values_sublist = []
+            theta_current_values_sublist = []
+            vega_current_values_sublist = []
+            
+            for price_delta, dte_delta in zip(p_arrays, d_arrays):
+                current_sim = position_sim(df, positions, price_delta, 
+                                           v_change, dte_delta, 'Calc IV',
+                                           'All', skew_type)
+                pnl_current_values_sublist.append(current_sim['PnL'].values[0])
+                pct_current_values_sublist.append(current_sim['Percent Return'].values[0])
+                delta_current_values_sublist.append(current_sim['Simulated Delta'].values[0])
+                gamma_current_values_sublist.append(current_sim['Simulated Gamma'].values[0])
+                theta_current_values_sublist.append(current_sim['Simulated Theta'].values[0])
+                vega_current_values_sublist.append(current_sim['Simulated Vega'].values[0])
+                
+                
+            pnl_out_values_lst.append(pnl_current_values_sublist)
+            pct_out_values_lst.append(pct_current_values_sublist)
+            delta_out_values_lst.append(delta_current_values_sublist)
+            gamma_out_values_lst.append(gamma_current_values_sublist)
+            theta_out_values_lst.append(theta_current_values_sublist)
+            vega_out_values_lst.append(vega_current_values_sublist)
+            
+        pnl_out_values_mesh = np.array(pnl_out_values_lst)
+        pnl_outmeshes.append(pnl_out_values_mesh)
+        
+        pct_out_values_mesh = np.array(pct_out_values_lst)
+        pct_outmeshes.append(pct_out_values_mesh)
+        
+        delta_out_values_mesh = np.array(delta_out_values_lst)
+        delta_outmeshes.append(delta_out_values_mesh)
+        
+        gamma_out_values_mesh = np.array(gamma_out_values_lst)
+        gamma_outmeshes.append(gamma_out_values_mesh)
+        
+        theta_out_values_mesh = np.array(theta_out_values_lst)
+        theta_outmeshes.append(theta_out_values_mesh)
+        
+        vega_out_values_mesh = np.array(vega_out_values_lst)
+        vega_outmeshes.append(vega_out_values_mesh)
+    
+    print('Loaded raw data')
+    return 'loaded'
+
+# Displaying outputs
+
+@app.callback(
+    Output('call_summary', 'children'),
+    [Input('display_button', 'n_clicks')],
+    [State('raw_container','hidden')])
+def update_output_calls(n_clicks, hidden):
+    if hidden == 'loaded':
+        return generate_table(calls)
+    
+@app.callback(
+    Output('put_summary', 'children'),
+    [Input('display_button', 'n_clicks')],
+    [State('raw_container','hidden')])
+def update_output_calls(n_clicks, hidden):
+    if hidden == 'loaded':
+        return generate_table(puts)
+    
+#    
+#    
+# Make main surface plot
+@app.callback(Output('pnl_surface', 'figure'),
+              [Input('display_button', 'n_clicks')],
+              [State('filtered_container','hidden')])
+def pnl_surface_plot(n_clicks, hidden):
+
+    if hidden == 'loaded':
+        surface1 = go.Surface(x = (priceGrid + 1)*df['Underlying_Price'].values[0], 
+                              y = dteGrid, 
+                              z = pnl_outmeshes[0],
+                              name = v_changes[0])
+
+        surface2 = go.Surface(x = (priceGrid + 1)*df['Underlying_Price'].values[0], 
+                              y = dteGrid, 
+                              z = pnl_outmeshes[1],
+                              name = v_changes[1])
+    
+        surface3 = go.Surface(x = (priceGrid + 1)*df['Underlying_Price'].values[0], 
+                              y = dteGrid, 
+                              z = pnl_outmeshes[2], 
+                              name = v_changes[2])
+
+        layout = go.Layout(
+                    title='PnL Plot',
+                    autosize=True,
+                    showlegend = False,
+                    scene=dict(
+                        xaxis=dict(
+                            title='Underlying Price',
+                            gridcolor='rgb(255, 255, 255)',
+                            zerolinecolor='rgb(255, 255, 255)',
+                            showbackground=True,
+                            backgroundcolor='rgb(230, 230,230)'
+                        ),
+                        yaxis=dict(
+                            title='DTE Change',
+                            gridcolor='rgb(255, 255, 255)',
+                            zerolinecolor='rgb(255, 255, 255)',
+                            showbackground=True,
+                            backgroundcolor='rgb(230, 230,230)'
+                        ),
+                        zaxis=dict(
+                            title = 'PnL',
+                            gridcolor='rgb(255, 255, 255)',
+                            zerolinecolor='rgb(255, 255, 255)',
+                            showbackground=True,
+                            backgroundcolor='rgb(230, 230,230)'
+                        )
+                    )
+                )
+
+        data = [surface1, surface2, surface3]
+        figure = dict(data=data, layout=layout)
+        return figure
+
+# Make main surface plot
+@app.callback(Output('return_surface', 'figure'),
+              [Input('display_button', 'n_clicks')],
+              [State('filtered_container','hidden')])
+def pct_surface_plot(n_clicks, hidden):
+
+    if hidden == 'loaded':
+        surface1 = go.Surface(x = (priceGrid + 1)*df['Underlying_Price'].values[0], 
+                              y = dteGrid, 
+                              z = pct_outmeshes[0],
+                              name = v_changes[0])
+
+        surface2 = go.Surface(x = (priceGrid + 1)*df['Underlying_Price'].values[0], 
+                              y = dteGrid, 
+                              z = pct_outmeshes[1],
+                              name = v_changes[1])
+    
+        surface3 = go.Surface(x = (priceGrid + 1)*df['Underlying_Price'].values[0], 
+                              y = dteGrid, 
+                              z = pct_outmeshes[2], 
+                              name = v_changes[2])
+
+        layout = go.Layout(
+                    title='Return Plot',
+                    autosize=True,
+                    showlegend = False,
+                    scene=dict(
+                        xaxis=dict(
+                            title='Underlying Price',
+                            gridcolor='rgb(255, 255, 255)',
+                            zerolinecolor='rgb(255, 255, 255)',
+                            showbackground=True,
+                            backgroundcolor='rgb(230, 230,230)'
+                        ),
+                        yaxis=dict(
+                            title='DTE Change',
+                            gridcolor='rgb(255, 255, 255)',
+                            zerolinecolor='rgb(255, 255, 255)',
+                            showbackground=True,
+                            backgroundcolor='rgb(230, 230,230)'
+                        ),
+                        zaxis=dict(
+                            title = 'Percent Return',
+                            gridcolor='rgb(255, 255, 255)',
+                            zerolinecolor='rgb(255, 255, 255)',
+                            showbackground=True,
+                            backgroundcolor='rgb(230, 230,230)'
+                        )
+                    )
+                )
+
+        data = [surface1, surface2, surface3]
+        figure = dict(data=data, layout=layout)
+        return figure
+
+# Make main surface plot
+@app.callback(Output('delta_surface', 'figure'),
+              [Input('display_button', 'n_clicks')],
+              [State('filtered_container','hidden')])
+def delta_surface_plot(n_clicks, hidden):
+
+    if hidden == 'loaded':
+        surface1 = go.Surface(x = (priceGrid + 1)*df['Underlying_Price'].values[0], 
+                              y = dteGrid, 
+                              z = delta_outmeshes[0],
+                              name = v_changes[0])
+
+        surface2 = go.Surface(x = (priceGrid + 1)*df['Underlying_Price'].values[0], 
+                              y = dteGrid, 
+                              z = delta_outmeshes[1],
+                              name = v_changes[1])
+    
+        surface3 = go.Surface(x = (priceGrid + 1)*df['Underlying_Price'].values[0], 
+                              y = dteGrid, 
+                              z = delta_outmeshes[2], 
+                              name = v_changes[2])
+
+        layout = go.Layout(
+                    title='Delta Plot',
+                    autosize=True,
+                    showlegend = False,
+                    scene=dict(
+                        xaxis=dict(
+                            title='Underlying Price',
+                            gridcolor='rgb(255, 255, 255)',
+                            zerolinecolor='rgb(255, 255, 255)',
+                            showbackground=True,
+                            backgroundcolor='rgb(230, 230,230)'
+                        ),
+                        yaxis=dict(
+                            title='DTE Change',
+                            gridcolor='rgb(255, 255, 255)',
+                            zerolinecolor='rgb(255, 255, 255)',
+                            showbackground=True,
+                            backgroundcolor='rgb(230, 230,230)'
+                        ),
+                        zaxis=dict(
+                            title = 'Delta',
+                            gridcolor='rgb(255, 255, 255)',
+                            zerolinecolor='rgb(255, 255, 255)',
+                            showbackground=True,
+                            backgroundcolor='rgb(230, 230,230)'
+                        )
+                    )
+                )
+
+        data = [surface1, surface2, surface3]
+        figure = dict(data=data, layout=layout)
+        return figure
+    
+# Make main surface plot
+@app.callback(Output('gamma_surface', 'figure'),
+              [Input('display_button', 'n_clicks')],
+              [State('filtered_container','hidden')])
+def gamma_surface_plot(n_clicks, hidden):
+
+    if hidden == 'loaded':
+        surface1 = go.Surface(x = (priceGrid + 1)*df['Underlying_Price'].values[0], 
+                              y = dteGrid, 
+                              z = gamma_outmeshes[0],
+                              name = v_changes[0])
+
+        surface2 = go.Surface(x = (priceGrid + 1)*df['Underlying_Price'].values[0], 
+                              y = dteGrid, 
+                              z = gamma_outmeshes[1],
+                              name = v_changes[1])
+    
+        surface3 = go.Surface(x = (priceGrid + 1)*df['Underlying_Price'].values[0], 
+                              y = dteGrid, 
+                              z = gamma_outmeshes[2], 
+                              name = v_changes[2])
+
+        layout = go.Layout(
+                    title='Gamma Plot',
+                    autosize=True,
+                    showlegend = False,
+                    scene=dict(
+                        xaxis=dict(
+                            title='Underlying Price',
+                            gridcolor='rgb(255, 255, 255)',
+                            zerolinecolor='rgb(255, 255, 255)',
+                            showbackground=True,
+                            backgroundcolor='rgb(230, 230,230)'
+                        ),
+                        yaxis=dict(
+                            title='DTE Change',
+                            gridcolor='rgb(255, 255, 255)',
+                            zerolinecolor='rgb(255, 255, 255)',
+                            showbackground=True,
+                            backgroundcolor='rgb(230, 230,230)'
+                        ),
+                        zaxis=dict(
+                            title = 'Gamma',
+                            gridcolor='rgb(255, 255, 255)',
+                            zerolinecolor='rgb(255, 255, 255)',
+                            showbackground=True,
+                            backgroundcolor='rgb(230, 230,230)'
+                        )
+                    )
+                )
+
+        data = [surface1, surface2, surface3]
+        figure = dict(data=data, layout=layout)
+        return figure
+
+# Make main surface plot
+@app.callback(Output('theta_surface', 'figure'),
+              [Input('display_button', 'n_clicks')],
+              [State('filtered_container','hidden')])
+def theta_surface_plot(n_clicks, hidden):
+
+    if hidden == 'loaded':
+        surface1 = go.Surface(x = (priceGrid + 1)*df['Underlying_Price'].values[0], 
+                              y = dteGrid, 
+                              z = theta_outmeshes[0],
+                              name = v_changes[0])
+
+        surface2 = go.Surface(x = (priceGrid + 1)*df['Underlying_Price'].values[0], 
+                              y = dteGrid, 
+                              z = theta_outmeshes[1],
+                              name = v_changes[1])
+    
+        surface3 = go.Surface(x = (priceGrid + 1)*df['Underlying_Price'].values[0], 
+                              y = dteGrid, 
+                              z = theta_outmeshes[2], 
+                              name = v_changes[2])
+
+        layout = go.Layout(
+                    title='Theta Plot',
+                    autosize=True,
+                    showlegend = False,
+                    scene=dict(
+                        xaxis=dict(
+                            title='Underlying Price',
+                            gridcolor='rgb(255, 255, 255)',
+                            zerolinecolor='rgb(255, 255, 255)',
+                            showbackground=True,
+                            backgroundcolor='rgb(230, 230,230)'
+                        ),
+                        yaxis=dict(
+                            title='DTE Change',
+                            gridcolor='rgb(255, 255, 255)',
+                            zerolinecolor='rgb(255, 255, 255)',
+                            showbackground=True,
+                            backgroundcolor='rgb(230, 230,230)'
+                        ),
+                        zaxis=dict(
+                            title = 'Theta',
+                            gridcolor='rgb(255, 255, 255)',
+                            zerolinecolor='rgb(255, 255, 255)',
+                            showbackground=True,
+                            backgroundcolor='rgb(230, 230,230)'
+                        )
+                    )
+                )
+
+        data = [surface1, surface2, surface3]
+        figure = dict(data=data, layout=layout)
+        return figure
+
+# Make main surface plot
+@app.callback(Output('vega_surface', 'figure'),
+              [Input('display_button', 'n_clicks')],
+              [State('filtered_container','hidden')])
+def theta_surface_plot(n_clicks, hidden):
+
+    if hidden == 'loaded':
+        surface1 = go.Surface(x = (priceGrid + 1)*df['Underlying_Price'].values[0], 
+                              y = dteGrid, 
+                              z = vega_outmeshes[0],
+                              name = v_changes[0])
+
+        surface2 = go.Surface(x = (priceGrid + 1)*df['Underlying_Price'].values[0], 
+                              y = dteGrid, 
+                              z = vega_outmeshes[1],
+                              name = v_changes[1])
+    
+        surface3 = go.Surface(x = (priceGrid + 1)*df['Underlying_Price'].values[0], 
+                              y = dteGrid, 
+                              z = vega_outmeshes[2], 
+                              name = v_changes[2])
+
+        layout = go.Layout(
+                    title='Vega Plot',
+                    autosize=True,
+                    showlegend = False,
+                    scene=dict(
+                        xaxis=dict(
+                            title='Underlying Price',
+                            gridcolor='rgb(255, 255, 255)',
+                            zerolinecolor='rgb(255, 255, 255)',
+                            showbackground=True,
+                            backgroundcolor='rgb(230, 230,230)'
+                        ),
+                        yaxis=dict(
+                            title='DTE Change',
+                            gridcolor='rgb(255, 255, 255)',
+                            zerolinecolor='rgb(255, 255, 255)',
+                            showbackground=True,
+                            backgroundcolor='rgb(230, 230,230)'
+                        ),
+                        zaxis=dict(
+                            title = 'Vega',
+                            gridcolor='rgb(255, 255, 255)',
+                            zerolinecolor='rgb(255, 255, 255)',
+                            showbackground=True,
+                            backgroundcolor='rgb(230, 230,230)'
+                        )
+                    )
+                )
+
+        data = [surface1, surface2, surface3]
+        figure = dict(data=data, layout=layout)
+        return figure
+
 
 if __name__ == '__main__':
     app.server.run(debug=True, threaded=True, use_reloader=False)

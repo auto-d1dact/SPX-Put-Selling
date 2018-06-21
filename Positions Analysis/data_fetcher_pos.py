@@ -15,6 +15,7 @@ from py_vollib.black_scholes_merton.greeks.analytical import *
 from trading_calendar import USTradingCalendar
 
 
+
 # Get time delta
 def get_time_delta(today, date_list, trading_calendar=True):
 
@@ -306,3 +307,141 @@ def greek_calc(ticker, dte_ub, dte_lb, prem_price_use = 'Mid', delta_filter = 0.
               (df['DTE'] == expiry_filter)].reset_index()[df.columns]
     
     return calls, puts
+
+def price_sim(options_df, price_change, vol_change, days_change, iv_tag = 'Calc IV', output = 'All',
+              skew = 'flat'):
+    '''
+    output types can be: All, Price, Delta, Gamma, Vega, Theta
+    skew types can be: flat, left, right, smile
+    '''
+    year = 365
+    strikes = options_df['Strike'].values
+    time_to_expirations = options_df['DTE'].values
+    ivs = options_df[iv_tag].values
+    underlying = options_df['Underlying_Price'].values[0]
+    types = options_df['Type'].values
+
+    # Tweaking changes
+    prices = []
+    deltas = []
+    gammas = []
+    thetas = []
+    vegas = []
+    for sigma, strike, time_to_expiration, flag in zip(ivs, strikes, time_to_expirations, types):
+
+        # Constants
+        S = underlying*(1 + price_change)
+        t = max(time_to_expiration - days_change, 0)/float(year)
+        K = strike
+        r = 0.005 / 100
+        q = 0 / 100
+        
+        if skew == 'flat':
+            sigma = sigma + vol_change
+        elif skew == 'right':
+            sigma = sigma + vol_change + vol_change*(K/S - 1)
+        elif skew == 'left':
+            sigma = sigma + vol_change - vol_change*(K/S - 1)
+        else:
+            sigma = sigma + vol_change + vol_change*abs(K/S - 1)
+        
+        if (output == 'All') or (output == 'Price'):
+            if days_change == time_to_expiration:
+                if flag == 'call':
+                    price = max(S - K, 0.0)
+                else:
+                    price = max(K - S, 0.0)
+                prices.append(price)
+            else:
+                try:
+                    price = py_vollib.black_scholes_merton.black_scholes_merton(flag[0], S, K, t, r, sigma, q)
+                    prices.append(price)
+                except:
+                    price = 0.0
+                    prices.append(price)
+                    
+        if (output == 'All') or (output == 'Delta'):
+            try:
+                delta = py_vollib.black_scholes_merton.greeks.analytical.delta(flag[0], S, K, t, r, sigma, q)
+                deltas.append(delta)
+            except:
+                delta = 0.0
+                deltas.append(delta)
+        
+        if (output == 'All') or (output == 'Gamma'):
+            try:
+                gamma = py_vollib.black_scholes_merton.greeks.analytical.gamma(flag[0], S, K, t, r, sigma, q)
+                gammas.append(gamma)
+            except:
+                gamma = 0.0
+                gammas.append(gamma)
+            
+        if (output == 'All') or (output == 'Theta'):
+            try:
+                theta = py_vollib.black_scholes_merton.greeks.analytical.theta(flag[0], S, K, t, r, sigma, q)
+                thetas.append(theta)
+            except:
+                theta = 0.0
+                thetas.append(theta)
+        
+        if (output == 'All') or (output == 'Vega'):
+            try:
+                vega = py_vollib.black_scholes_merton.greeks.analytical.vega(flag[0], S, K, t, r, sigma, q)
+                vegas.append(vega)
+            except:
+                vega = 0.0
+                vegas.append(vega)
+            
+    df = options_df[['Strike','DTE','Type','Cost','Underlying_Price']]
+    if (output == 'All') or (output == 'Price'):
+        df['Simulated Price'] = prices
+        df['Price Change'] = df['Simulated Price']/df['Cost'] - 1
+    if (output == 'All') or (output == 'Delta'):
+        df['Delta'] = deltas
+    if (output == 'All') or (output == 'Gamma'):
+        df['Gamma'] = gammas
+    if (output == 'All') or (output == 'Theta'):
+        df['Theta'] = thetas
+    if (output == 'All') or (output == 'Vega'):
+        df['Vega'] = vegas
+    df = df.dropna()
+    return df
+
+def position_sim(position_df, holdings, price_change, vol_change, dte_change, iv_tag = 'Calc IV', output = 'All',
+                 skew = 'flat'):
+    position = position_df
+    position['Pos'] = holdings
+    position_dict = {}
+    position_dict['Total Cost'] = sum(position['Cost']*position['Pos'])
+    #position_dict['Original Delta'] = sum(position['Delta']*position['Pos'])
+    #position_dict['Original Gamma'] = sum(position['Gamma']*position['Pos'])
+    #position_dict['Original Theta'] = sum(position['Theta']*position['Pos'])
+    #position_dict['Original Vega'] = sum(position['Vega']*position['Pos'])
+    
+    if (output == 'PnL') or (output == 'Percent Return'):
+        simulation = price_sim(position, price_change, vol_change, dte_change, iv_tag, 'Price', skew)
+    else:
+        simulation = price_sim(position, price_change, vol_change, dte_change, iv_tag, output, skew)
+    
+    if (output == 'All') or (output == 'PnL') or (output == 'Percent Return'):
+        position_dict['Simulated Price'] = sum(simulation['Simulated Price']*position['Pos'])
+        position_dict['PnL'] = sum(simulation['Simulated Price']*position['Pos']) - position_dict['Total Cost']
+        if position_dict['Total Cost'] > 0:
+            position_dict['Percent Return'] = position_dict['PnL']/position_dict['Total Cost']
+        else:
+            position_dict['Percent Return'] = -position_dict['PnL']/position_dict['Total Cost']
+            
+    if (output == 'All') or (output == 'Delta'):
+        position_dict['Simulated Delta'] = sum(simulation['Delta']*position['Pos'])
+        
+    if (output == 'All') or (output == 'Gamma'):
+        position_dict['Simulated Gamma'] = sum(simulation['Gamma']*position['Pos'])
+        
+    if (output == 'All') or (output == 'Theta'):
+        position_dict['Simulated Theta'] = sum(simulation['Theta']*position['Pos'])
+        
+    if (output == 'All') or (output == 'Vega'):
+        position_dict['Simulated Vega'] = sum(simulation['Vega']*position['Pos'])
+    
+    outframe = pd.DataFrame(position_dict, index = [vol_change])
+    return outframe
