@@ -6,3 +6,4 @@ Dash abstracts away all of the technologies and protocols required to build an i
 
 To learn more check out our [documentation](https://plot.ly/dash).
 
+![Alt desc](https://github.com/aspiringfastlaner/SPX-Put-Selling/blob/master/Positions%20Analysis/screenshots/Screenshot1.png)
