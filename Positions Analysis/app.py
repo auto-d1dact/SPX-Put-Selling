@@ -22,7 +22,8 @@ from data_fetcher_pos import *
 # server = flask.Flask(__name__)
 # server.secret_key = os.environ.get('secret_key', 'secret')
 # app = dash.Dash(__name__, server=server, url_base_pathname='/dash/gallery/volatility-surface', csrf_protect=False)
-app = dash.Dash()
+app = dash.Dash(__name__)
+server = app.server
 
 external_css = ["https://fonts.googleapis.com/css?family=Overpass:300,300i",
                 "https://cdn.rawgit.com/plotly/dash-app-stylesheets/dab6f937fd5548cebf4c6dc7e93a10ac438f5efb/dash-technical-charting.css"]
@@ -129,7 +130,7 @@ app.layout = html.Div(
                 html.Label('Query Summary:'),
                 html.Button('Submit Query', id='query_button'),
                 html.Label('Display Summary:'),
-                html.Button('Update Tables', id='display_button'),
+                html.Button('Update Tables', id='show_button'),
             ],
                 className='three columns',
             )
@@ -565,6 +566,7 @@ app.layout = html.Div(
         
         html.Div([
                 html.Button('Run Analysis', id='analysis_button'),
+                html.Button('Update Surfaces', id='display_button')
             ],
                 className='row',
                 style={'margin-bottom': '20',
@@ -827,7 +829,7 @@ def cache_raw_data_sim(n_clicks, expiry1, type1, strike1, interest1, price1, pos
 
 @app.callback(
     Output('call_summary', 'children'),
-    [Input('display_button', 'n_clicks')],
+    [Input('show_button', 'n_clicks')],
     [State('raw_container','hidden')])
 def update_output_calls(n_clicks, hidden):
     if hidden == 'loaded':
@@ -835,7 +837,7 @@ def update_output_calls(n_clicks, hidden):
     
 @app.callback(
     Output('put_summary', 'children'),
-    [Input('display_button', 'n_clicks')],
+    [Input('show_button', 'n_clicks')],
     [State('raw_container','hidden')])
 def update_output_calls(n_clicks, hidden):
     if hidden == 'loaded':
@@ -1175,4 +1177,5 @@ def theta_surface_plot(n_clicks, hidden):
 
 
 if __name__ == '__main__':
-    app.server.run(debug=True, threaded=True, use_reloader=False)
+    #app.server.run(debug=True, threaded=True, use_reloader=False)
+    app.run_server(debug = True)
