@@ -23,7 +23,7 @@ from data_fetcher_pos import *
 # server.secret_key = os.environ.get('secret_key', 'secret')
 # app = dash.Dash(__name__, server=server, url_base_pathname='/dash/gallery/volatility-surface', csrf_protect=False)
 app = dash.Dash(__name__)
-server = app.server
+#server = app.server
 
 external_css = ["https://fonts.googleapis.com/css?family=Overpass:300,300i",
                 "https://cdn.rawgit.com/plotly/dash-app-stylesheets/dab6f937fd5548cebf4c6dc7e93a10ac438f5efb/dash-technical-charting.css"]
@@ -1177,5 +1177,5 @@ def theta_surface_plot(n_clicks, hidden):
 
 
 if __name__ == '__main__':
-    #app.server.run(debug=True, threaded=True, use_reloader=False)
-    app.run_server(debug = True)
+    app.server.run(debug=True, threaded=True, use_reloader=False)
+    #app.run_server(debug = True)

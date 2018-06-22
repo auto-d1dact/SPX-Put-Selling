@@ -404,7 +404,7 @@ def price_sim(options_df, price_change, vol_change, days_change, iv_tag = 'Calc 
         df['Theta'] = thetas
     if (output == 'All') or (output == 'Vega'):
         df['Vega'] = vegas
-    df = df.dropna()
+    df = df.fillna(0)
     return df
 
 def position_sim(position_df, holdings, price_change, vol_change, dte_change, iv_tag = 'Calc IV', output = 'All',
