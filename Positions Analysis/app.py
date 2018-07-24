@@ -1177,5 +1177,5 @@ def theta_surface_plot(n_clicks, hidden):
 
 
 if __name__ == '__main__':
-    app.server.run(debug=True, threaded=True, use_reloader=False)
+    app.server.run(port=6000, debug=True, threaded=True, use_reloader=False)
     #app.run_server(debug = True)

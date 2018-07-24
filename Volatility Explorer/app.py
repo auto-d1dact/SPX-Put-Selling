@@ -1159,4 +1159,4 @@ def make_hv_line_plot(hidden, ticker, graph_toggles,
     
 
 if __name__ == '__main__':
-    app.server.run(debug=True, threaded=True, use_reloader=False)
+    app.server.run(port=5050, debug=True, threaded=True, use_reloader=False)

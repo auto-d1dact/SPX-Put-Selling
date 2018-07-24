@@ -374,5 +374,5 @@ def update_c_table(n_clicks, hidden):
         return condors_df.to_dict('records')
 
 if __name__ == '__main__':
-    app.server.run(debug=True, threaded=True, use_reloader=False)
+    app.server.run(port=8000, debug=True, threaded=True, use_reloader=False)
     #app.run_server(debug = True)
