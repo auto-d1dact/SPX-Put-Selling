@@ -12,6 +12,8 @@ $ virtualenv venv
 
 $ git add .
 $ git commit -m 'initcommit'
+$ heroku git:remote -a my-app-name
+
 $ git push heroku master
 $ heroku ps:scale web=1
 
