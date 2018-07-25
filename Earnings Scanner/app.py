@@ -97,7 +97,7 @@ app.layout = html.Div(
         html.Div([
             html.Div([
                 html.Label('Starting Date:',
-                           style={'text-align': 'left'}),
+                           style={'text-align': 'center'}),
                 dcc.DatePickerSingle(
                     id='startdate',
                     date=dt.date.today(),
@@ -117,7 +117,7 @@ app.layout = html.Div(
                     min=0,
                     max=10,
                     step=1,
-                    value=1
+                    value=0
                 )
             ],
                 className='six columns',
@@ -132,6 +132,78 @@ app.layout = html.Div(
                        'display': 'table-cell'},
                 className='three columns',
             )
+        ],
+            className='row',
+            style={'margin-bottom': '10'}
+        ),
+		
+		html.Div([
+            html.Div([
+                html.Label('Max Strike Gap:'),
+                dcc.Input(
+                    id='max_gap',
+                    type='number',
+                    value=5
+                )
+            ],  
+                style={'text-align': 'center',
+                       'vertical-align': 'middle',
+                       'display': 'table-cell'},
+                className='two columns',
+            ),
+            html.Div([
+                html.Label('DTE Threshold:'),
+                dcc.Input(
+                    id='dte_thresh',
+                    type='number',
+                    value=5
+                ),
+            ],
+                style={'text-align': 'center',
+                       'vertical-align': 'middle',
+                       'display': 'table-cell'},
+                className='two columns',
+            ),
+            html.Div([
+                html.Label('Strike Filter Type:'),
+                dcc.Input(
+                    id='strike_filter',
+                    type='text',
+                    value='bounds'
+                ),
+            ],
+                style={'text-align': 'center',
+                       'vertical-align': 'middle',
+                       'display': 'table-cell'},
+                className='two columns',
+            ),
+            
+            html.Div([
+                html.Label('Moneyness Threshold:'),
+                dcc.Input(
+                    id='money_thresh',
+                    type='number',
+                    value=0.1
+                )
+            ],
+                style={'text-align': 'center',
+                       'vertical-align': 'middle',
+                       'display': 'table-cell'},
+                className='two columns',
+            ),
+			html.Div([
+                html.Label('Strike Adjustment:'),
+                dcc.Input(
+                    id='bounds_adj',
+                    type='number',
+                    value=0,
+                ),
+            ],
+                style={'text-align': 'center',
+                       'vertical-align': 'middle',
+                       'display': 'table-cell'},
+                className='two columns',
+            ),
         ],
             className='row',
             style={'margin-bottom': '10'}
@@ -167,66 +239,7 @@ app.layout = html.Div(
             className='row',
             style={'margin-bottom': '20'}
         ), 
-            
-        html.Div([
-            html.Div([
-                html.Label('Max Strike Gap:'),
-                dcc.Input(
-                    id='max_gap',
-                    type='number',
-                    value=5
-                )
-            ],  
-                style={'text-align': 'center',
-                       'vertical-align': 'middle',
-                       'display': 'table-cell'},
-                className='three columns',
-            ),
-            html.Div([
-                html.Label('DTE Threshold:'),
-                dcc.Input(
-                    id='dte_thresh',
-                    type='number',
-                    value=5
-                ),
-            ],
-                style={'text-align': 'center',
-                       'vertical-align': 'middle',
-                       'display': 'table-cell'},
-                className='three columns',
-            ),
-            html.Div([
-                html.Label('Strike Filter Type:'),
-                dcc.Input(
-                    id='strike_filter',
-                    type='text',
-                    value='close'
-                ),
-            ],
-                style={'text-align': 'center',
-                       'vertical-align': 'middle',
-                       'display': 'table-cell'},
-                className='three columns',
-            ),
-            
-            html.Div([
-                html.Label('Moneyness Threshold:'),
-                dcc.Input(
-                    id='money_thresh',
-                    type='number',
-                    value=0.1
-                )
-            ],
-                style={'text-align': 'center',
-                       'vertical-align': 'middle',
-                       'display': 'table-cell'},
-                className='three columns',
-            ),
-        ],
-            className='row',
-            style={'margin-bottom': '10'}
-        ),
-            
+                       
             
         html.Div([
             html.Div([
@@ -240,7 +253,7 @@ app.layout = html.Div(
                 style={'text-align': 'center',
                        'vertical-align': 'middle',
                        'display': 'table-cell'},
-                className='three columns',
+                className='four columns',
             ),
             html.Div([
                 html.Label('Minimum Premium:'),
@@ -253,20 +266,7 @@ app.layout = html.Div(
                 style={'text-align': 'center',
                        'vertical-align': 'middle',
                        'display': 'table-cell'},
-                className='three columns',
-            ),
-            html.Div([
-                html.Label('Strike Adjustment:'),
-                dcc.Input(
-                    id='bounds_adj',
-                    type='number',
-                    value=0,
-                ),
-            ],
-                style={'text-align': 'center',
-                       'vertical-align': 'middle',
-                       'display': 'table-cell'},
-                className='three columns',
+                className='four columns',
             ),
             html.Div([
                 html.Label('Risk Reward Threshold:'),
@@ -279,7 +279,7 @@ app.layout = html.Div(
                 style={'text-align': 'center',
                        'vertical-align': 'middle',
                        'display': 'table-cell'},
-                className='three columns',
+                className='four columns',
             )
         ],
             className='row',
@@ -337,21 +337,18 @@ app.layout = html.Div(
          State('dte_thresh','value'),
          State('strike_filter','value'),
          State('money_thresh','value'),
-         State('delta_thresh','value'),
-         State('minimum_prem','value'),
-         State('bounds_adj','value'),
-         State('rr_thresh','value')])
+		 State('bounds_adj','value')])
 def cache_earnings(n_clicks, startdate, fwd_days, maxgap, dtethresh,
-                   strikefilter, moneythresh, deltathresh, 
-                   minimumprem, boundsadj, rrthresh):
+                   strikefilter, moneythresh, boundsadj):
 
     global earnings_df, condors_df
     start_date = dt.datetime.strptime(startdate, '%Y-%m-%d')
     earnings_df = earnings(start_date, fwd_days)
     
-    condors_df = condor_screener(earnings_df, maxgap, dtethresh, moneythresh,
-                                 deltathresh, minimumprem, boundsadj, 
-                                 rrthresh, strikefilter)
+    condors_df = condor_screener(earnings_df, max_gap = maxgap, dte_thresh = dtethresh, 
+                                 money_thresh = moneythresh, delta_thresh = 0.03, 
+                                 minimum_prem = 0.1, bounds_adj = boundsadj, 
+                                 rr_thresh = 0.1, strike_filter = strikefilter)
     
     print('Loaded raw data')
     return 'loaded'
@@ -368,10 +365,17 @@ def update_e_table(n_clicks, hidden):
 @app.callback(
         Output('c_table', 'rows'), 
         [Input('condors_show', 'n_clicks')],
-        [State('raw_container', 'hidden')])
-def update_c_table(n_clicks, hidden):
+        [State('raw_container', 'hidden'),
+		 State('delta_thresh','value'),
+         State('minimum_prem','value'),
+         State('rr_thresh','value')])
+def update_c_table(n_clicks, hidden, deltathresh, 
+                   minimumprem, rrthresh):
     if hidden == 'loaded':
-        return condors_df.to_dict('records')
+        filtered_condors = condors_df[(abs(condors_df['Delta']) <= deltathresh) & 
+                                      (condors_df['Premium'] >= minimumprem) & 
+                                      (condors_df['RiskRewardRatio'] >= rrthresh)]
+        return filtered_condors.to_dict('records')
 
 if __name__ == '__main__':
     app.server.run(port=8000, debug=True, threaded=True, use_reloader=False)
