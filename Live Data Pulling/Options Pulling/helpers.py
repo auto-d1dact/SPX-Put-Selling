@@ -27,6 +27,10 @@ functions list:
     earnings_condor(str[ticker], int[max_gap], int[dte_thresh], float[|money_thresh| <= 1]) -- DataFrame[condors], DataFrame[puts], DataFrame[calls]
     
     write_excel(str[filename], list[str[sheetnames]], list[dataframes]) --> void()
+    
+    curr_stock_data(str[ticker]) --> DataFrame[stock_info]
+    
+    curr_batch_quotes(list_of_string[tickers]) --> DataFrame[stock_info]
         
 """
 
@@ -651,3 +655,29 @@ def write_excel(filename, sheetnames, df_list):
     # Close the Pandas Excel writer and output the Excel file.
     writer.save()
     return
+
+def curr_stock_data(ticker):
+    yahoo_url = 'https://finance.yahoo.com/quote/{0}/history?p={0}'.format(ticker)
+
+    soup = bs(requests.get(yahoo_url).text, "lxml")
+
+    table = soup.find_all('table')[0]
+
+    i = 0
+
+    for row in table.find_all('tr'):
+        if i == 2:
+            break
+        else:
+            individual_row = str(row).split('\n')
+            i += 1
+
+    curr_svxy = [float(x.split('>')[-1]) for x in individual_row[0].split('</span>')[1:-2]]
+    
+    return curr_svxy
+
+def curr_batch_quotes(tickerlst):
+    lst_string = str(tickerlst).replace('[','').replace(']','').replace(' ','').replace("'",'')
+    av_link = 'https://www.alphavantage.co/query?function=BATCH_STOCK_QUOTES&symbols={0}&apikey=APIKEY=5HZEUI5AFJB06BUK&datatype=csv'.format(lst_string)
+    df = pd.read_csv(av_link, index_col = 0)
+    return df
