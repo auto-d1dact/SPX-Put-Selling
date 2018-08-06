@@ -16,6 +16,8 @@ def get_intraday_data():
     
     intraday_df = pd.read_csv(spx_filename,index_col = 0)
     
+    if intraday_df.columns != ['Last']:
+        intraday_df.columns = ['Last']
     rolling_window = 20
     
     intraday_vol = intraday_df[['Last']]
