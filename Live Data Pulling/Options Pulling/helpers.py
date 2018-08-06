@@ -31,6 +31,8 @@ functions list:
     curr_stock_data(str[ticker]) --> DataFrame[stock_info]
     
     curr_batch_quotes(list_of_string[tickers]) --> DataFrame[stock_info]
+
+    past_earnings(str[ticker]) --> DataFrame[earnings_info]
         
 """
 
@@ -681,3 +683,41 @@ def curr_batch_quotes(tickerlst):
     av_link = 'https://www.alphavantage.co/query?function=BATCH_STOCK_QUOTES&symbols={0}&apikey=APIKEY=5HZEUI5AFJB06BUK&datatype=csv'.format(lst_string)
     df = pd.read_csv(av_link, index_col = 0)
     return df
+
+def past_earnings(ticker):
+    
+    site = 'https://www.optionslam.com/earnings/stocks/' + ticker
+    soup = bs(requests.get(site).text, "lxml")
+    table = soup.find_all('table')[10]
+
+    i = 1
+    earnings_dates = []
+
+    for row in table.find_all('tr'):
+        # Individual row stores current row item and delimits on '\n'
+    #     individual_row = 
+    #     row_items = individual_row[0].split('</span>')[:3]
+
+        if i >= 5:
+            try:
+                earnings_date = str(row).split('<td nowrap="">')[1].split('<font size="-1">')[0].replace('.','')
+                earnings_dates.append(dt.datetime.strptime(earnings_date.strip(), '%b %d, %Y'))
+            except:
+                break
+
+
+        i += 1
+
+    alphavantage_link = 'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={0}&apikey=6ZAZOL7YF8VPXND7&datatype=csv&outputsize={1}'.format(ticker, 'full')
+    stockframe = pd.read_csv(alphavantage_link, index_col = 0).sort_index()[['open', 'close']]
+    stockframe[ticker] = np.log(stockframe['close']/stockframe['close'].shift(1))
+    stockframe.index = pd.to_datetime(stockframe.index)
+
+    earnings_returns = []
+
+    for earnings_date in earnings_dates:
+        earnings_returns.append(stockframe.loc[stockframe.index > earnings_date].head(1))
+
+    earnings_df = pd.concat(earnings_returns, axis = 0)
+    
+    return earnings_df
