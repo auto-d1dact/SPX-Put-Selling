@@ -692,19 +692,26 @@ def past_earnings(ticker):
 
     i = 1
     earnings_dates = []
-
+    earnings_times = []
+    
     for row in table.find_all('tr'):
         # Individual row stores current row item and delimits on '\n'
     #     individual_row = 
     #     row_items = individual_row[0].split('</span>')[:3]
-
+    
         if i >= 5:
+
             try:
                 earnings_date = str(row).split('<td nowrap="">')[1].split('<font size="-1">')[0].replace('.','')
                 earnings_dates.append(dt.datetime.strptime(earnings_date.strip(), '%b %d, %Y'))
+                earnings_times.append(str(row).split('<font size="-1">')[1].split('</font>')[0].strip())
             except:
-                break
-
+                try:
+                    earnings_date = str(row).split('<td nowrap="">')[1].split('<font size="-1">')[0].replace('.','')
+                    earnings_dates.append(dt.datetime.strptime(earnings_date.strip(), '%B %d, %Y'))
+                    earnings_times.append(str(row).split('<font size="-1">')[1].split('</font>')[0].strip())
+                except:
+                    break
 
         i += 1
 
@@ -715,8 +722,11 @@ def past_earnings(ticker):
 
     earnings_returns = []
 
-    for earnings_date in earnings_dates:
-        earnings_returns.append(stockframe.loc[stockframe.index > earnings_date].head(1))
+    for earnings_date, earnings_time in zip(earnings_dates, earnings_times):
+        if earnings_time == 'BO':
+            earnings_returns.append(stockframe.loc[stockframe.index >= earnings_date].head(1))
+        else:
+            earnings_returns.append(stockframe.loc[stockframe.index > earnings_date].head(1))
 
     earnings_df = pd.concat(earnings_returns, axis = 0)
     

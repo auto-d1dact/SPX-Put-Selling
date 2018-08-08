@@ -16,8 +16,6 @@ def get_intraday_data():
     
     intraday_df = pd.read_csv(spx_filename,index_col = 0)
     
-    if intraday_df.columns != ['Last']:
-        intraday_df.columns = ['Last']
     rolling_window = 20
     
     intraday_vol = intraday_df[['Last']]
@@ -26,5 +24,9 @@ def get_intraday_data():
     intraday_vol['Dollar Std'] = intraday_vol['Return Std']*intraday_vol['Last']
     intraday_vol['Dollar Std Move'] = (intraday_vol['Last'] - intraday_vol['Last'].shift(1))/intraday_vol['Dollar Std'].shift(1)
     intraday_df['Dollar Std Move'] = intraday_vol['Dollar Std Move']
+    
+        
+    intraday_df['SMA 5'] = intraday_df.Last.rolling(5).mean()
+    intraday_df['SMA 20'] = intraday_df.Last.rolling(20).mean()
     
     return intraday_df.dropna()

@@ -90,7 +90,7 @@ app.layout = html.Div(
     
         html.Div([
             html.Div([
-                dcc.Graph(id='std_historical_plot', style={'max-height': '400', 'height': '40vh'}),
+                dcc.Graph(id='hist_plot', style={'max-height': '600', 'height': '60vh'}),
             ],
                 className='twelve columns'
             )
@@ -122,88 +122,98 @@ app.layout = html.Div(
 def update_graph_live(n):
     intraday_data = get_intraday_data()
 
-    trace1 = {
-        'name':'Intraday Dollar Vol',
-        "type": 'bar',
-        'mode': 'markers',
-        'x': intraday_data.index,
-        'y': intraday_data['Dollar Std Move'],
-        'boxpoints': 'outliers',
-        'marker': {'color': '#00aaff', 'opacity': 0.8}
-    }
     
-    trace2 = {
-        "type": 'scatter',
-        'mode': 'lines+markers',
-        'name': 'SPX Close',
-        'x': intraday_data.index,
-        'y': intraday_data['Last'],
-        'yaxis': 'y2',
-        'marker': {'color': '#ff7f0e', 'opacity': 0.8}
-    }   
+    trace1 = go.Bar(
+                x=intraday_data.index,
+                y=intraday_data['Dollar Std Move'],
+                name='Intraday Dollar Vol',
+                yaxis='y1',
+            )
     
-    layout = {
-        'margin': {
-            'l': 60,
-            'r': 10,
-            'b': 60,
-            't': 10,
-        },
-        'paper_bgcolor': '#FAFAFA',
-        "xaxis": {
-            "title": "Date",
-        },
-        "yaxis": {
-            "rangemode": "tozero",
-            "title": "Dollar Return Std.",
-            "side": "left"
-        },
-        "yaxis2": {
-            "title": "SPX",
-            "overlaying": "y",
-            "side": "right"}
-    }
+    trace2 = go.Scatter(
+                x=intraday_data.index,
+                y=intraday_data['Last'],
+                mode='lines',
+                yaxis='y2',
+                name='SPX Close')
+    
+    trace3 = go.Scatter(
+                x=intraday_data.index,
+                y=intraday_data['SMA 20'],
+                mode='lines',
+                yaxis='y3',
+                name='SPX SMA 20')
+    
+    trace4 = go.Scatter(
+                x=intraday_data.index,
+                y=intraday_data['SMA 5'],
+                mode='lines',
+                yaxis='y4',
+                name='SPX SMA 5')
+    
         
-    data = [trace1, trace2]
+    layout = go.Layout(
+            title='SPX Dollar Std. Return Distribution',
+            yaxis=dict(
+                    title='Dollar Return Std.',
+                    side='right'),
+            yaxis2=dict(
+                    range=[intraday_data.Last.min(),intraday_data.Last.max()],
+                    title='SPX',
+                    overlaying='y',
+                    side='left',
+                    showgrid=False,
+                    zeroline=False,
+                    showline=False,
+                    ticks='',
+                    showticklabels=False
+                    ),
+            yaxis3=dict(
+                    range=[intraday_data.Last.min(),intraday_data.Last.max()],
+                    title='SPX SMA 20',
+                    overlaying='y',
+                    side='left',
+                    showgrid=False,
+                    zeroline=False,
+                    showline=False,
+                    ticks='',
+                    showticklabels=False
+                    ),
+            yaxis4=dict(
+                    range=[intraday_data.Last.min(),intraday_data.Last.max()],
+                    title='SPX SMA 5',
+                    overlaying='y',
+                    side='left',
+                    showgrid=False,
+                    zeroline=False,
+                    showline=False,
+                    ticks='',
+                    showticklabels=False
+                    )
+            )
+        
+    data = [trace1, trace2, trace3, trace4]
     figure = dict(data=data, layout=layout)
     return figure
 
 # Make side std hist plot
-@app.callback(Output('hv_std_hist', 'figure'),
-              [Input('filtered_container', 'hidden'),
-               Input('ticker_dropdown', 'value'),
-               Input('graph_toggles', 'values')],
-              [State('graph_toggles', 'values'),
-               State('hv_std_hist', 'relayoutData')])
-def make_dollar_hist(hidden, ticker, graph_toggles,
-                     graph_toggles_state, iv_scatter_layout):
-
-    if hidden == 'loaded':
-
-        if 'discrete' in graph_toggles:
-            shading = 'contour'
-        else:
-            shading = 'heatmap'
-
+@app.callback(Output('hist_plot', 'figure'),
+              [Input('interval-component', 'n_intervals')])
+def make_dollar_hist(n):
+        hist_data = get_intraday_data()
         typ = 'histogram'
 
         trace1 = {
             "type": typ,
             'mode': 'markers',
             'histnorm': 'probability',
-            'x': hist_data.daily_dollar_std_direction,
+            'x': hist_data['Dollar Std Move'],
             'marker': {'color': '#00aaff', 'opacity': 0.8}
         }
 
         layout = {
-            'margin': {
-                'l': 60,
-                'r': 10,
-                'b': 60,
-                't': 10,
-            },
+            'title':'Dollar Std. Return Distribution',
             'paper_bgcolor': '#FAFAFA',
-            "hovermode": "closest",
             "xaxis": {
                 "title": "Dollar Return Std.",
             },
@@ -214,22 +224,6 @@ def make_dollar_hist(hidden, ticker, graph_toggles,
             'bargap' : 0.2,
             'bargroupgap': 0.1
         }
-
-        if (iv_scatter_layout is not None and 'lock' in graph_toggles_state):
-
-            try:
-                x_range_left = iv_scatter_layout['xaxis.range[0]']
-                x_range_right = iv_scatter_layout['xaxis.range[1]']
-                layout['xaxis']['range'] = [x_range_left, x_range_right]
-            except:
-                pass
-
-            try:
-                y_range_left = iv_scatter_layout['yaxis.range[0]']
-                y_range_right = iv_scatter_layout['yaxis.range[1]']
-                layout['yaxis']['range'] = [x_range_left, x_range_right]
-            except:
-                pass
 
         data = [trace1]
         figure = dict(data=data, layout=layout)
