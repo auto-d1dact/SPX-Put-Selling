@@ -33,7 +33,18 @@ functions list:
     curr_batch_quotes(list_of_string[tickers]) --> DataFrame[stock_info]
 
     past_earnings(str[ticker]) --> DataFrame[earnings_info]
-        
+
+    earnings_history(str[ticker]) --> [DataFrame[earnings_estimate], DataFrame[past_earnings], DataFrame[earnings_estimate_change]]
+    
+    av_data(str[ticker]) --> DataFrame[ticker_open, ticker_close]
+
+    av_batch(list_of_str[tickers]) --> DataFrame[tickers_closes]
+
+    check_mkt_corr(int[corr_rolling_window],int[plot_window]) --> DataFrame[rolling_corr]
+
+    vvix_check() --> DataFrame[VVIX Data]
+
+    earnings_longs(list_of_str[ticker], float[bid_ask_spread]) --> DataFrame[option_chains]
 """
 
 # Note to import from .py files, must follow structure
@@ -731,3 +742,187 @@ def past_earnings(ticker):
     earnings_df = pd.concat(earnings_returns, axis = 0)
     
     return earnings_df
+
+def earnings_history(ticker):
+    yahoo_url = 'https://finance.yahoo.com/quote/{0}/analysts?p={0}'.format(ticker)
+    res = requests.get(yahoo_url)
+    soup = bs(requests.get(yahoo_url).text, "lxml")
+    table = soup.find_all('table')
+    
+    # Earnings Estimates
+    raw_html_table = table[0]
+
+    i = 0
+    headers = ['Current Qtr', 'Next Qtr', 'Current Year', 'Next Year']
+    idx = ['No. of Analysts', 'Avg. Estimate', 'Low Estimate', 'High Estimate', 'Year Ago EPS']
+    earnings_df = pd.DataFrame(columns = headers, index = idx)
+    for row in raw_html_table.find_all('tr'):
+        # Individual row stores current row item and delimits on '\n'
+        individual_row = str(row).split('\n')
+        if i != 0:
+            split_row = individual_row[0].split('</span></td><')
+            col = 0
+            for j in split_row[1:-1]:
+                earnings_df.iloc[i-1,col] = float(j.split('>')[-1].replace('%','').replace('N/A','nan'))
+                col += 1
+
+        i += 1
+
+    raw_html_table = table[2]
+
+    i = 0
+    idx = ['EPS Est.', 'EPS Actual', 'Difference', 'Surprise %']
+
+    for row in raw_html_table.find_all('tr'):
+        # Individual row stores current row item and delimits on '\n'
+        individual_row = str(row).split('\n')
+        if i == 0:
+            cols = [x.split('>')[-1] for x in individual_row[0].split('</span></th>')[1:-1]]
+            earnings_history = pd.DataFrame(columns = cols, index = idx)
+        if i != 0:
+            split_row = individual_row[0].split('</span></td><')
+            col = 0
+            for j in split_row[1:-1]:
+                earnings_history.iloc[i-1,col] = float(j.split('>')[-1].replace('%','').replace('N/A','nan'))
+                col += 1
+
+        i += 1
+        
+    # EPS Trend
+    raw_html_table = table[3]
+
+    i = 0
+    idx = ['Current Estimate', '7 Days Ago', '30 Days Ago',
+           '60 Days Ago', '90 Days Ago']
+    eps_trend = pd.DataFrame(columns = headers, index = idx)
+    for row in raw_html_table.find_all('tr'):
+        # Individual row stores current row item and delimits on '\n'
+        individual_row = str(row).split('\n')
+        if i != 0:
+            split_row = individual_row[0].split('</span></td><')
+            col = 0
+            for j in split_row[1:-1]:
+                eps_trend.iloc[i-1,col] = float(j.split('>')[-1].replace('%','').replace('N/A','nan'))
+                col += 1
+
+        i += 1
+        
+    return [earnings_df, earnings_history, eps_trend]
+
+
+def earnings_long_single(ticker, bid_ask_spread):
+    chain = all_options(ticker)
+    intra_vol = current_volatility([ticker])['intra_ann'][0]
+    chain = chain[(abs(chain['Delta']) <= 0.5) &
+                  (abs(chain['Delta']) >= 0.3) &
+                  (chain['IV'] <= intra_vol)]
+    potential_longs = chain[chain['DTE'] == chain['DTE'].sort_values().values[0]]
+    potential_longs[potential_longs['Ask'] - potential_longs['Bid'] <= bid_ask_spread]
+    potential_longs['HV'] = intra_vol
+    return potential_longs
+
+def earnings_longs(tickers, bid_ask_spread):
+    all_chains = []
+    for ticker in tickers:
+        curr_long = earnings_long_single(ticker, bid_ask_spread)
+        if len(curr_long) > 0:
+            all_chains.append(curr_long)
+    chains = pd.concat(all_chains, axis = 0)
+    chains = chains.reset_index()[chains.columns]
+    return chains
+
+def av_data(ticker):
+    outsize = 'full'
+    alphavantage_link = 'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={0}&apikey=5HZEUI5AFJB06BUK&datatype=csv&outputsize={1}'.format(ticker, outsize)
+    stockframe = pd.read_csv(alphavantage_link, index_col = 0).sort_index()[['open', 'close']]
+    return stockframe
+
+def av_batch(ticker_lst):
+    lst = ticker_lst
+    df_lst = []
+
+    while len(lst) > 0:
+
+        for ticker in lst:
+            try:
+                df = av_data(ticker)[['close']]
+                df.columns = [ticker]
+                df_lst.append(df)
+                lst.remove(ticker)
+            except:
+                continue
+
+    df = pd.concat(df_lst, axis = 1)
+    return df
+
+def check_mkt_corr(rolling_window, plot_window):
+    spdr_lst = ['SPY','XLU','XLRE','XLY','XLV',
+                'XLB', 'XLI', 'XLF', 'XLK', 'XLC',
+                'XLP', 'XLE']
+
+    df = av_batch(spdr_lst)
+    df = df.pct_change()
+    df_corr = df.rolling(rolling_window).corr(df['SPY'])
+    del df_corr['SPY'], df_corr['XLC']
+    df_corr = df_corr.dropna().tail(plot_window)
+    df_corr['Avg_Corr'] = df_corr.mean(axis = 1)
+    df_corr['SPY_cum'] = (df[['SPY']].tail(plot_window) + 1).cumprod() - 1
+
+    plt.figure(figsize=(20,10))
+    plt.xlabel('Date')
+
+    ax1 = df_corr.SPY_cum.plot(color='blue', grid=True, label='SPY Return')
+    ax2 = df_corr.Avg_Corr.plot(color='red', grid=True, secondary_y=True, label='Correlation')
+
+    h1, l1 = ax1.get_legend_handles_labels()
+    h2, l2 = ax2.get_legend_handles_labels()
+
+
+    plt.legend(h1+h2, l1+l2, loc=2)
+    plt.show()
+    return df_corr
+
+def vvix_check():
+
+    spx = av_data('SPX')
+    spx.index = pd.to_datetime(spx.index)
+    spx.columns = ['spx_open','spx_close']
+
+    vix = pd.read_csv('http://www.cboe.com/publish/scheduledtask/mktdata/datahouse/vixcurrent.csv', skiprows = 1,
+                     index_col = 0)
+    vix.index = pd.to_datetime(vix.index)
+    vvix = pd.read_csv('http://www.cboe.com/publish/scheduledtask/mktdata/datahouse/vvixtimeseries.csv', skiprows = 1,
+                      index_col = 0)
+    vvix.index = pd.to_datetime(vvix.index)
+
+    df = pd.concat([spx,vix,vvix], axis = 1).dropna()
+    df['VIX_Return'] = df['VIX Close'].pct_change()
+    df['VVIX_Return'] = df['VVIX'].pct_change()
+    df = df.dropna()
+
+    vix_spike_thresh = 0.05
+    days_since_spike_count = 0
+    days_since_spike = []
+    vvix_stdev = []
+    for idx,row in df.iterrows():
+        if row.VIX_Return >= vix_spike_thresh:
+            days_since_spike_count = 0
+        else:
+            days_since_spike_count += 1
+        days_since_spike.append(days_since_spike_count)
+
+        vvix_stdev.append(df[['VVIX_Return']].rolling(days_since_spike_count).std()[df.index == idx]['VVIX_Return'][0])
+
+    df['Days_Since_Spike'] = days_since_spike
+    df['VVIX_Stdev'] = vvix_stdev
+    df['VVIX_Move'] = np.round(np.abs(df['VVIX_Return']/df['VVIX_Stdev']),2)
+    df['VVIX_Move'] = df['VVIX_Move'].shift(1)
+
+    out_df = df[['spx_close','VIX Close','VVIX','VIX_Return','VVIX_Move','Days_Since_Spike']]
+    out_df['SPX 200 SMA'] = np.round(out_df['spx_close'].rolling(200).mean(), 2)
+    out_df['SPX 20 SMA'] = np.round(out_df['spx_close'].rolling(20).mean(), 2)
+    out_df['VIX_Return'] = np.round(out_df['VIX_Return'], 4)
+    out_df['spx_close'] = np.round(out_df['spx_close'], 2)
+    out_df.columns = ['SPX Close', 'VIX Close', 'VVIX', 'VIX Return', 
+                      'VVIX Move', 'Days Since Spike', 'SPX 200 SMA', 'SPX 20 SMA']
+    return out_df.tail(60)
