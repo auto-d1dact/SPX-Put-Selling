@@ -61,6 +61,8 @@ functions list:
                  float[price_change], float[vol_change], int[dte_change], str[output = 'All'],
                  str[skew = 'flat'], str[prem_price_use = 'Mid'], str[day_format = 'trading'], 
                  float[interest_rate = 0.0193], float[dividend_rate = 0])
+	
+	yahoo_fundamentals(list_of_str[tickers]) --> DataFrame[fundamentals]
 """
 
 # Note to import from .py files, must follow structure
@@ -1243,3 +1245,16 @@ def position_sim(position_df, holdings, shares,
     
     outframe = pd.DataFrame(position_dict, index = [vol_change])
     return outframe
+	
+def yahoo_fundamentals(ticker_lst):
+    
+    for i, ticker in enumerate(tickers):
+        with req.urlopen('https://query1.finance.yahoo.com/v7/finance/options/{}'.format(ticker)) as url:
+            data = json_normalize(json.loads(url.read().decode())['optionChain']['result'][0]['quote']).T
+            data.columns = [ticker]
+        if i == 0:
+            out_df = data
+        else:
+            out_df = out_df.join(data)
+            
+    return out_df
