@@ -86,6 +86,7 @@ import requests
 import webbrowser
 from bs4 import BeautifulSoup as bs
 import json
+from pandas.io.json import json_normalize
 import csv
 import sched, time
 import pandas_datareader as datareader
@@ -267,7 +268,6 @@ def yahoo_earnings(date):
         if no_tables:
             break
         yahoo_url = 'https://finance.yahoo.com/calendar/earnings?day=' + today + '&offset={}&size=100'.format(int(i*100))
-        res = requests.get(yahoo_url)
         soup = bs(requests.get(yahoo_url).text, "lxml")
         
         try:
@@ -434,7 +434,7 @@ def current_volatility(ticker_list, roll = 20):
         
     return pd.concat(rows, axis = 0)
 
-def all_options(ticker, greeks = True):
+def all_options_old(ticker, greeks = True):
     tape = Options(ticker, 'yahoo')
     data = tape.get_all_data().reset_index()
     
@@ -449,7 +449,7 @@ def all_options(ticker, greeks = True):
         year = 365
         strikes = data['Strike'].values
         time_to_expirations = data['DTE'].values
-        ivs = data['IV'].values
+        #ivs = data['IV'].values
         underlying = data['Underlying_Price'].values[0]
         types = data['Type'].values
     
@@ -507,7 +507,7 @@ def all_options(ticker, greeks = True):
 
 
 def earnings_condor(tick, max_gap, dte_thresh, money_thresh):
-    chain = all_options(tick)
+    chain = all_options_old(tick)
     chain = chain[chain['DTE'] <= dte_thresh]
     chain = chain.reset_index()[chain.columns]
     chain = chain[chain['Moneyness'] <= money_thresh]
@@ -623,8 +623,8 @@ def earnings_condor(tick, max_gap, dte_thresh, money_thresh):
                                                'call Spread Theta': call_spread_theta}),
                                   index = range(len(call_spread_prem)))
 
-    put_combos = []
-    call_combos = []
+    #put_combos = []
+    #call_combos = []
     condor_prems = []
     condor_maxloss = []
     condor_delta = []
@@ -763,7 +763,6 @@ def past_earnings(ticker):
 
 def earnings_history(ticker):
     yahoo_url = 'https://finance.yahoo.com/quote/{0}/analysts?p={0}'.format(ticker)
-    res = requests.get(yahoo_url)
     soup = bs(requests.get(yahoo_url).text, "lxml")
     table = soup.find_all('table')
     
@@ -829,7 +828,7 @@ def earnings_history(ticker):
 
 
 def earnings_long_single(ticker, bid_ask_spread):
-    chain = all_options(ticker)
+    chain = all_options_old(ticker)
     intra_vol = current_volatility([ticker])['intra_ann'][0]
     chain = chain[(abs(chain['Delta']) <= 0.5) &
                   (abs(chain['Delta']) >= 0.3) &
@@ -872,7 +871,12 @@ def av_batch(ticker_lst):
 
     df = pd.concat(df_lst, axis = 1)
     return df
+#%% 
 
+'''
+Newer and optimized functions
+
+'''
 def check_mkt_corr(rolling_window, plot_window):
     spdr_lst = ['SPY','XLU','XLRE','XLY','XLV',
                 'XLB', 'XLI', 'XLF', 'XLK', 'XLC',
@@ -945,7 +949,151 @@ def vvix_check():
                       'VVIX Move', 'Days Since Spike', 'SPX 200 SMA', 'SPX 20 SMA']
     return out_df.tail(60)
 
-def all_options_v2(ticker, dte_ub, dte_lb, moneyness = 0.03):
+
+#%% BSM Functions
+from scipy.stats import norm as norm
+
+
+def d1(options_df, interest_rate = 0.0193, q = 0, year = 252):
+    numerator = np.log(options_df['Underlying_Price'] / 
+                       options_df['Strike']) + ((interest_rate - q) + options_df['IV']**2 / 2.0) * options_df['DTE']/year
+    denominator = options_df['IV'] * np.sqrt(options_df['DTE']/year)
+    return numerator / denominator
+
+def d2(options_df, interest_rate = 0.0193, q = 0, year = 252):
+    return d1(options_df, interest_rate, q, year) - options_df['IV'] * np.sqrt(options_df['DTE']/year)
+
+def bsm_call(options_df, interest_rate = 0.0193, q = 0, year = 252):
+
+    D1 = d1(options_df, interest_rate, q, year)
+    D2 = d2(options_df, interest_rate, q, year)
+    call_prices = options_df['Underlying_Price'] * np.exp(-q * options_df['DTE']/year) * norm.cdf(D1) - options_df['Strike'] * np.exp(-interest_rate * options_df['DTE']/year) * norm.cdf(D2)
+    
+    return pd.DataFrame(call_prices) 
+
+def bsm_put(options_df, interest_rate = 0.0193, q = 0, year = 252):
+
+    D1 = d1(options_df, interest_rate, q, year)
+    D2 = d2(options_df, interest_rate, q, year)
+    put_prices = options_df['Strike'] * np.exp(-interest_rate * options_df['DTE']/year) * norm.cdf(-D2) - options_df['Underlying_Price'] * np.exp(-q * options_df['DTE']/year) * norm.cdf(-D1)
+    return pd.DataFrame(put_prices)
+
+def black_scholes_merton(options_df, interest_rate = 0.0193, q = 0, year = 252):
+    calls = options_df[options_df['Type'] == 'call']
+    if len(calls) > 0:
+        calls['Simulated Prices'] = bsm_call(calls, interest_rate, q, year)
+    
+    
+    puts = options_df[options_df['Type'] == 'put']
+    if len(puts) > 0:
+        puts['Simulated Prices'] = bsm_put(puts, interest_rate, q, year)
+    
+    if len(puts) > 0 and len(calls) > 0:
+        df = pd.concat([calls, puts], axis = 0)
+    elif len(puts) > 0:
+        df = puts
+    else:
+        df = calls
+        
+    return df.reset_index()[df.columns]
+
+def delta(options_df, interest_rate = 0.0193, q = 0, year = 252):
+
+    options_df['D1'] = d1(options_df, interest_rate, q, year)
+    calls = options_df[options_df['Type'] == 'call']
+    if len(calls) > 0:
+        calls['Delta'] = np.exp(-q*calls['DTE']/year)*norm.cdf(calls['D1'])
+    
+    puts = options_df[options_df['Type'] == 'put']
+    if len(puts) > 0:
+        puts['Delta'] = -np.exp(-q*puts['DTE']/year)*norm.cdf(-puts['D1'])
+    
+    if len(puts) > 0 and len(calls) > 0:
+        df = pd.concat([calls, puts], axis = 0)
+    elif len(puts) > 0:
+        df = puts
+    else:
+        df = calls
+        
+    del df['D1']
+    return df.reset_index()[df.columns]
+
+def theta(options_df, interest_rate = 0.0193, q = 0, year = 252):
+
+    options_df['D1'] = d1(options_df, interest_rate, q, year)
+    options_df['D2'] = d2(options_df, interest_rate, q, year)
+
+    options_df['first_term'] = (options_df['Underlying_Price'] * np.exp(-q * options_df['DTE']/year) * 
+                                norm.pdf(options_df['D1']) * options_df['IV']) / (2 * np.sqrt(options_df['DTE']/year))
+    
+    calls = options_df[options_df['Type'] == 'call']
+    if len(calls) > 0:
+        calls_second_term = -q * calls.Strike * np.exp(-q * calls.DTE/year)*norm.cdf(calls.D1)
+        calls_third_term = interest_rate * calls.Strike * np.exp(-interest_rate * calls.DTE/year)*norm.cdf(calls.D2)
+        calls['Theta'] = -(calls.first_term + calls_second_term + calls_third_term) / 365.0
+    
+    puts = options_df[options_df['Type'] == 'put']
+    if len(puts) > 0:
+        puts_second_term = -q * puts.Strike * np.exp(-q * puts.DTE/year) * norm.cdf(-puts.D1)
+        puts_third_term = interest_rate * puts.Strike * np.exp(-interest_rate * puts.DTE/year) * norm.cdf(-puts.D2)
+        puts['Theta'] = (-puts.first_term + puts_second_term + puts_third_term) / 365.0
+    
+    if len(puts) > 0 and len(calls) > 0:
+        df = pd.concat([calls, puts], axis = 0)
+    elif len(puts) > 0:
+        df = puts
+    else:
+        df = calls
+        
+    del df['first_term'], df['D1'], df['D2']
+    
+    return df.reset_index()[df.columns]
+
+
+def gamma(options_df, interest_rate = 0.0193, q = 0, year = 252):
+    D1 = d1(options_df, interest_rate, q, year)
+    numerator = np.exp(-q * options_df.DTE/year) * norm.pdf(D1)
+    denominator = options_df.Underlying_Price * options_df.IV * np.sqrt(options_df.DTE/year)
+    options_df['Gamma'] = numerator / denominator
+    return options_df
+
+
+def vega(options_df, interest_rate = 0.0193, q = 0, year = 252):
+    D1 = d1(options_df, interest_rate, q, year)
+    options_df['Vega'] = options_df.Underlying_Price * np.exp(-q * options_df.DTE/year) * norm.pdf(D1) * np.sqrt(options_df.DTE/year) * 0.01
+    return options_df
+
+
+def rho(options_df, interest_rate = 0.0193, q = 0, year = 252):
+    options_df['D2'] = d2(options_df, interest_rate, q, year)
+    calls = options_df[options_df['Type'] == 'call']
+    if len(calls) > 0:
+        calls['Rho'] = calls.DTE/year * calls.Strike * np.exp(-interest_rate * calls.DTE/year) * norm.cdf(calls.D2) * 0.01
+    
+    puts = options_df[options_df['Type'] == 'put']
+    if len(puts) > 0:
+        puts['Rho'] = -puts.DTE/year * puts.Strike * np.exp(-interest_rate * puts.DTE/year) * norm.cdf(-puts.D2) * 0.01
+    
+    if len(puts) > 0 and len(calls) > 0:
+        df = pd.concat([calls, puts], axis = 0)
+    elif len(puts) > 0:
+        df = puts
+    else:
+        df = calls
+        
+    del df['D2']
+    
+    return df.reset_index()[df.columns]
+
+def all_greeks(options_df, interest_rate = 0.0193, q = 0, year = 252):
+    df = delta(theta(gamma(vega(rho(options_df, interest_rate, q ,year), 
+                                interest_rate, q, year),interest_rate, q, year), interest_rate, q, year), interest_rate, q, year)
+    # del df['D2']
+    return df
+
+#%%
+
+def all_options(ticker, dte_ub, dte_lb, moneyness = 0.03):
     tape = Options(ticker, 'yahoo')
     data = tape.get_all_data().reset_index()
     
@@ -961,8 +1109,52 @@ def all_options_v2(ticker, dte_ub, dte_lb, moneyness = 0.03):
                 (data['DTE'] >= dte_lb)]
     return data.sort_values(['DTE','Type']).reset_index()[data.columns]#data.dropna().reset_index()[data.columns]
 
+
+def price_sim(options_df, price_change, vol_change, days_change, output = 'All',
+              skew = 'flat', day_format = 'trading', interest_rate = 0.0193, q = 0,
+              prem_price_use = 'Mid'):
+    '''
+    output types can be: All, Price, Delta, Gamma, Vega, Theta
+    skew types can be: flat, left, right, smile
+    '''
+    if prem_price_use != 'Mid':
+        price_col = 'Last'
+    else:
+        price_col = 'Mid'
+        
+    if day_format != 'trading':
+        year = 365
+    else:
+        year = 252
+    
+    df = options_df.copy()
+    df['Underlying_Price'] = df['Underlying_Price']*(1 + price_change)
+    df['DTE'] = df['DTE'] - days_change
+    df[df['DTE'] < 0] = 0
+    
+    
+    if skew == 'flat':
+        df['IV'] = df['IV'] + vol_change
+    elif skew == 'right':
+        df['IV'] = df['IV'] + vol_change + vol_change*(df['Strike']/df['Underlying_Price'] - 1)
+    elif skew == 'left':
+        df['IV'] = df['IV'] + vol_change - vol_change*(df['Strike']/df['Underlying_Price'] - 1)
+    else:
+        df['IV'] = df['IV'] + vol_change + vol_change*abs(df['Strike']/df['Underlying_Price'] - 1)
+            
+    output_df = black_scholes_merton(delta(gamma(theta(vega(rho(df,interest_rate, q, year), 
+                                                           interest_rate, q, year),
+                                                      interest_rate, q, year), 
+                                                interest_rate, q, year), 
+                                          interest_rate, q, year),
+                                     interest_rate, q, year)
+    return output_df
+
+
+
+#%% Older non-optimized functions
 def yahoo_options_query(ticker, dte_ub, dte_lb):
-    with req.urlopen('https://query1.finance.yahoo.com/v7/finance/options/{}'.format(ticker)) as url:
+    with urlreq.urlopen('https://query1.finance.yahoo.com/v7/finance/options/{}'.format(ticker)) as url:
         data = json.loads(url.read().decode())
         midprice = (data['optionChain']['result'][0]['quote']['ask'] + 
                     data['optionChain']['result'][0]['quote']['bid'])/2
@@ -978,7 +1170,7 @@ def yahoo_options_query(ticker, dte_ub, dte_lb):
     query_dte_ub = query_dates[-1]
     query_dte_lb = query_dates[0]
             
-    with req.urlopen('https://query1.finance.yahoo.com/v7/finance/options/{}?date={}'.format(ticker,
+    with urlreq.urlopen('https://query1.finance.yahoo.com/v7/finance/options/{}?date={}'.format(ticker,
                                                                                             expiry_dates_unix[query_dte_ub])) as url:
         data = json.loads(url.read().decode())['optionChain']['result'][0]['options'][0]
         calls_ub = json_normalize(data['calls'])
@@ -986,7 +1178,7 @@ def yahoo_options_query(ticker, dte_ub, dte_lb):
         
     time.sleep(1)
         
-    with req.urlopen('https://query1.finance.yahoo.com/v7/finance/options/{}?date={}'.format(ticker,
+    with urlreq.urlopen('https://query1.finance.yahoo.com/v7/finance/options/{}?date={}'.format(ticker,
                                                                                             expiry_dates_unix[query_dte_lb])) as url:
         data = json.loads(url.read().decode())['optionChain']['result'][0]['options'][0]
         calls_lb = json_normalize(data['calls'])
@@ -996,7 +1188,7 @@ def yahoo_options_query(ticker, dte_ub, dte_lb):
         chain = chain.drop(['contractSize','currency','lastTradeDate','openInterest','percentChange',
                             'volume','expiration','change','contractSymbol'], axis = 1)
         chain['type'] = option_type
-        cols = ['ask', 'bid', 'impliedVolatility', 'lastPrice', 'strike']
+        #cols = ['ask', 'bid', 'impliedVolatility', 'lastPrice', 'strike']
         chain['expiry'] = expiry_dates[query_date].date()
         chain['DTE'] = (expiry_dates[query_date].date() - dt.datetime.today().date()).days
         chain['lastSpotPrice'] = midprice
@@ -1013,7 +1205,8 @@ def yahoo_options_query(ticker, dte_ub, dte_lb):
     
     return pd.concat([calls_lb, puts_lb, calls_ub, puts_ub], axis = 0).reset_index()[display]
 
-def greek_calc(df, prem_price_use = 'Mid', day_format = 'trading', interest_rate = 0.0193, dividend_rate = 0):
+
+def greek_calc_old(df, prem_price_use = 'Mid', day_format = 'trading', interest_rate = 0.0193, dividend_rate = 0):
     if prem_price_use != 'Mid':
         price_col = 'Last'
     else:
@@ -1039,7 +1232,7 @@ def greek_calc(df, prem_price_use = 'Mid', day_format = 'trading', interest_rate
     for premium, strike, time_to_expiration, flag, iv in zip(premiums, strikes, time_to_expirations, types, ivs):
 
         # Constants
-        P = premium
+        # P = premium
         S = underlying
         K = strike
         t = time_to_expiration/float(year)
@@ -1083,7 +1276,8 @@ def greek_calc(df, prem_price_use = 'Mid', day_format = 'trading', interest_rate
     # df = df.dropna()
     
     return df
-def price_sim(options_df, price_change, vol_change, days_change, output = 'All',
+
+def price_sim_old(options_df, price_change, vol_change, days_change, output = 'All',
               skew = 'flat', day_format = 'trading', interest_rate = 0.0193, dividend_rate = 0,
               prem_price_use = 'Mid'):
     '''
@@ -1101,7 +1295,7 @@ def price_sim(options_df, price_change, vol_change, days_change, output = 'All',
         year = 252
         
     
-    premiums = options_df[price_col].values
+    #premiums = options_df[price_col].values
     strikes = options_df['Strike'].values
     time_to_expirations = options_df['DTE'].values
     ivs = options_df['IV'].values
@@ -1196,7 +1390,8 @@ def price_sim(options_df, price_change, vol_change, days_change, output = 'All',
         df['Rho'] = rhos
     df = df.dropna()
     return df
-def position_sim(position_df, holdings, shares,
+
+def position_sim_old(position_df, holdings, shares,
                  price_change, vol_change, dte_change, output = 'All',
                  skew = 'flat', prem_price_use = 'Mid', day_format = 'trading', 
                  interest_rate = 0.0193, dividend_rate = 0):
@@ -1205,18 +1400,13 @@ def position_sim(position_df, holdings, shares,
         price_col = 'Last'
     else:
         price_col = 'Mid'
-        
-    if day_format != 'trading':
-        year = 365
-    else:
-        year = 252
-        
+                
     position = position_df
     position['Pos'] = holdings
     position_dict = {}
     position_dict['Total Cost'] = sum(position[price_col]*position['Pos'])*100 + shares*position['Underlying_Price'].values[0]
     
-    simulation = price_sim(position, price_change, vol_change, dte_change, output,
+    simulation = price_sim_old(position, price_change, vol_change, dte_change, output,
                            skew, day_format, interest_rate, dividend_rate,
                            prem_price_use)
     
@@ -1245,11 +1435,12 @@ def position_sim(position_df, holdings, shares,
     
     outframe = pd.DataFrame(position_dict, index = [vol_change])
     return outframe
+#%%
 	
 def yahoo_fundamentals(ticker_lst):
     
-    for i, ticker in enumerate(tickers):
-        with req.urlopen('https://query1.finance.yahoo.com/v7/finance/options/{}'.format(ticker)) as url:
+    for i, ticker in enumerate(ticker_lst):
+        with urlreq.urlopen('https://query1.finance.yahoo.com/v7/finance/options/{}'.format(ticker)) as url:
             data = json_normalize(json.loads(url.read().decode())['optionChain']['result'][0]['quote']).T
             data.columns = [ticker]
         if i == 0:
