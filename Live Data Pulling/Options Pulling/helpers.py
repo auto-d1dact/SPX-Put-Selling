@@ -969,7 +969,7 @@ def bsm_call(options_df, interest_rate = 0.0193, q = 0, year = 252):
     D2 = d2(options_df, interest_rate, q, year)
     call_prices = options_df['Underlying_Price'] * np.exp(-q * options_df['DTE']/year) * norm.cdf(D1) - options_df['Strike'] * np.exp(-interest_rate * options_df['DTE']/year) * norm.cdf(D2)
     
-    return pd.DataFrame(call_prices) 
+    return pd.DataFrame(call_prices)
 
 def bsm_put(options_df, interest_rate = 0.0193, q = 0, year = 252):
 
@@ -995,7 +995,7 @@ def black_scholes_merton(options_df, interest_rate = 0.0193, q = 0, year = 252):
     else:
         df = calls
         
-    return df.reset_index()[df.columns]
+    return df.fillna(0).reset_index()[df.columns]
 
 def delta(options_df, interest_rate = 0.0193, q = 0, year = 252):
 
@@ -1016,7 +1016,7 @@ def delta(options_df, interest_rate = 0.0193, q = 0, year = 252):
         df = calls
         
     del df['D1']
-    return df.reset_index()[df.columns]
+    return df.fillna(0).reset_index()[df.columns]
 
 def theta(options_df, interest_rate = 0.0193, q = 0, year = 252):
 
@@ -1047,7 +1047,7 @@ def theta(options_df, interest_rate = 0.0193, q = 0, year = 252):
         
     del df['first_term'], df['D1'], df['D2']
     
-    return df.reset_index()[df.columns]
+    return df.fillna(0).reset_index()[df.columns]
 
 
 def gamma(options_df, interest_rate = 0.0193, q = 0, year = 252):
@@ -1055,13 +1055,13 @@ def gamma(options_df, interest_rate = 0.0193, q = 0, year = 252):
     numerator = np.exp(-q * options_df.DTE/year) * norm.pdf(D1)
     denominator = options_df.Underlying_Price * options_df.IV * np.sqrt(options_df.DTE/year)
     options_df['Gamma'] = numerator / denominator
-    return options_df
+    return options_df.fillna(0)
 
 
 def vega(options_df, interest_rate = 0.0193, q = 0, year = 252):
     D1 = d1(options_df, interest_rate, q, year)
     options_df['Vega'] = options_df.Underlying_Price * np.exp(-q * options_df.DTE/year) * norm.pdf(D1) * np.sqrt(options_df.DTE/year) * 0.01
-    return options_df
+    return options_df.fillna(0)
 
 
 def rho(options_df, interest_rate = 0.0193, q = 0, year = 252):
@@ -1083,7 +1083,7 @@ def rho(options_df, interest_rate = 0.0193, q = 0, year = 252):
         
     del df['D2']
     
-    return df.reset_index()[df.columns]
+    return df.fillna(0).reset_index()[df.columns]
 
 def all_greeks(options_df, interest_rate = 0.0193, q = 0, year = 252):
     df = delta(theta(gamma(vega(rho(options_df, interest_rate, q ,year), 
