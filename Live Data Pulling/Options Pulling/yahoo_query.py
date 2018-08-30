@@ -14,6 +14,45 @@ import urllib.request as urlreq
 
 # Creating class for querying yahoo data
 # yahoo_query(str[self.ticker], datetime.date([starting_date]), datetime.date([ending_date])):
+    
+'''
+Inputs for the ?modules= query:
+
+modules = [
+   'assetProfile',
+   'incomeStatementHistory',
+   'incomeStatementHistoryQuarterly',
+   'balanceSheetHistory',
+   'balanceSheetHistoryQuarterly',
+   'cashflowStatementHistory',
+   'cashflowStatementHistoryQuarterly',
+   'defaultKeyStatistics',
+   'financialData',
+   'calendarEvents',
+   'secFilings',
+   'recommendationTrend',
+   'upgradeDowngradeHistory',
+   'institutionOwnership',
+   'fundOwnership',
+   'majorDirectHolders',
+   'majorHoldersBreakdown',
+   'insiderTransactions',
+   'insiderHolders',
+   'netSharePurchaseActivity',
+   'earnings',
+   'earningsHistory',
+   'earningsTrend',
+   'industryTrend',
+   'indexTrend',
+   'sectorTrend' ]
+Example URL:
+
+https://query1.finance.yahoo.com/v10/finance/quoteSummary/AAPL?modules=assetProfile%2CearningsHistory
+Querying for: assetProfile and earningsHistory
+
+'''
+
+
 class yahoo_query:
     
     # Initializing yahoo_query class with self.ticker and creating
