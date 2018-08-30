@@ -17,13 +17,12 @@ from tickers import tickers
 from py_vollib.black_scholes_merton.implied_volatility import *
 from py_vollib.black_scholes_merton.greeks.analytical import *
 from data_fetcher_pos import *
-
 # Setup app
 # server = flask.Flask(__name__)
 # server.secret_key = os.environ.get('secret_key', 'secret')
 # app = dash.Dash(__name__, server=server, url_base_pathname='/dash/gallery/volatility-surface', csrf_protect=False)
 app = dash.Dash(__name__)
-# server = app.server
+server = app.server
 
 # Tickers
 tickers = [dict(label=str(ticker), value=str(ticker))
@@ -514,7 +513,7 @@ app.layout = html.Div(
 def cache_raw_data_options(n_clicks, ticker, dte_ub, dte_lb, moneyness):
 
     global yahoo_data
-    yahoo_data = all_options(ticker, dte_ub, dte_lb, moneyness = 0.03)
+    yahoo_data = all_options(ticker, dte_ub, dte_lb, moneyness)
     print('Loaded raw data')
     return 'loaded'
 
@@ -522,20 +521,20 @@ def cache_raw_data_options(n_clicks, ticker, dte_ub, dte_lb, moneyness):
 @app.callback(Output('options_table', 'rows'),
               [Input('display_table', 'n_clicks')],
               [State('raw_container','hidden'),
-               State('price_selector','value'),
                State('date_format','value'),
                State('interest_rate', 'value')])
-def update_options_table(n_clicks, hidden,prem_price_use,day_format,interest_rate):
+def update_options_table(n_clicks, hidden,day_format,interest_rate):
     
     if hidden == 'loaded':
-        table = greek_calc(yahoo_data, prem_price_use, day_format, interest_rate).reset_index()
+        table = all_greeks(yahoo_data, interest_rate, 0, day_format).reset_index()
         return table.to_dict('records')
 
 #
 @app.callback(
         Output('filtered_container', 'hidden'),
         [Input('analysis_button', 'n_clicks')],
-        [State('interest_rate', 'value'),
+        [State('raw_container','hidden'),
+         State('interest_rate', 'value'),
          State('price_changes', 'value'),
          State('vol_range', 'value'),
          State('dte_range', 'value'),
@@ -546,94 +545,21 @@ def update_options_table(n_clicks, hidden,prem_price_use,day_format,interest_rat
          State('number_of_shares','value'),
          State('price_selector','value'),
          State('date_format','value')])
-def cache_raw_data_sim(n_clicks, interest_rate, price_range, vol_range, dte_range, skew_type,
+def cache_raw_data_sim(n_clicks, hidden, interest_rate, price_range, vol_range, dte_range, skew_type,
                        spacing, contract_ids, contract_pos, shares, price_selector,
                        date_format):
-
-    global pnl_outmeshes, pct_outmeshes, delta_outmeshes, gamma_outmeshes, theta_outmeshes, vega_outmeshes, rho_outmeshes
-    global priceGrid, dteGrid, v_changes, df
     
-    day_spacing = dte_range[1] - dte_range[0] + 1
-    
-    indices = [int(x) for x in contract_ids.split(' ')]
-    positions = [int(x) for x in contract_pos.split(' ')]
-    
-    price_axis = np.linspace(price_range[0], price_range[1], spacing)
-    dte_axis = np.linspace(dte_range[0], dte_range[1], day_spacing)
-    v_changes = np.linspace(vol_range[0], vol_range[1], 3)
-    
-    priceGrid, dteGrid = np.meshgrid(price_axis, dte_axis)
+    global adj_dfs, priceGrid, dteGrid
+    if hidden == 'loaded':
+        indices = [int(x) for x in contract_ids.split(' ')]
+        positions = [int(x) for x in contract_pos.split(' ')]
         
-    # Creating Mesh Grids
-    
-    pnl_outmeshes= []
-    pct_outmeshes = []
-    delta_outmeshes = []
-    gamma_outmeshes = []
-    theta_outmeshes = []
-    vega_outmeshes = []
-    rho_outmeshes = []
-    
-    for v_change in v_changes:
-    
-        pnl_out_values_lst = []
-        pct_out_values_lst = []
-        delta_out_values_lst = []
-        gamma_out_values_lst = []
-        theta_out_values_lst = []
-        vega_out_values_lst = []
-        rho_out_values_lst = []
-        for p_arrays, d_arrays in zip(priceGrid, dteGrid):
-            pnl_current_values_sublist = []
-            pct_current_values_sublist = []
-            delta_current_values_sublist = []
-            gamma_current_values_sublist = []
-            theta_current_values_sublist = []
-            vega_current_values_sublist = []
-            rho_current_values_sublist = []
-    
-            for price_delta, dte_delta in zip(p_arrays, d_arrays):
-                current_sim = position_sim(yahoo_data.loc[indices], positions, shares, price_delta, 
-                                           v_change, dte_delta,
-                                           'All', skew_type, price_selector, date_format,
-                                           interest_rate)
-                pnl_current_values_sublist.append(current_sim['PnL'].values[0])
-                pct_current_values_sublist.append(current_sim['Percent Return'].values[0])
-                delta_current_values_sublist.append(current_sim['Simulated Delta'].values[0])
-                gamma_current_values_sublist.append(current_sim['Simulated Gamma'].values[0])
-                theta_current_values_sublist.append(current_sim['Simulated Theta'].values[0])
-                vega_current_values_sublist.append(current_sim['Simulated Vega'].values[0])
-                rho_current_values_sublist.append(current_sim['Simulated Rho'].values[0])
+        adj_dfs, priceGrid, dteGrid = position_sim(yahoo_data.loc[indices], positions, shares,
+                                                   price_range, vol_range, dte_range, 'All',
+                                                   skew_type, price_selector, date_format, 
+                                                   interest_rate, 0, 2, spacing)
     
     
-            pnl_out_values_lst.append(pnl_current_values_sublist)
-            pct_out_values_lst.append(pct_current_values_sublist)
-            delta_out_values_lst.append(delta_current_values_sublist)
-            gamma_out_values_lst.append(gamma_current_values_sublist)
-            theta_out_values_lst.append(theta_current_values_sublist)
-            vega_out_values_lst.append(vega_current_values_sublist)
-            rho_out_values_lst.append(rho_current_values_sublist)
-    
-        pnl_out_values_mesh = np.array(pnl_out_values_lst)
-        pnl_outmeshes.append(pnl_out_values_mesh)
-    
-        pct_out_values_mesh = np.array(pct_out_values_lst)
-        pct_outmeshes.append(pct_out_values_mesh)
-    
-        delta_out_values_mesh = np.array(delta_out_values_lst)
-        delta_outmeshes.append(delta_out_values_mesh)
-    
-        gamma_out_values_mesh = np.array(gamma_out_values_lst)
-        gamma_outmeshes.append(gamma_out_values_mesh)
-    
-        theta_out_values_mesh = np.array(theta_out_values_lst)
-        theta_outmeshes.append(theta_out_values_mesh)
-    
-        vega_out_values_mesh = np.array(vega_out_values_lst)
-        vega_outmeshes.append(vega_out_values_mesh)
-        
-        rho_out_values_mesh = np.array(rho_out_values_lst)
-        rho_outmeshes.append(rho_out_values_mesh)
     
     print('Loaded raw data')
     return 'loaded'
@@ -644,27 +570,24 @@ def cache_raw_data_sim(n_clicks, interest_rate, price_range, vol_range, dte_rang
 ## Make main surface plot
 @app.callback(Output('pnl_surface', 'figure'),
               [Input('display_button', 'n_clicks')],
-              [State('filtered_container','hidden')])
-def pnl_surface_plot(n_clicks, hidden):
+              [State('filtered_container','hidden'),
+               State('vol_range', 'value')])
+def pnl_surface_plot(n_clicks, hidden, v_changes):
 
     if hidden == 'loaded':
+        display = 'PnL'
         surface1 = go.Surface(x = (priceGrid + 1)*yahoo_data['Underlying_Price'].values[0], 
                               y = dteGrid, 
-                              z = pnl_outmeshes[0],
-                              name = v_changes[0])
+                              z = np.array(adj_dfs[0][display]).reshape(priceGrid.shape),
+                              name = 'Vol Change of {}%'.format(round(v_changes[0]*100),2))
 
         surface2 = go.Surface(x = (priceGrid + 1)*yahoo_data['Underlying_Price'].values[0], 
                               y = dteGrid, 
-                              z = pnl_outmeshes[1],
-                              name = v_changes[1])
+                              z = np.array(adj_dfs[1][display]).reshape(priceGrid.shape),
+                              name = 'Vol Change of {}%'.format(round(v_changes[1]*100),2))
     
-        surface3 = go.Surface(x = (priceGrid + 1)*yahoo_data['Underlying_Price'].values[0], 
-                              y = dteGrid, 
-                              z = pnl_outmeshes[2], 
-                              name = v_changes[2])
-
         layout = go.Layout(
-                    title='PnL Plot',
+                    title='{} Plot'.format(display),
                     autosize=True,
                     showlegend = False,
                     scene=dict(
@@ -696,7 +619,7 @@ def pnl_surface_plot(n_clicks, hidden):
                             backgroundcolor='rgb(230, 230,230)'
                         ),
                         zaxis=dict(
-                            title = 'PnL',
+                            title = display,
                             gridcolor='rgb(255, 255, 255)',
                             zerolinecolor='rgb(255, 255, 255)',
                             showbackground=True,
@@ -705,34 +628,31 @@ def pnl_surface_plot(n_clicks, hidden):
                     )
                 )
 
-        data = [surface1, surface2, surface3]
+        data = [surface1, surface2]
         figure = dict(data=data, layout=layout)
         return figure
 
 # Make main surface plot
 @app.callback(Output('return_surface', 'figure'),
               [Input('display_button', 'n_clicks')],
-              [State('filtered_container','hidden')])
-def pct_surface_plot(n_clicks, hidden):
+              [State('filtered_container','hidden'),
+               State('vol_range', 'value')])
+def pct_surface_plot(n_clicks, hidden, v_changes):
 
     if hidden == 'loaded':
+        display = 'Percent Return'
         surface1 = go.Surface(x = (priceGrid + 1)*yahoo_data['Underlying_Price'].values[0], 
                               y = dteGrid, 
-                              z = pct_outmeshes[0],
-                              name = v_changes[0])
+                              z = np.array(adj_dfs[0][display]).reshape(priceGrid.shape),
+                              name = 'Vol Change of {}%'.format(round(v_changes[0]*100),2))
 
         surface2 = go.Surface(x = (priceGrid + 1)*yahoo_data['Underlying_Price'].values[0], 
                               y = dteGrid, 
-                              z = pct_outmeshes[1],
-                              name = v_changes[1])
+                              z = np.array(adj_dfs[1][display]).reshape(priceGrid.shape),
+                              name = 'Vol Change of {}%'.format(round(v_changes[1]*100),2))
     
-        surface3 = go.Surface(x = (priceGrid + 1)*yahoo_data['Underlying_Price'].values[0], 
-                              y = dteGrid, 
-                              z = pct_outmeshes[2], 
-                              name = v_changes[2])
-
         layout = go.Layout(
-                    title='Return Plot',
+                    title='{} Plot'.format(display),
                     autosize=True,
                     showlegend = False,
                     scene=dict(
@@ -764,7 +684,7 @@ def pct_surface_plot(n_clicks, hidden):
                             backgroundcolor='rgb(230, 230,230)'
                         ),
                         zaxis=dict(
-                            title = 'Percent Return',
+                            title = display,
                             gridcolor='rgb(255, 255, 255)',
                             zerolinecolor='rgb(255, 255, 255)',
                             showbackground=True,
@@ -773,34 +693,31 @@ def pct_surface_plot(n_clicks, hidden):
                     )
                 )
 
-        data = [surface1, surface2, surface3]
+        data = [surface1, surface2]
         figure = dict(data=data, layout=layout)
         return figure
 
 # Make main surface plot
 @app.callback(Output('delta_surface', 'figure'),
               [Input('display_button', 'n_clicks')],
-              [State('filtered_container','hidden')])
-def delta_surface_plot(n_clicks, hidden):
+              [State('filtered_container','hidden'),
+               State('vol_range', 'value')])
+def delta_surface_plot(n_clicks, hidden, v_changes):
 
     if hidden == 'loaded':
+        display = 'Delta'
         surface1 = go.Surface(x = (priceGrid + 1)*yahoo_data['Underlying_Price'].values[0], 
                               y = dteGrid, 
-                              z = delta_outmeshes[0],
-                              name = v_changes[0])
+                              z = np.array(adj_dfs[0][display]).reshape(priceGrid.shape),
+                              name = 'Vol Change of {}%'.format(round(v_changes[0]*100),2))
 
         surface2 = go.Surface(x = (priceGrid + 1)*yahoo_data['Underlying_Price'].values[0], 
                               y = dteGrid, 
-                              z = delta_outmeshes[1],
-                              name = v_changes[1])
+                              z = np.array(adj_dfs[1][display]).reshape(priceGrid.shape),
+                              name = 'Vol Change of {}%'.format(round(v_changes[1]*100),2))
     
-        surface3 = go.Surface(x = (priceGrid + 1)*yahoo_data['Underlying_Price'].values[0], 
-                              y = dteGrid, 
-                              z = delta_outmeshes[2], 
-                              name = v_changes[2])
-
         layout = go.Layout(
-                    title='Delta Plot',
+                    title='{} Plot'.format(display),
                     autosize=True,
                     showlegend = False,
                     scene=dict(
@@ -832,7 +749,7 @@ def delta_surface_plot(n_clicks, hidden):
                             backgroundcolor='rgb(230, 230,230)'
                         ),
                         zaxis=dict(
-                            title = 'Delta',
+                            title = display,
                             gridcolor='rgb(255, 255, 255)',
                             zerolinecolor='rgb(255, 255, 255)',
                             showbackground=True,
@@ -841,34 +758,32 @@ def delta_surface_plot(n_clicks, hidden):
                     )
                 )
 
-        data = [surface1, surface2, surface3]
+        data = [surface1, surface2]
         figure = dict(data=data, layout=layout)
         return figure
+
     
 # Make main surface plot
 @app.callback(Output('gamma_surface', 'figure'),
               [Input('display_button', 'n_clicks')],
-              [State('filtered_container','hidden')])
-def gamma_surface_plot(n_clicks, hidden):
+              [State('filtered_container','hidden'),
+               State('vol_range', 'value')])
+def gamma_surface_plot(n_clicks, hidden, v_changes):
 
     if hidden == 'loaded':
+        display = 'Gamma'
         surface1 = go.Surface(x = (priceGrid + 1)*yahoo_data['Underlying_Price'].values[0], 
                               y = dteGrid, 
-                              z = gamma_outmeshes[0],
-                              name = v_changes[0])
+                              z = np.array(adj_dfs[0][display]).reshape(priceGrid.shape),
+                              name = 'Vol Change of {}%'.format(round(v_changes[0]*100),2))
 
         surface2 = go.Surface(x = (priceGrid + 1)*yahoo_data['Underlying_Price'].values[0], 
                               y = dteGrid, 
-                              z = gamma_outmeshes[1],
-                              name = v_changes[1])
+                              z = np.array(adj_dfs[1][display]).reshape(priceGrid.shape),
+                              name = 'Vol Change of {}%'.format(round(v_changes[1]*100),2))
     
-        surface3 = go.Surface(x = (priceGrid + 1)*yahoo_data['Underlying_Price'].values[0], 
-                              y = dteGrid, 
-                              z = gamma_outmeshes[2], 
-                              name = v_changes[2])
-
         layout = go.Layout(
-                    title='Gamma Plot',
+                    title='{} Plot'.format(display),
                     autosize=True,
                     showlegend = False,
                     scene=dict(
@@ -900,7 +815,7 @@ def gamma_surface_plot(n_clicks, hidden):
                             backgroundcolor='rgb(230, 230,230)'
                         ),
                         zaxis=dict(
-                            title = 'Gamma',
+                            title = display,
                             gridcolor='rgb(255, 255, 255)',
                             zerolinecolor='rgb(255, 255, 255)',
                             showbackground=True,
@@ -909,34 +824,32 @@ def gamma_surface_plot(n_clicks, hidden):
                     )
                 )
 
-        data = [surface1, surface2, surface3]
+        data = [surface1, surface2]
         figure = dict(data=data, layout=layout)
         return figure
+
 
 # Make main surface plot
 @app.callback(Output('theta_surface', 'figure'),
               [Input('display_button', 'n_clicks')],
-              [State('filtered_container','hidden')])
-def theta_surface_plot(n_clicks, hidden):
+              [State('filtered_container','hidden'),
+               State('vol_range', 'value')])
+def theta_surface_plot(n_clicks, hidden, v_changes):
 
     if hidden == 'loaded':
+        display = 'Theta'
         surface1 = go.Surface(x = (priceGrid + 1)*yahoo_data['Underlying_Price'].values[0], 
                               y = dteGrid, 
-                              z = theta_outmeshes[0],
-                              name = v_changes[0])
+                              z = np.array(adj_dfs[0][display]).reshape(priceGrid.shape),
+                              name = 'Vol Change of {}%'.format(round(v_changes[0]*100),2))
 
         surface2 = go.Surface(x = (priceGrid + 1)*yahoo_data['Underlying_Price'].values[0], 
                               y = dteGrid, 
-                              z = theta_outmeshes[1],
-                              name = v_changes[1])
+                              z = np.array(adj_dfs[1][display]).reshape(priceGrid.shape),
+                              name = 'Vol Change of {}%'.format(round(v_changes[1]*100),2))
     
-        surface3 = go.Surface(x = (priceGrid + 1)*yahoo_data['Underlying_Price'].values[0], 
-                              y = dteGrid, 
-                              z = theta_outmeshes[2], 
-                              name = v_changes[2])
-
         layout = go.Layout(
-                    title='Theta Plot',
+                    title='{} Plot'.format(display),
                     autosize=True,
                     showlegend = False,
                     scene=dict(
@@ -968,7 +881,7 @@ def theta_surface_plot(n_clicks, hidden):
                             backgroundcolor='rgb(230, 230,230)'
                         ),
                         zaxis=dict(
-                            title = 'Theta',
+                            title = display,
                             gridcolor='rgb(255, 255, 255)',
                             zerolinecolor='rgb(255, 255, 255)',
                             showbackground=True,
@@ -977,34 +890,32 @@ def theta_surface_plot(n_clicks, hidden):
                     )
                 )
 
-        data = [surface1, surface2, surface3]
+        data = [surface1, surface2]
         figure = dict(data=data, layout=layout)
         return figure
+
 
 # Make main surface plot
 @app.callback(Output('vega_surface', 'figure'),
               [Input('display_button', 'n_clicks')],
-              [State('filtered_container','hidden')])
-def vega_surface_plot(n_clicks, hidden):
+              [State('filtered_container','hidden'),
+               State('vol_range', 'value')])
+def vega_surface_plot(n_clicks, hidden, v_changes):
 
     if hidden == 'loaded':
+        display = 'Vega'
         surface1 = go.Surface(x = (priceGrid + 1)*yahoo_data['Underlying_Price'].values[0], 
                               y = dteGrid, 
-                              z = vega_outmeshes[0],
-                              name = v_changes[0])
+                              z = np.array(adj_dfs[0][display]).reshape(priceGrid.shape),
+                              name = 'Vol Change of {}%'.format(round(v_changes[0]*100),2))
 
         surface2 = go.Surface(x = (priceGrid + 1)*yahoo_data['Underlying_Price'].values[0], 
                               y = dteGrid, 
-                              z = vega_outmeshes[1],
-                              name = v_changes[1])
+                              z = np.array(adj_dfs[1][display]).reshape(priceGrid.shape),
+                              name = 'Vol Change of {}%'.format(round(v_changes[1]*100),2))
     
-        surface3 = go.Surface(x = (priceGrid + 1)*yahoo_data['Underlying_Price'].values[0], 
-                              y = dteGrid, 
-                              z = vega_outmeshes[2], 
-                              name = v_changes[2])
-
         layout = go.Layout(
-                    title='Vega Plot',
+                    title='{} Plot'.format(display),
                     autosize=True,
                     showlegend = False,
                     scene=dict(
@@ -1036,7 +947,7 @@ def vega_surface_plot(n_clicks, hidden):
                             backgroundcolor='rgb(230, 230,230)'
                         ),
                         zaxis=dict(
-                            title = 'Vega',
+                            title = display,
                             gridcolor='rgb(255, 255, 255)',
                             zerolinecolor='rgb(255, 255, 255)',
                             showbackground=True,
@@ -1045,34 +956,32 @@ def vega_surface_plot(n_clicks, hidden):
                     )
                 )
 
-        data = [surface1, surface2, surface3]
+        data = [surface1, surface2]
         figure = dict(data=data, layout=layout)
         return figure
+
     
 # Make main surface plot
 @app.callback(Output('rho_surface', 'figure'),
               [Input('display_button', 'n_clicks')],
-              [State('filtered_container','hidden')])
-def rho_surface_plot(n_clicks, hidden):
+              [State('filtered_container','hidden'),
+               State('vol_range', 'value')])
+def rho_surface_plot(n_clicks, hidden, v_changes):
 
     if hidden == 'loaded':
+        display = 'Rho'
         surface1 = go.Surface(x = (priceGrid + 1)*yahoo_data['Underlying_Price'].values[0], 
                               y = dteGrid, 
-                              z = rho_outmeshes[0],
-                              name = v_changes[0])
+                              z = np.array(adj_dfs[0][display]).reshape(priceGrid.shape),
+                              name = 'Vol Change of {}%'.format(round(v_changes[0]*100),2))
 
         surface2 = go.Surface(x = (priceGrid + 1)*yahoo_data['Underlying_Price'].values[0], 
                               y = dteGrid, 
-                              z = rho_outmeshes[1],
-                              name = v_changes[1])
+                              z = np.array(adj_dfs[1][display]).reshape(priceGrid.shape),
+                              name = 'Vol Change of {}%'.format(round(v_changes[1]*100),2))
     
-        surface3 = go.Surface(x = (priceGrid + 1)*yahoo_data['Underlying_Price'].values[0], 
-                              y = dteGrid, 
-                              z = rho_outmeshes[2], 
-                              name = v_changes[2])
-
         layout = go.Layout(
-                    title='Rho Plot',
+                    title='{} Plot'.format(display),
                     autosize=True,
                     showlegend = False,
                     scene=dict(
@@ -1104,7 +1013,7 @@ def rho_surface_plot(n_clicks, hidden):
                             backgroundcolor='rgb(230, 230,230)'
                         ),
                         zaxis=dict(
-                            title = 'Rho',
+                            title = display,
                             gridcolor='rgb(255, 255, 255)',
                             zerolinecolor='rgb(255, 255, 255)',
                             showbackground=True,
@@ -1113,11 +1022,11 @@ def rho_surface_plot(n_clicks, hidden):
                     )
                 )
 
-        data = [surface1, surface2, surface3]
+        data = [surface1, surface2]
         figure = dict(data=data, layout=layout)
         return figure
 
 
+
 if __name__ == '__main__':
-    #app.server.run(debug=True, threaded=True, use_reloader=False)
-	app.run_server(port = 5050, debug = True, threaded=True, use_reloader=False)
+    app.server.run(debug=True, threaded=True, use_reloader=False)

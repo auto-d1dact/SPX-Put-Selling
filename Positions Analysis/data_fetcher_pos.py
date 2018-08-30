@@ -12,10 +12,154 @@ from py_vollib.black_scholes_merton.greeks.analytical import *
 from pandas.io.json import json_normalize
 from pandas_datareader.data import Options 
 
-import urllib.request as req
+#import urllib.request as req
+from scipy.stats import norm as norm
 
 
-# Getting Options Data
+def d1(options_df, interest_rate = 0.0193, q = 0, year = 252):
+    numerator = np.log(options_df['Underlying_Price'] / 
+                       options_df['Strike']) + ((interest_rate - q) + options_df['IV']**2 / 2.0) * options_df['DTE']/year
+    denominator = options_df['IV'] * np.sqrt(options_df['DTE']/year)
+    return numerator / denominator
+
+def d2(options_df, interest_rate = 0.0193, q = 0, year = 252):
+    return d1(options_df, interest_rate, q, year) - options_df['IV'] * np.sqrt(options_df['DTE']/year)
+
+def bsm_call(options_df, interest_rate = 0.0193, q = 0, year = 252):
+
+    D1 = d1(options_df, interest_rate, q, year)
+    D2 = d2(options_df, interest_rate, q, year)
+    call_prices = options_df['Underlying_Price'] * np.exp(-q * options_df['DTE']/year) * norm.cdf(D1) - options_df['Strike'] * np.exp(-interest_rate * options_df['DTE']/year) * norm.cdf(D2)
+    
+    return pd.DataFrame(call_prices)
+
+def bsm_put(options_df, interest_rate = 0.0193, q = 0, year = 252):
+
+    D1 = d1(options_df, interest_rate, q, year)
+    D2 = d2(options_df, interest_rate, q, year)
+    put_prices = options_df['Strike'] * np.exp(-interest_rate * options_df['DTE']/year) * norm.cdf(-D2) - options_df['Underlying_Price'] * np.exp(-q * options_df['DTE']/year) * norm.cdf(-D1)
+    return pd.DataFrame(put_prices)
+
+def black_scholes_merton(options_df, interest_rate = 0.0193, q = 0, year = 252):
+    calls = options_df[options_df['Type'] == 'call']
+    if len(calls) > 0:
+        calls['Simulated Prices'] = bsm_call(calls, interest_rate, q, year)
+    
+    
+    puts = options_df[options_df['Type'] == 'put']
+    if len(puts) > 0:
+        puts['Simulated Prices'] = bsm_put(puts, interest_rate, q, year)
+    
+    if len(puts) > 0 and len(calls) > 0:
+        df = pd.concat([calls, puts], axis = 0)
+    elif len(puts) > 0:
+        df = puts
+    else:
+        df = calls
+        
+    return df.fillna(0).reset_index()[df.columns]
+
+def delta(options_df, interest_rate = 0.0193, q = 0, year = 252):
+
+    options_df['D1'] = d1(options_df, interest_rate, q, year)
+    calls = options_df[options_df['Type'] == 'call']
+    if len(calls) > 0:
+        calls['Delta'] = np.exp(-q*calls['DTE']/year)*norm.cdf(calls['D1'])
+    
+    puts = options_df[options_df['Type'] == 'put']
+    if len(puts) > 0:
+        puts['Delta'] = -np.exp(-q*puts['DTE']/year)*norm.cdf(-puts['D1'])
+    
+    if len(puts) > 0 and len(calls) > 0:
+        df = pd.concat([calls, puts], axis = 0)
+    elif len(puts) > 0:
+        df = puts
+    else:
+        df = calls
+        
+    del df['D1']
+    return df.fillna(0).reset_index()[df.columns]
+
+def theta(options_df, interest_rate = 0.0193, q = 0, year = 252):
+
+    options_df['D1'] = d1(options_df, interest_rate, q, year)
+    options_df['D2'] = d2(options_df, interest_rate, q, year)
+
+    options_df['first_term'] = (options_df['Underlying_Price'] * np.exp(-q * options_df['DTE']/year) * 
+                                norm.pdf(options_df['D1']) * options_df['IV']) / (2 * np.sqrt(options_df['DTE']/year))
+    
+    calls = options_df[options_df['Type'] == 'call']
+    if len(calls) > 0:
+        calls_second_term = -q * calls.Strike * np.exp(-q * calls.DTE/year)*norm.cdf(calls.D1)
+        calls_third_term = interest_rate * calls.Strike * np.exp(-interest_rate * calls.DTE/year)*norm.cdf(calls.D2)
+        calls['Theta'] = -(calls.first_term + calls_second_term + calls_third_term) / 365.0
+    
+    puts = options_df[options_df['Type'] == 'put']
+    if len(puts) > 0:
+        puts_second_term = -q * puts.Strike * np.exp(-q * puts.DTE/year) * norm.cdf(-puts.D1)
+        puts_third_term = interest_rate * puts.Strike * np.exp(-interest_rate * puts.DTE/year) * norm.cdf(-puts.D2)
+        puts['Theta'] = (-puts.first_term + puts_second_term + puts_third_term) / 365.0
+    
+    if len(puts) > 0 and len(calls) > 0:
+        df = pd.concat([calls, puts], axis = 0)
+    elif len(puts) > 0:
+        df = puts
+    else:
+        df = calls
+        
+    del df['first_term'], df['D1'], df['D2']
+    
+    return df.fillna(0).reset_index()[df.columns]
+
+
+def gamma(options_df, interest_rate = 0.0193, q = 0, year = 252):
+    D1 = d1(options_df, interest_rate, q, year)
+    numerator = np.exp(-q * options_df.DTE/year) * norm.pdf(D1)
+    denominator = options_df.Underlying_Price * options_df.IV * np.sqrt(options_df.DTE/year)
+    options_df['Gamma'] = numerator / denominator
+    return options_df.fillna(0)
+
+
+def vega(options_df, interest_rate = 0.0193, q = 0, year = 252):
+    D1 = d1(options_df, interest_rate, q, year)
+    options_df['Vega'] = options_df.Underlying_Price * np.exp(-q * options_df.DTE/year) * norm.pdf(D1) * np.sqrt(options_df.DTE/year) * 0.01
+    return options_df.fillna(0)
+
+
+def rho(options_df, interest_rate = 0.0193, q = 0, year = 252):
+    options_df['D2'] = d2(options_df, interest_rate, q, year)
+    calls = options_df[options_df['Type'] == 'call']
+    if len(calls) > 0:
+        calls['Rho'] = calls.DTE/year * calls.Strike * np.exp(-interest_rate * calls.DTE/year) * norm.cdf(calls.D2) * 0.01
+    
+    puts = options_df[options_df['Type'] == 'put']
+    if len(puts) > 0:
+        puts['Rho'] = -puts.DTE/year * puts.Strike * np.exp(-interest_rate * puts.DTE/year) * norm.cdf(-puts.D2) * 0.01
+    
+    if len(puts) > 0 and len(calls) > 0:
+        df = pd.concat([calls, puts], axis = 0)
+    elif len(puts) > 0:
+        df = puts
+    else:
+        df = calls
+        
+    del df['D2']
+    
+    return df.fillna(0).reset_index()[df.columns]
+
+def all_greeks(options_df, interest_rate = 0.0193, q = 0, day_format = 'trading'):
+    if day_format != 'trading':
+        year = 365
+    else:
+        year = 252
+        
+    df = delta(theta(gamma(vega(rho(options_df, interest_rate, q ,year), 
+                                interest_rate, q, year),interest_rate, q, year), interest_rate, q, year), interest_rate, q, year)
+    # del df['D2']
+    return df
+
+#%%
+
 def all_options(ticker, dte_ub, dte_lb, moneyness = 0.03):
     tape = Options(ticker, 'yahoo')
     data = tape.get_all_data().reset_index()
@@ -23,7 +167,7 @@ def all_options(ticker, dte_ub, dte_lb, moneyness = 0.03):
     data['Moneyness'] = np.abs(data['Strike'] - data['Underlying_Price'])/data['Underlying_Price']
     
     data['DTE'] = (data['Expiry'] - dt.datetime.today()).dt.days
-    data = data[['Strike', 'DTE', 'Type', 'IV', 'Underlying_Price',
+    data = data[['Strike', 'Expiry','DTE', 'Type', 'IV', 'Underlying_Price',
                  'Last','Bid','Ask', 'Moneyness']]
     data['Mid'] = (data['Ask'] - data['Bid'])/2 + data['Bid']
     data = data.dropna()
@@ -32,80 +176,8 @@ def all_options(ticker, dte_ub, dte_lb, moneyness = 0.03):
                 (data['DTE'] >= dte_lb)]
     return data.sort_values(['DTE','Type']).reset_index()[data.columns]
 
-
-def greek_calc(df, prem_price_use = 'Mid', day_format = 'trading', interest_rate = 0.0193, dividend_rate = 0):
-    if prem_price_use != 'Mid':
-        price_col = 'Last'
-    else:
-        price_col = 'Mid'
-        
-    if day_format != 'trading':
-        year = 365
-    else:
-        year = 252
-    
-    premiums = df[price_col].values
-    strikes = df['Strike'].values
-    time_to_expirations = df['DTE'].values
-    ivs = df['IV'].values
-    underlying = df['Underlying_Price'].values[0]
-    types = df['Type'].values
-
-    deltas = []
-    gammas = []
-    thetas = []
-    rhos = []
-    vegas = []
-    for premium, strike, time_to_expiration, flag, iv in zip(premiums, strikes, time_to_expirations, types, ivs):
-
-        # Constants
-        S = underlying
-        K = strike
-        t = time_to_expiration/float(year)
-        r = interest_rate
-        q = dividend_rate
-        try:
-            rho = py_vollib.black_scholes_merton.greeks.analytical.rho(flag[0], S, K, t, r, iv, q)
-        except:
-            rho = 0.0
-        rhos.append(rho)
-
-        try:
-            delta = py_vollib.black_scholes_merton.greeks.analytical.delta(flag[0], S, K, t, r, iv, q)
-        except:
-            delta = 0.0
-        deltas.append(delta)
-
-        try:
-            gamma = py_vollib.black_scholes_merton.greeks.analytical.gamma(flag[0], S, K, t, r, iv, q)
-        except:
-            gamma = 0.0
-        gammas.append(gamma)
-
-        try:
-            theta = py_vollib.black_scholes_merton.greeks.analytical.theta(flag[0], S, K, t, r, iv, q)
-        except:
-            theta = 0.0
-        thetas.append(theta)
-
-        try:
-            vega = py_vollib.black_scholes_merton.greeks.analytical.vega(flag[0], S, K, t, r, iv, q)
-        except:
-            vega = 0.0
-        vegas.append(vega)
-
-    df['Delta'] = deltas
-    df['Gamma'] = gammas
-    df['Theta'] = thetas
-    df['Vega'] = vegas
-    df['Rho'] = rhos
-    # df = df.dropna()
-    
-    return df
-
-
 def price_sim(options_df, price_change, vol_change, days_change, output = 'All',
-              skew = 'flat', day_format = 'trading', interest_rate = 0.0193, dividend_rate = 0,
+              skew = 'flat', day_format = 'trading', interest_rate = 0.0193, q = 0,
               prem_price_use = 'Mid'):
     '''
     output types can be: All, Price, Delta, Gamma, Vega, Theta
@@ -120,143 +192,110 @@ def price_sim(options_df, price_change, vol_change, days_change, output = 'All',
         year = 365
     else:
         year = 252
-        
-    strikes = options_df['Strike'].values
-    time_to_expirations = options_df['DTE'].values
-    ivs = options_df['IV'].values
-    underlying = options_df['Underlying_Price'].values[0]
-    types = options_df['Type'].values
-
-    # Tweaking changes
-    prices = []
-    deltas = []
-    gammas = []
-    thetas = []
-    vegas = []
-    rhos = []
-    for sigma, strike, time_to_expiration, flag in zip(ivs, strikes, time_to_expirations, types):
-
-        # Constants
-        S = underlying*(1 + price_change)
-        t = max(time_to_expiration - days_change, 0)/float(year)
-        K = strike
-        r = interest_rate
-        q = dividend_rate
-        
-        if skew == 'flat':
-            sigma = sigma + vol_change
-        elif skew == 'right':
-            sigma = sigma + vol_change + vol_change*(K/S - 1)
-        elif skew == 'left':
-            sigma = sigma + vol_change - vol_change*(K/S - 1)
-        else:
-            sigma = sigma + vol_change + vol_change*abs(K/S - 1)
-        
-        if (output == 'All') or (output == 'Price'):
-            if days_change == time_to_expiration:
-                if flag == 'call':
-                    price = max(S - K, 0.0)
-                else:
-                    price = max(K - S, 0.0)
-                prices.append(price)
-            else:
-                try:
-                    price = py_vollib.black_scholes_merton.black_scholes_merton(flag[0], S, K, t, r, sigma, q)
-                except:
-                    price = 0.0
-                prices.append(price)
-                    
-        if (output == 'All') or (output == 'Delta'):
-            try:
-                delta = py_vollib.black_scholes_merton.greeks.analytical.delta(flag[0], S, K, t, r, sigma, q)
-            except:
-                delta = 0.0
-            deltas.append(delta)
-        
-        if (output == 'All') or (output == 'Gamma'):
-            try:
-                gamma = py_vollib.black_scholes_merton.greeks.analytical.gamma(flag[0], S, K, t, r, sigma, q)
-            except:
-                gamma = 0.0
-            gammas.append(gamma)
+    
+    df = options_df.copy()
+    df['Underlying_Price'] = df['Underlying_Price']*(1 + price_change)
+    df['DTE'] = df['DTE'] - days_change
+    df[df['DTE'] < 0] = 0
+    
+    
+    if skew == 'flat':
+        df['IV'] = df['IV'] + vol_change
+    elif skew == 'right':
+        df['IV'] = df['IV'] + vol_change + vol_change*(df['Strike']/df['Underlying_Price'] - 1)
+    elif skew == 'left':
+        df['IV'] = df['IV'] + vol_change - vol_change*(df['Strike']/df['Underlying_Price'] - 1)
+    else:
+        df['IV'] = df['IV'] + vol_change + vol_change*abs(df['Strike']/df['Underlying_Price'] - 1)
             
-        if (output == 'All') or (output == 'Theta'):
-            try:
-                theta = py_vollib.black_scholes_merton.greeks.analytical.theta(flag[0], S, K, t, r, sigma, q)
-            except:
-                theta = 0.0
-            thetas.append(theta)
-        
-        if (output == 'All') or (output == 'Vega'):
-            try:
-                vega = py_vollib.black_scholes_merton.greeks.analytical.vega(flag[0], S, K, t, r, sigma, q)
-            except:
-                vega = 0.0
-            vegas.append(vega)
-        if (output == 'All') or (output == 'Rho'):
-            try:
-                rho = py_vollib.black_scholes_merton.greeks.analytical.rho(flag[0], S, K, t, r, sigma, q)
-            except:
-                rho = 0.0
-            rhos.append(rho)
-            
-    df = options_df[['Strike','DTE','Type',price_col,'Underlying_Price']]
-    df['Simulated Price'] = prices
-    df['Price Change'] = df['Simulated Price']/(df[price_col]) - 1
-    if (output == 'All') or (output == 'Delta'):
-        df['Delta'] = deltas
-    if (output == 'All') or (output == 'Gamma'):
-        df['Gamma'] = gammas
-    if (output == 'All') or (output == 'Theta'):
-        df['Theta'] = thetas
-    if (output == 'All') or (output == 'Vega'):
-        df['Vega'] = vegas
-    if (output == 'All') or (output == 'Rho'):
-        df['Rho'] = rhos
-    df = df.dropna()
-    return df
+    output_df = black_scholes_merton(delta(gamma(theta(vega(rho(df,interest_rate, q, year), 
+                                                           interest_rate, q, year),
+                                                      interest_rate, q, year), 
+                                                interest_rate, q, year), 
+                                          interest_rate, q, year),
+                                     interest_rate, q, year)
+    return output_df
 
 def position_sim(position_df, holdings, shares,
                  price_change, vol_change, dte_change, output = 'All',
                  skew = 'flat', prem_price_use = 'Mid', day_format = 'trading', 
-                 interest_rate = 0.0193, dividend_rate = 0):
+                 interest_rate = 0.0193, dividend_rate = 0, vol_spacing = 2,
+                 spacing = 20):
     
     if prem_price_use != 'Mid':
         price_col = 'Last'
     else:
         price_col = 'Mid'
-                
-    position = position_df
+
+    position = position_df.copy().reset_index()[['Strike','Expiry','DTE','Type','IV','Underlying_Price',price_col]]
     position['Pos'] = holdings
-    position_dict = {}
-    position_dict['Total Cost'] = sum(position[price_col]*position['Pos'])*100 + shares*position['Underlying_Price'].values[0]
+    initial_cost = sum(position[price_col]*position['Pos'])*100 + shares*position['Underlying_Price'].values[0]
     
-    simulation = price_sim(position, price_change, vol_change, dte_change, output,
-                           skew, day_format, interest_rate, dividend_rate,
-                           prem_price_use)
-    
-    if (output == 'All') or (output == 'PnL') or (output == 'Percent Return'):
-        position_dict['Simulated Price'] = sum(simulation['Simulated Price']*position['Pos'])*100 + shares*position['Underlying_Price'].values[0]*(1 + price_change)
-        position_dict['PnL'] = position_dict['Simulated Price'] - position_dict['Total Cost']
-        if position_dict['Total Cost'] > 0:
-            position_dict['Percent Return'] = position_dict['PnL']/position_dict['Total Cost']
+    price_changes = np.linspace(price_change[0], price_change[-1], spacing)
+    dte_changes = np.linspace(dte_change[0], dte_change[-1], dte_change[-1] - dte_change[0] + 1)
+
+    if vol_spacing <= 2:
+        vol_changes = vol_change
+    else:
+        vol_changes = np.linspace(vol_change[0], vol_change[-1], vol_spacing)
+
+    adj_dfs = []
+
+    price_ax, dte_ax = np.meshgrid(price_changes,dte_changes)
+
+    vol_adj_df = pd.DataFrame(np.array(np.meshgrid(price_changes,dte_changes)).reshape(2,-1).T)
+    vol_adj_df.columns = ['ret_change', 'dte_change']
+
+    for vol_change in vol_changes:
+        # mesh_shape = np.meshgrid(price_changes,dte_changes)
+
+        indi_sims = []
+        for idx, row in position.iterrows():
+            curr_sim = pd.DataFrame(index = range(len(vol_adj_df)))
+            curr_sim['Strike'] = row.Strike
+            curr_sim['DTE'] = row.DTE - vol_adj_df['dte_change']
+            curr_sim[curr_sim['DTE'] < 0] = 0
+
+            curr_sim['Type'] = row.Type
+            curr_sim['IV'] = row.IV
+            curr_sim['Underlying_Price'] = (1 + vol_adj_df[['ret_change']])*row.Underlying_Price
+            curr_sim = price_sim(curr_sim, 0, vol_change, 0, output,
+                                 skew, day_format, interest_rate, dividend_rate,
+                                 prem_price_use)
+            indi_sims.append(curr_sim)
+
+        if len(holdings) < 2:
+            try:
+                adj_df = indi_sims[0].copy()
+            except:
+                break
+            adj_df['Delta'] = adj_df['Delta'] + shares/100
+            adj_df['PnL'] = position.head(1)['Pos'][0]*(adj_df['Simulated Prices'] - 
+                                                        position.head(1)[price_col][0])*100 + shares*(adj_df['Underlying_Price'] - 
+                                                                                                      position.head(1)['Underlying_Price'][0])
         else:
-            position_dict['Percent Return'] = -position_dict['PnL']/position_dict['Total Cost']
-            
-    if (output == 'All') or (output == 'Delta'):
-        position_dict['Simulated Delta'] = sum(simulation['Delta']*position['Pos']) + shares/100
-        
-    if (output == 'All') or (output == 'Gamma'):
-        position_dict['Simulated Gamma'] = sum(simulation['Gamma']*position['Pos'])
-        
-    if (output == 'All') or (output == 'Theta'):
-        position_dict['Simulated Theta'] = sum(simulation['Theta']*position['Pos'])
-        
-    if (output == 'All') or (output == 'Vega'):
-        position_dict['Simulated Vega'] = sum(simulation['Vega']*position['Pos'])
-        
-    if (output == 'All') or (output == 'Rho'):
-        position_dict['Simulated Rho'] = sum(simulation['Rho']*position['Pos'])
+            adj_df = curr_sim[['Underlying_Price']]
+            adj_df['Delta'] = 0
+            adj_df['Gamma'] = 0
+            adj_df['Vega'] = 0
+            adj_df['Theta'] = 0
+            adj_df['Rho'] = 0
+            adj_df['PnL'] = 0
+            for i, val in enumerate(holdings):
+                adj_df['Delta'] = adj_df['Delta'] + val*indi_sims[i]['Delta']
+                adj_df['Gamma'] = adj_df['Gamma'] + val*indi_sims[i]['Gamma']
+                adj_df['Vega'] = adj_df['Vega'] + val*indi_sims[i]['Vega']
+                adj_df['Theta'] = adj_df['Theta'] + val*indi_sims[i]['Theta']
+                adj_df['Rho'] = adj_df['Rho'] + val*indi_sims[i]['Rho']
+                adj_df['PnL'] = adj_df['PnL'] + val*indi_sims[i]['Simulated Prices']
+
+            adj_df['PnL'] = (adj_df['PnL'] - sum(position[price_col]*position['Pos']))*100 - shares*(adj_df['Underlying_Price'] -
+                                                                                                     position.head(1)['Underlying_Price'][0])
+        if initial_cost < 0:
+            adj_df['Percent Return'] = adj_df['PnL']/(-initial_cost)
+        else:
+            adj_df['Percent Return'] = adj_df['PnL']/initial_cost
+        adj_df['Date'] = dt.datetime.today().date() + pd.to_timedelta(vol_adj_df['dte_change'] + 1, 'd')
+        adj_dfs.append(adj_df)
     
-    outframe = pd.DataFrame(position_dict, index = [vol_change])
-    return outframe
+    return (adj_dfs, price_ax, dte_ax)
