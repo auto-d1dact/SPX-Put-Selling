@@ -67,7 +67,7 @@ class yahoo_query:
         self.options_url = 'https://query1.finance.yahoo.com/v7/finance/options/{}'.format(self.ticker)
         self.quick_summary_url = 'https://query1.finance.yahoo.com/v7/finance/quote?symbols={}'.format(self.ticker)
         self.earnings_management_url = 'https://query1.finance.yahoo.com/v10/finance/quoteSummary/{}?modules=assetProfile%2CearningsHistory'.format(self.ticker)
-        self.fin_statements_url = "https://query1.finance.yahoo.com/v7/finance/quote?symbols={}&fields=ebitda,shortRatio,priceToSales".format(self.ticker)
+        self.fin_statements_url = "https://query1.finance.yahoo.com/v7/finance/quote?symbols={}&fields=ebitda,shortRatio,priceToSales,priceToBook".format(self.ticker)
     
     # Class method for querying yahoo minute data using
     # minute_url defined on initialization
