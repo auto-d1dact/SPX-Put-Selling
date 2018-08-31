@@ -53,6 +53,8 @@ Querying for: assetProfile and earningsHistory
 '''
 
 
+# Creating class for querying yahoo data
+# yahoo_query(str[self.ticker], datetime.date([starting_date]), datetime.date([ending_date])):
 class yahoo_query:
     
     # Initializing yahoo_query class with self.ticker and creating
@@ -66,8 +68,21 @@ class yahoo_query:
         self.hist_price_url = 'https://query1.finance.yahoo.com/v8/finance/chart/{0}?symbol={0}&period1={1}&period2={2}&interval=1d'.format(self.ticker,start_date_unix,end_date_unix)
         self.options_url = 'https://query1.finance.yahoo.com/v7/finance/options/{}'.format(self.ticker)
         self.quick_summary_url = 'https://query1.finance.yahoo.com/v7/finance/quote?symbols={}'.format(self.ticker)
-        self.earnings_management_url = 'https://query1.finance.yahoo.com/v10/finance/quoteSummary/{}?modules=assetProfile%2CearningsHistory'.format(self.ticker)
-        self.fin_statements_url = "https://query1.finance.yahoo.com/v7/finance/quote?symbols={}&fields=ebitda,shortRatio,priceToSales,priceToBook".format(self.ticker)
+        
+        modules = '%2C'.join(['assetProfile','incomeStatementHistory', 'balanceSheetHistoryQuarterly',
+                              'balanceSheetHistory','cashflowStatementHistory', 'cashflowStatementHistoryQuarterly',
+                              'defaultKeyStatistics','financialData','incomeStatementHistoryQuarterly',
+                              'calendarEvents','secFilings', 'recommendationTrend', 'institutionOwnership',
+                              'fundOwnership', 'majorDirectHolders', 'majorHoldersBreakdown',
+                              'insiderTransactions', 'insiderHolders', 'netSharePurchaseActivity',
+                              'earnings', 'earningsHistory', 'earningsTrend', 'industryTrend', 'indexTrend',
+                              'sectorTrend'])
+        self.full_info_url = 'https://query1.finance.yahoo.com/v10/finance/quoteSummary/{0}?modules={1}'.format(self.ticker, modules)
+        
+        fields = ','.join(['ebitda','shortRatio','priceToSales','priceToBook','trailingPE','forwardPE','marketCap',
+                           'trailingAnnualDividendRate','trailingAnnualDividendYield','sharesOutstanding','bookValue',
+                           'epsTrailingTwelveMonths','epsForward'])
+        self.fin_statements_url = "https://query1.finance.yahoo.com/v7/finance/quote?symbols={0}&fields={1}".format(self.ticker,fields)
     
     # Class method for querying yahoo minute data using
     # minute_url defined on initialization
@@ -92,11 +107,13 @@ class yahoo_query:
             self.hist_prices.index = pd.to_datetime(self.hist_prices.index)
             self.hist_prices.columns = ["{0}_{1}".format(self.ticker, x) for x in self.hist_prices.columns]
             
-    # Class method for querying yahoo earnings data
-    # using earnings_management_url on initialization
-    def earnings_query(self):
-        with urlreq.urlopen(self.earnings_management_url) as url:
+    # Class method for querying yahoo data for all modules from the above defined modules list
+    # using full_info_url on initialization
+    def full_info_query(self):
+        with urlreq.urlopen(self.full_info_url) as url:
             data = json.loads(url.read().decode())
+            
+            ########## Creating earnings_history dataframe
             earnings_history = pd.concat([pd.DataFrame(quarter_earnings).loc['raw'] for 
                                           quarter_earnings in 
                                           data['quoteSummary']['result'][0]['earningsHistory']['history']],
@@ -105,18 +122,142 @@ class yahoo_query:
                                                      x in earnings_history['quarter'].tolist()])
             self.earnings_history = earnings_history.drop(['period','maxAge','quarter'], axis = 1)
             
-            # Additional data figure assignments from same api call
+            ########### Creating company profile (risk metrics) dataframe
             self.profile = pd.DataFrame(dict((k, data['quoteSummary']['result'][0]['assetProfile'][k]) for 
                                              k in ('industry', 'sector', 'fullTimeEmployees', 'auditRisk', 
                                                    'boardRisk', 'compensationRisk', 'shareHolderRightsRisk', 
                                                    'overallRisk')), index = [self.ticker])
             
+            ########### Creating executives profile dataframe
             executives = pd.concat([pd.DataFrame(executive).loc['raw'] for 
                                     executive in data['quoteSummary']['result'][0]['assetProfile']['companyOfficers']],
                                    axis = 1).T
             executives.index = executives.title
             self.executives = executives.drop(['title','maxAge','yearBorn'], axis = 1)
             
+            ########### Creating historical cashflow statements dataframe
+            cashFlowStatementAnnual = pd.concat([pd.DataFrame(cfstatement).loc['raw'] for cfstatement in 
+                                                 data['quoteSummary']['result'][0]['cashflowStatementHistory']['cashflowStatements']],
+                                                axis = 1).T
+            cashFlowStatementAnnual.index = pd.to_datetime([dt.datetime.utcfromtimestamp(int(x)).date() for 
+                                                            x in cashFlowStatementAnnual['endDate'].tolist()])
+            self.cashFlowStatementAnnual = cashFlowStatementAnnual.drop(['endDate', 'maxAge'], axis = 1)
+            
+            cashFlowStatementQuarter = pd.concat([pd.DataFrame(cfstatement).loc['raw'] for cfstatement in 
+                                                  data['quoteSummary']['result'][0]['cashflowStatementHistoryQuarterly']['cashflowStatements']],
+                                                 axis = 1).T
+            cashFlowStatementQuarter.index = pd.to_datetime([dt.datetime.utcfromtimestamp(int(x)).date() for 
+                                                             x in cashFlowStatementQuarter['endDate'].tolist()])
+            self.cashFlowStatementQuarter = cashFlowStatementQuarter.drop(['endDate', 'maxAge'], axis = 1)
+            
+            ########### Creating institutional ownership information for company
+            institutionOwn = pd.concat([pd.DataFrame(owners).loc['raw'] for owners in 
+                                        data['quoteSummary']['result'][0]['institutionOwnership']['ownershipList']],
+                                      axis = 1).T
+            institutionOwn.reportDate = pd.to_datetime([dt.datetime.utcfromtimestamp(int(x)).date() for
+                                                        x in institutionOwn['reportDate'].tolist()])
+            institutionOwn.index = institutionOwn.organization
+            self.institutionOwners = institutionOwn.drop(['maxAge', 'organization'], axis = 1)
+            
+            ########### Creating major holders info dataframe
+            self.majorHolderInfo = pd.DataFrame(data['quoteSummary']['result'][0]['majorHoldersBreakdown']).drop('maxAge', 
+                                                                                                            axis = 1).loc[['raw']]
+            self.majorHolderInfo.index = [self.ticker]
+            
+            ########### Creating recommendation trend dataframe
+            self.recommendationTrend = pd.concat([pd.DataFrame(trend, index = [trend['period']]) for trend in 
+                                                  data['quoteSummary']['result'][0]['recommendationTrend']['trend']],
+                                                 axis = 0).T.drop('period')
+            
+            ########### Creating key statistics dataframe
+            self.keyStats = pd.DataFrame(data['quoteSummary']['result'][0]['defaultKeyStatistics']).loc[['raw']]
+            self.keyStats.index = [self.ticker]
+            
+            ########### Creating share purchase dataframe
+            self.purchaseActivity = pd.DataFrame(data['quoteSummary']['result'][0]['netSharePurchaseActivity']).loc[['raw']]
+            self.purchaseActivity.index = [self.ticker]
+            
+            ########### Creating insider transactions dataframe
+            insiderTxns = pd.concat([pd.DataFrame(filer).loc[['raw']] for filer in data['quoteSummary']['result'][0]['insiderTransactions']['transactions']])
+            insiderTxns.index = insiderTxns.filerName
+            insiderTxns.startDate = pd.to_datetime([dt.datetime.utcfromtimestamp(int(x)).date() for 
+                                                    x in insiderTxns.startDate.tolist()])
+            self.insiderTxns = insiderTxns.drop(['filerUrl','maxAge','moneyText','filerName'], axis = 1)
+            
+            ########### Creating historical income statement dataframe
+            incomeStatementAnnual = pd.concat([pd.DataFrame(incomeStatement).loc['raw'] for 
+                                   incomeStatement in 
+                                   data['quoteSummary']['result'][0]['incomeStatementHistory']['incomeStatementHistory']],
+                                  axis = 1).T
+
+            incomeStatementAnnual.index = pd.to_datetime([dt.datetime.utcfromtimestamp(int(x)).date() for 
+                                                          x in incomeStatementAnnual['endDate'].tolist()])
+            self.incomeStatementAnnual = incomeStatementAnnual.drop('endDate', axis = 1)
+
+
+            incomeStatementQuarter = pd.concat([pd.DataFrame(incomeStatement).loc['raw'] for 
+                                                incomeStatement in 
+                                                data['quoteSummary']['result'][0]['incomeStatementHistoryQuarterly']['incomeStatementHistory']],
+                                               axis = 1).T
+
+            incomeStatementQuarter.index = pd.to_datetime([dt.datetime.utcfromtimestamp(int(x)).date() for 
+                                                           x in incomeStatementQuarter['endDate'].tolist()])
+            self.incomeStatementQuarter = incomeStatementQuarter.drop('endDate', axis = 1)
+            
+            ############ Creating historical balance sheet statement dataframe
+            balanceSheetAnnual = pd.concat([pd.DataFrame(balanceSheet).loc['raw'] for 
+                                   balanceSheet in 
+                                   data['quoteSummary']['result'][0]['balanceSheetHistory']['balanceSheetStatements']],
+                                  axis = 1).T
+
+            balanceSheetAnnual.index = pd.to_datetime([dt.datetime.utcfromtimestamp(int(x)).date() for 
+                                                          x in balanceSheetAnnual['endDate'].tolist()])
+            self.balanceSheetAnnual = balanceSheetAnnual.drop('endDate', axis = 1)
+
+
+            balanceSheetQuarter = pd.concat([pd.DataFrame(balanceSheet).loc['raw'] for 
+                                                balanceSheet in 
+                                                data['quoteSummary']['result'][0]['balanceSheetHistoryQuarterly']['balanceSheetStatements']],
+                                               axis = 1).T
+
+            balanceSheetQuarter.index = pd.to_datetime([dt.datetime.utcfromtimestamp(int(x)).date() for 
+                                                           x in balanceSheetQuarter['endDate'].tolist()])
+            self.balanceSheetQuarter = balanceSheetQuarter.drop('endDate', axis = 1)
+            
+            ############ Creating fund ownership dataframe
+            self.fundOwnership = pd.concat([pd.DataFrame(fundOwner).loc['raw'] for 
+                                            fundOwner in 
+                                            data['quoteSummary']['result'][0]['fundOwnership']['ownershipList']],
+                                           axis = 1).T.drop('maxAge', axis = 1)
+
+            self.fundOwnership.index = self.fundOwnership.organization
+            self.fundOwnership.reportDate = pd.to_datetime([dt.datetime.utcfromtimestamp(int(x)) for 
+                                                            x in self.fundOwnership.reportDate])
+            
+            ############ Creating insider holders dataframe
+            self.insiderHolders = pd.concat([pd.DataFrame(holder).loc['raw'] for 
+                                             holder in data['quoteSummary']['result'][0]['insiderHolders']['holders']],
+                                            axis = 1).T.drop('maxAge', axis = 1)
+            self.insiderHolders.index = range(len(self.insiderHolders))
+            
+            ############ Creating calendar events dataframe (dividend dates and earnings dates)
+            #self.currEarnings = pd.DataFrame(data['quoteSummary']['result'][0]['calendarEvents']['earnings']).loc[['raw']]
+            #self.dividends = pd.DataFrame(dict((k, dt.datetime.utcfromtimestamp(int(data['quoteSummary']['result'][0]['calendarEvents'][k]['raw'])).date()) for
+            #                                   k in ('dividendDate','exDividendDate')), index = [self.ticker])
+            
+            
+            ############ Creating earnings estimate dataframe
+            earningEsts = pd.concat([pd.DataFrame(estimate).loc['raw'] for estimate in 
+                                     data['quoteSummary']['result'][0]['earningsTrend']['trend']],
+                                    axis = 1).T.dropna(subset=['endDate'])
+            earningEsts.index = pd.to_datetime([dt.datetime.strptime(date,'%Y-%m-%d').date() for date in earningEsts.endDate])
+            self.earningEsts = earningEsts.drop('endDate', axis = 1)
+            
+            
+            ############ Creating financial data
+            self.finData = pd.DataFrame(data['quoteSummary']['result'][0]['financialData']).loc[['raw']]
+            self.finData.index = [self.ticker]
+
         
     # Class method for querying most near-term options chain
     # using  options_url on initialization
@@ -150,3 +291,4 @@ class yahoo_query:
         with urlreq.urlopen(self.fin_statements_url) as url:
             data = json.loads(url.read().decode())
             self.financials = pd.DataFrame(data['quoteResponse']['result'][0], index = [self.ticker])
+            
