@@ -123,17 +123,24 @@ class yahoo_query:
             self.earnings_history = earnings_history.drop(['period','maxAge','quarter'], axis = 1)
             
             ########### Creating company profile (risk metrics) dataframe
-            self.profile = pd.DataFrame(dict((k, data['quoteSummary']['result'][0]['assetProfile'][k]) for 
-                                             k in ('industry', 'sector', 'fullTimeEmployees', 'auditRisk', 
-                                                   'boardRisk', 'compensationRisk', 'shareHolderRightsRisk', 
-                                                   'overallRisk')), index = [self.ticker])
+            profileKeys = list(data['quoteSummary']['result'][0]['assetProfile'].keys())
+            checkKeys = ['industry', 'sector', 'fullTimeEmployees', 'auditRisk', 
+                         'boardRisk', 'compensationRisk', 'shareHolderRightsRisk', 
+                         'overallRisk']
+            keyList = list(filter(lambda x: x in checkKeys, profileKeys))
             
-            ########### Creating executives profile dataframe
-            executives = pd.concat([pd.DataFrame(executive).loc['raw'] for 
-                                    executive in data['quoteSummary']['result'][0]['assetProfile']['companyOfficers']],
-                                   axis = 1).T
-            executives.index = executives.title
-            self.executives = executives.drop(['title','maxAge','yearBorn'], axis = 1)
+            self.profile = pd.DataFrame(dict((k, data['quoteSummary']['result'][0]['assetProfile'][k]) for 
+                                             k in keyList), index = [self.ticker])
+            
+            try:
+                ########### Creating executives profile dataframe
+                executives = pd.concat([pd.DataFrame(executive).loc['raw'] for 
+                                        executive in data['quoteSummary']['result'][0]['assetProfile']['companyOfficers']],
+                                       axis = 1).T
+                executives.index = executives.title
+                self.executives = executives.drop(['title','maxAge','yearBorn'], axis = 1)
+            except:
+                pass
             
             ########### Creating historical cashflow statements dataframe
             cashFlowStatementAnnual = pd.concat([pd.DataFrame(cfstatement).loc['raw'] for cfstatement in 
@@ -150,39 +157,54 @@ class yahoo_query:
                                                              x in cashFlowStatementQuarter['endDate'].tolist()])
             self.cashFlowStatementQuarter = cashFlowStatementQuarter.drop(['endDate', 'maxAge'], axis = 1)
             
-            ########### Creating institutional ownership information for company
-            institutionOwn = pd.concat([pd.DataFrame(owners).loc['raw'] for owners in 
-                                        data['quoteSummary']['result'][0]['institutionOwnership']['ownershipList']],
-                                      axis = 1).T
-            institutionOwn.reportDate = pd.to_datetime([dt.datetime.utcfromtimestamp(int(x)).date() for
-                                                        x in institutionOwn['reportDate'].tolist()])
-            institutionOwn.index = institutionOwn.organization
-            self.institutionOwners = institutionOwn.drop(['maxAge', 'organization'], axis = 1)
+            try:
+                ########### Creating institutional ownership information for company
+                institutionOwn = pd.concat([pd.DataFrame(owners).loc['raw'] for owners in 
+                                            data['quoteSummary']['result'][0]['institutionOwnership']['ownershipList']],
+                                          axis = 1).T
+                institutionOwn.reportDate = pd.to_datetime([dt.datetime.utcfromtimestamp(int(x)).date() for
+                                                            x in institutionOwn['reportDate'].tolist()])
+                institutionOwn.index = institutionOwn.organization
+                self.institutionOwners = institutionOwn.drop(['maxAge', 'organization'], axis = 1)
+            except:
+                pass
             
-            ########### Creating major holders info dataframe
-            self.majorHolderInfo = pd.DataFrame(data['quoteSummary']['result'][0]['majorHoldersBreakdown']).drop('maxAge', 
-                                                                                                            axis = 1).loc[['raw']]
-            self.majorHolderInfo.index = [self.ticker]
+            try:
+                ########### Creating major holders info dataframe
+                self.majorHolderInfo = pd.DataFrame(data['quoteSummary']['result'][0]['majorHoldersBreakdown']).drop('maxAge', 
+                                                                                                                axis = 1).loc[['raw']]
+                self.majorHolderInfo.index = [self.ticker]
+            except:
+                pass
             
-            ########### Creating recommendation trend dataframe
-            self.recommendationTrend = pd.concat([pd.DataFrame(trend, index = [trend['period']]) for trend in 
-                                                  data['quoteSummary']['result'][0]['recommendationTrend']['trend']],
-                                                 axis = 0).T.drop('period')
+            try:
+                ########### Creating recommendation trend dataframe
+                self.recommendationTrend = pd.concat([pd.DataFrame(trend, index = [trend['period']]) for trend in 
+                                                      data['quoteSummary']['result'][0]['recommendationTrend']['trend']],
+                                                     axis = 0).T.drop('period')
+            except:
+                pass
             
             ########### Creating key statistics dataframe
             self.keyStats = pd.DataFrame(data['quoteSummary']['result'][0]['defaultKeyStatistics']).loc[['raw']]
             self.keyStats.index = [self.ticker]
             
-            ########### Creating share purchase dataframe
-            self.purchaseActivity = pd.DataFrame(data['quoteSummary']['result'][0]['netSharePurchaseActivity']).loc[['raw']]
-            self.purchaseActivity.index = [self.ticker]
+            try:
+                ########### Creating share purchase dataframe
+                self.purchaseActivity = pd.DataFrame(data['quoteSummary']['result'][0]['netSharePurchaseActivity']).loc[['raw']]
+                self.purchaseActivity.index = [self.ticker]
+            except:
+                pass
             
-            ########### Creating insider transactions dataframe
-            insiderTxns = pd.concat([pd.DataFrame(filer).loc[['raw']] for filer in data['quoteSummary']['result'][0]['insiderTransactions']['transactions']])
-            insiderTxns.index = insiderTxns.filerName
-            insiderTxns.startDate = pd.to_datetime([dt.datetime.utcfromtimestamp(int(x)).date() for 
-                                                    x in insiderTxns.startDate.tolist()])
-            self.insiderTxns = insiderTxns.drop(['filerUrl','maxAge','moneyText','filerName'], axis = 1)
+            try:
+                ########### Creating insider transactions dataframe
+                insiderTxns = pd.concat([pd.DataFrame(filer).loc[['raw']] for filer in data['quoteSummary']['result'][0]['insiderTransactions']['transactions']])
+                insiderTxns.index = insiderTxns.filerName
+                insiderTxns.startDate = pd.to_datetime([dt.datetime.utcfromtimestamp(int(x)).date() for 
+                                                        x in insiderTxns.startDate.tolist()])
+                self.insiderTxns = insiderTxns.drop(['filerUrl','maxAge','moneyText','filerName'], axis = 1)
+            except:
+                pass
             
             ########### Creating historical income statement dataframe
             incomeStatementAnnual = pd.concat([pd.DataFrame(incomeStatement).loc['raw'] for 
@@ -224,34 +246,45 @@ class yahoo_query:
                                                            x in balanceSheetQuarter['endDate'].tolist()])
             self.balanceSheetQuarter = balanceSheetQuarter.drop('endDate', axis = 1)
             
-            ############ Creating fund ownership dataframe
-            self.fundOwnership = pd.concat([pd.DataFrame(fundOwner).loc['raw'] for 
-                                            fundOwner in 
-                                            data['quoteSummary']['result'][0]['fundOwnership']['ownershipList']],
-                                           axis = 1).T.drop('maxAge', axis = 1)
-
-            self.fundOwnership.index = self.fundOwnership.organization
-            self.fundOwnership.reportDate = pd.to_datetime([dt.datetime.utcfromtimestamp(int(x)) for 
-                                                            x in self.fundOwnership.reportDate])
+            try:
+                ############ Creating fund ownership dataframe
+                self.fundOwnership = pd.concat([pd.DataFrame(fundOwner).loc['raw'] for 
+                                                fundOwner in 
+                                                data['quoteSummary']['result'][0]['fundOwnership']['ownershipList']],
+                                               axis = 1).T.drop('maxAge', axis = 1)
+    
+                self.fundOwnership.index = self.fundOwnership.organization
+                self.fundOwnership.reportDate = pd.to_datetime([dt.datetime.utcfromtimestamp(int(x)) for 
+                                                                x in self.fundOwnership.reportDate])
+            except:
+                pass
             
-            ############ Creating insider holders dataframe
-            self.insiderHolders = pd.concat([pd.DataFrame(holder).loc['raw'] for 
-                                             holder in data['quoteSummary']['result'][0]['insiderHolders']['holders']],
-                                            axis = 1).T.drop('maxAge', axis = 1)
-            self.insiderHolders.index = range(len(self.insiderHolders))
+            try:
+                ############ Creating insider holders dataframe
+                self.insiderHolders = pd.concat([pd.DataFrame(holder).loc['raw'] for 
+                                                 holder in data['quoteSummary']['result'][0]['insiderHolders']['holders']],
+                                                axis = 1).T.drop('maxAge', axis = 1)
+                self.insiderHolders.index = range(len(self.insiderHolders))
+            except:
+                pass
             
-            ############ Creating calendar events dataframe (dividend dates and earnings dates)
-            #self.currEarnings = pd.DataFrame(data['quoteSummary']['result'][0]['calendarEvents']['earnings']).loc[['raw']]
-            #self.dividends = pd.DataFrame(dict((k, dt.datetime.utcfromtimestamp(int(data['quoteSummary']['result'][0]['calendarEvents'][k]['raw'])).date()) for
-            #                                   k in ('dividendDate','exDividendDate')), index = [self.ticker])
+            try:
+                ############ Creating calendar events dataframe (dividend dates and earnings dates)
+                self.currEarnings = pd.DataFrame(data['quoteSummary']['result'][0]['calendarEvents']['earnings']).loc[['raw']]
+                self.dividends = pd.DataFrame(dict((k, dt.datetime.utcfromtimestamp(int(data['quoteSummary']['result'][0]['calendarEvents'][k]['raw'])).date()) for
+                                                   k in ('dividendDate','exDividendDate')), index = [self.ticker])
+            except:
+                pass
             
-            
-            ############ Creating earnings estimate dataframe
-            earningEsts = pd.concat([pd.DataFrame(estimate).loc['raw'] for estimate in 
-                                     data['quoteSummary']['result'][0]['earningsTrend']['trend']],
-                                    axis = 1).T.dropna(subset=['endDate'])
-            earningEsts.index = pd.to_datetime([dt.datetime.strptime(date,'%Y-%m-%d').date() for date in earningEsts.endDate])
-            self.earningEsts = earningEsts.drop('endDate', axis = 1)
+            try:
+                ############ Creating earnings estimate dataframe
+                earningEsts = pd.concat([pd.DataFrame(estimate).loc['raw'] for estimate in 
+                                         data['quoteSummary']['result'][0]['earningsTrend']['trend']],
+                                        axis = 1).T.dropna(subset=['endDate'])
+                earningEsts.index = pd.to_datetime([dt.datetime.strptime(date,'%Y-%m-%d').date() for date in earningEsts.endDate])
+                self.earningEsts = earningEsts.drop('endDate', axis = 1)
+            except:
+                pass
             
             
             ############ Creating financial data
