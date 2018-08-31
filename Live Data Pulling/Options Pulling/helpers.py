@@ -1224,7 +1224,7 @@ def position_sim(position_df, holdings, shares,
                 adj_df['Rho'] = adj_df['Rho'] + val*indi_sims[i]['Rho']
                 adj_df['PnL'] = adj_df['PnL'] + val*indi_sims[i]['Simulated Prices']
 
-            adj_df['PnL'] = (adj_df['PnL'] - sum(position[price_col]*position['Pos']))*100 - shares*(adj_df['Underlying_Price'] -
+            adj_df['PnL'] = (adj_df['PnL'] - sum(position[price_col]*position['Pos']))*100 + shares*(adj_df['Underlying_Price'] -
                                                                                                      position.head(1)['Underlying_Price'][0])
             adj_df['Percent Return'] = adj_df['PnL']/initial_cost
 
