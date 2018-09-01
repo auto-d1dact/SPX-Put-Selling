@@ -746,11 +746,11 @@ def past_earnings(ticker):
 
     alphavantage_link = 'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={0}&apikey=6ZAZOL7YF8VPXND7&datatype=csv&outputsize={1}'.format(ticker, 'full')
     stockframe = pd.read_csv(alphavantage_link, index_col = 0).sort_index()[['open', 'close']]
-    stockframe[ticker] = np.log(stockframe['close']/stockframe['close'].shift(1))
-    stockframe['1Year'] = stockframe.close.pct_change(252).shift(-1)
-    stockframe['6month'] = stockframe.close.pct_change(126).shift(-1)
-    stockframe['3month'] = stockframe.close.pct_change(63).shift(-1)
-    stockframe['1month'] = stockframe.close.pct_change(20).shift(-1)
+    stockframe['PostEarningsReturn'] = np.log(stockframe['close']/stockframe['close'].shift(1))
+    stockframe['1Year'] = stockframe.close.pct_change(252).shift(1)
+    stockframe['6month'] = stockframe.close.pct_change(126).shift(1)
+    stockframe['3month'] = stockframe.close.pct_change(63).shift(1)
+    stockframe['1month'] = stockframe.close.pct_change(20).shift(1)
     stockframe.index = pd.to_datetime(stockframe.index)
 
     earnings_returns = []
