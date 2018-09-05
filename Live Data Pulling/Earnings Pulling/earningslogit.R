@@ -2,12 +2,11 @@
 library(lubridate)
 library(dplyr)
 library(nnet)
-library(kable)
 library(purrr)
 library(magrittr)
 
 # Importing the dataset
-dataset = read.csv('earnings_data.csv')
+dataset = read.csv('earnHist_v3.csv')
 dataset$quarter = as.Date(dataset$quarter, "%m/%d/%Y")
 
 # columns = c("X1Year","X1month","industry","current_ratio",'total_debt_equity_ratio',
@@ -20,14 +19,14 @@ columns = c("X1Year","X1month","industry","current_ratio",'total_debt_equity_rat
             'interest_coverage_ratio','net_profit_margin','roe','changeToLiabilities',
             'changeToNetincome','changeToOperatingActivities','return_factor')
 
+
 # Splitting the dataset into the Training set and Test set
 train = dataset %>%
-  filter(quarter < as.Date('2018-03-31'))
+  filter(quarter < as.Date('2018-04-30'))
 train = train[,columns]
 
 test = dataset %>%
-  filter(quarter >= as.Date('2018-03-31')) %>%
-  filter(quarter < as.Date('2018-05-31'))
+  filter(quarter >= as.Date('2018-04-30'))
 test = test[,columns]
 
 test_y_actual = data.frame(test$return_factor)
@@ -37,9 +36,9 @@ for(level in unique(test_y_actual$test.return_factor)){
 }
 
 
-valid = dataset %>%
-  filter(quarter >= as.Date('2018-05-31'))
-valid = valid[,columns]
+# valid = dataset %>%
+#   filter(quarter >= as.Date('2018-05-31'))
+# valid = valid[,columns]
 
 # define model grid for best subset regression
 # defines which predictors are on/off; all combinations presented
